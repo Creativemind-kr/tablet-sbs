@@ -612,7 +612,67 @@
   .modal-btn-confirm:hover { background: #333; }
 
   /* ══════════════════════════════════════
-     14. ADMIN — 툴바
+     14. ROADMAP
+  ══════════════════════════════════════ */
+  .roadmap-steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+  .roadmap-step { display: flex; gap: 20px; position: relative; padding-bottom: 28px; }
+  .roadmap-step:last-child { padding-bottom: 0; }
+  .roadmap-step__line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .roadmap-step__dot { width: 44px; height: 44px; border-radius: 50%; background: var(--c-course); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .8rem; letter-spacing: .04em; }
+  .roadmap-step__connector { width: 2px; flex: 1; background: var(--c-border); margin-top: 6px; min-height: 20px; }
+  .roadmap-step:last-child .roadmap-step__connector { display: none; }
+  .roadmap-step__body { padding-top: 10px; padding-left: 4px; flex: 1; }
+  .roadmap-step__title { font-size: var(--t-lg); font-weight: 700; margin-bottom: 3px; }
+  .roadmap-step__weeks { font-size: var(--t-sm); color: var(--c-course); font-weight: 600; margin-bottom: 6px; }
+  .roadmap-step__desc { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.65; }
+
+  /* ══════════════════════════════════════
+     15. INSTRUCTORS
+  ══════════════════════════════════════ */
+  .instructor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 24px; }
+  .instructor-card { background: var(--c-bg-2); border-radius: 16px; padding: 26px 22px; display: flex; gap: 18px; align-items: flex-start; }
+  .instructor-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--c-black); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+  .instructor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .instructor-name { font-size: var(--t-lg); font-weight: 700; margin-bottom: 3px; }
+  .instructor-specialty { font-size: var(--t-sm); color: var(--c-text-2); font-weight: 600; margin-bottom: 10px; background: var(--c-bg); display: inline-block; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--c-border); }
+  .instructor-career { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.7; white-space: pre-line; }
+
+  /* ══════════════════════════════════════
+     16. REVIEWS
+  ══════════════════════════════════════ */
+  .review-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
+  .review-card { background: var(--c-bg-2); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
+  .review-quote { font-size: 2.8rem; line-height: 1; color: var(--c-black); opacity: .12; margin-bottom: -6px; font-family: Georgia, serif; }
+  .review-text { font-size: var(--t-md); color: var(--c-text); line-height: 1.75; margin-bottom: 18px; flex: 1; }
+  .review-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .review-meta { display: flex; flex-direction: column; gap: 5px; }
+  .review-name { font-size: var(--t-sm); font-weight: 700; }
+  .review-course-tag { font-size: var(--t-xs); color: var(--c-text-2); background: var(--c-bg); border: 1px solid var(--c-border); padding: 3px 10px; border-radius: 20px; display: inline-block; }
+  .review-stars { color: #FBBF24; font-size: var(--t-md); letter-spacing: 2px; }
+
+  /* ══════════════════════════════════════
+     17. IMAGE GALLERY & LIGHTBOX
+  ══════════════════════════════════════ */
+  .img-gallery { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 16px; margin-bottom: 8px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+  .img-gallery::-webkit-scrollbar { height: 3px; }
+  .img-gallery::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
+  .img-gallery__item { flex-shrink: 0; width: 190px; height: 130px; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; scroll-snap-align: start; border: 1px solid var(--c-border); }
+  .img-gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+  .img-gallery__item:hover img { transform: scale(1.04); }
+  .img-gallery__del { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,.6); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: .7rem; display: flex; align-items: center; justify-content: center; }
+  .img-gallery__add { flex-shrink: 0; width: 120px; height: 130px; border-radius: 12px; border: 2px dashed var(--c-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--c-text-2); font-size: var(--t-sm); background: none; scroll-snap-align: start; }
+  .img-gallery__add:hover { border-color: var(--c-text-2); }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 10px; pointer-events: none; }
+  .lightbox__close { position: absolute; top: 18px; right: 22px; color: #fff; font-size: 2rem; background: none; border: none; cursor: pointer; line-height: 1; }
+
+  @media (max-width: 680px) {
+    .instructor-grid { grid-template-columns: 1fr; }
+    .review-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ══════════════════════════════════════
+     18. ADMIN — 툴바
   ══════════════════════════════════════ */
   .admin-toolbar {
     display: none;
@@ -819,13 +879,15 @@
       <span>컴퓨터아트학원</span>
     </div>
     <nav class="main-nav" role="tablist">
-      <button class="main-nav__btn is-active" data-page="intro"      role="tab"><span class="dot"></span>학원 소개</button>
-      <button class="main-nav__btn"           data-page="courses"    role="tab"><span class="dot"></span>강좌 안내</button>
-      <button class="main-nav__btn"           data-page="curriculum" role="tab"><span class="dot"></span>커리큘럼</button>
-      <button class="main-nav__btn"           data-page="checklist"  role="tab"><span class="dot"></span>준비물</button>
+      <button class="main-nav__btn is-active" data-page="intro"        role="tab"><span class="dot"></span>학원 소개</button>
+      <button class="main-nav__btn"           data-page="roadmap"      role="tab"><span class="dot"></span>학과별 로드맵</button>
+      <button class="main-nav__btn"           data-page="curriculum"   role="tab"><span class="dot"></span>커리큘럼</button>
+      <button class="main-nav__btn"           data-page="instructors"  role="tab"><span class="dot"></span>강사 소개</button>
+      <button class="main-nav__btn"           data-page="reviews"      role="tab"><span class="dot"></span>수강생 후기</button>
+      <button class="main-nav__btn"           data-page="checklist"    role="tab"><span class="dot"></span>준비물 안내</button>
     </nav>
     <!-- 2초 길게 누르면 관리자 로그인 -->
-    <div class="header__indicator" id="indicator" title="">1 / 4</div>
+    <div class="header__indicator" id="indicator" title="">1 / 6</div>
   </header>
 
   <!-- ══ CONTENT ══ -->
@@ -836,28 +898,38 @@
       <div class="page__inner" id="intro-content"></div>
     </div>
 
-    <!-- ── PAGE 2: 강좌 안내 ── -->
-    <div class="page" id="page-courses">
+    <!-- ── PAGE 2: 학과별 로드맵 ── -->
+    <div class="page" id="page-roadmap">
       <div class="page__inner">
-        <p class="page-label">강좌 안내</p>
-        <nav class="sub-nav" id="course-subnav"></nav>
-        <div id="course-views"></div>
+        <p class="page-label">학과별 로드맵</p>
+        <nav class="sub-nav" id="roadmap-subnav"></nav>
+        <div id="roadmap-views"></div>
       </div>
     </div>
 
     <!-- ── PAGE 3: 커리큘럼 ── -->
     <div class="page" id="page-curriculum">
       <div class="page__inner">
-        <p class="page-label">커리큘럼</p>
+        <p class="page-label">커리큘럼(학과별)</p>
         <nav class="sub-nav" id="curr-subnav"></nav>
         <div id="curr-views"></div>
       </div>
     </div>
 
-    <!-- ── PAGE 4: 준비물 ── -->
+    <!-- ── PAGE 4: 강사 소개 ── -->
+    <div class="page" id="page-instructors">
+      <div class="page__inner" id="instructors-content"></div>
+    </div>
+
+    <!-- ── PAGE 5: 수강생 후기 ── -->
+    <div class="page" id="page-reviews">
+      <div class="page__inner" id="reviews-content"></div>
+    </div>
+
+    <!-- ── PAGE 6: 준비물 및 수강생 안내 ── -->
     <div class="page" id="page-checklist">
       <div class="page__inner">
-        <p class="page-label">수강 준비물</p>
+        <p class="page-label">준비물 및 수강생 안내</p>
         <p class="checklist-intro">
           수강 등록 전 아래 준비물을 확인해 주세요.<br>
           장비 구매 전 반드시 상담을 먼저 받아보시길 권장합니다.
@@ -945,6 +1017,13 @@ let COURSES = {
     title: 'HTML/CSS/JS부터\n포트폴리오까지',
     desc: '반응형 웹 제작의 처음부터 끝까지 배웁니다. 디자인 감각과 코딩 실력을 함께 키워 현업 바로 투입 가능한 웹 퍼블리셔·프론트엔드 기초 역량을 완성합니다.',
     tags: ['HTML5 / CSS3','JavaScript ES6+','반응형 웹','Figma 협업','포트폴리오 배포'],
+    roadmap: [
+      { phase: '01', title: '웹의 구조 이해', weeks: '1–4주차', desc: 'HTML5 시맨틱 구조와 CSS Flexbox/Grid로 반응형 레이아웃을 완성합니다.' },
+      { phase: '02', title: '인터랙션 구현', weeks: '5–8주차', desc: 'JavaScript DOM 조작과 API 연동으로 동적인 웹 페이지를 만듭니다.' },
+      { phase: '03', title: '심화 & 실전', weeks: '9–10주차', desc: 'CSS 애니메이션, 스크롤 인터랙션, 성능 최적화를 다룹니다.' },
+      { phase: '04', title: '포트폴리오 완성', weeks: '11–12주차', desc: '개인 포트폴리오 사이트 제작부터 GitHub Pages 배포까지 완성합니다.' }
+    ],
+    images: [],
     curriculum: [
       { week: '1–2주차',   topic: 'HTML5 구조 · CSS Box Model',   items: ['HTML5 시맨틱 태그 이해','CSS Box Model · Flexbox 레이아웃','기본 웹 페이지 제작 실습'] },
       { week: '3–4주차',   topic: 'Grid · 반응형 미디어쿼리',      items: ['CSS Grid 고급 레이아웃','미디어 쿼리 · Clamp 반응형 대응','CSS 변수(Custom Properties) 활용'] },
@@ -961,6 +1040,13 @@ let COURSES = {
     title: '그래픽 디자인의\n모든 것',
     desc: 'Photoshop과 Illustrator를 완전 마스터합니다. 사진 보정부터 브랜드 아이덴티티 디자인까지 실무 전 영역을 다루며 즉시 사용 가능한 실력을 키웁니다.',
     tags: ['Adobe Photoshop','Adobe Illustrator','사진 보정·합성','벡터 드로잉','브랜드 디자인'],
+    roadmap: [
+      { phase: '01', title: 'Photoshop 기초', weeks: '1–2주차', desc: '레이어·마스크 시스템을 이해하고 기본 사진 보정을 익힙니다.' },
+      { phase: '02', title: '고급 합성 & 색보정', weeks: '3–4주차', desc: '블렌딩 모드, Curves를 활용한 전문 사진 합성을 다룹니다.' },
+      { phase: '03', title: 'Illustrator 벡터', weeks: '5–6주차', desc: '펜툴 드로잉, 로고·아이콘 디자인, 타이포그래피를 완성합니다.' },
+      { phase: '04', title: '브랜드 포트폴리오', weeks: '7–8주차', desc: 'BI/CI 시스템 기획부터 최종 포트폴리오 PDF까지 완성합니다.' }
+    ],
+    images: [],
     curriculum: [
       { week: '1–2주차', topic: 'Photoshop 기초 · 레이어 시스템', items: ['인터페이스 및 주요 도구 이해','레이어·마스크·채널 활용','기본 사진 보정 실습'] },
       { week: '3–4주차', topic: '고급 합성 · 색보정',              items: ['블렌딩 모드 고급 합성','Curves·Levels 전문 색보정','누끼 따기 · 자연스러운 합성 기법'] },
@@ -975,6 +1061,13 @@ let COURSES = {
     title: '영상 편집부터\n모션그래픽까지',
     desc: 'Premiere Pro로 탄탄한 편집 기초를 쌓고 After Effects로 모션그래픽을 완성합니다. 유튜브·릴스·숏폼까지 실전 콘텐츠 제작 능력을 갖춥니다.',
     tags: ['Adobe Premiere Pro','Adobe After Effects','색보정 LUT','모션그래픽','숏폼 콘텐츠'],
+    roadmap: [
+      { phase: '01', title: 'Premiere 편집 기초', weeks: '1–2주차', desc: '시퀀스 설정, 컷편집, 자막 디자인을 익혀 영상 편집의 기본기를 다집니다.' },
+      { phase: '02', title: '색보정 & 오디오', weeks: '3–4주차', desc: 'Lumetri Color로 전문 색보정과 오디오 믹싱·노이즈 제거를 다룹니다.' },
+      { phase: '03', title: 'After Effects 모션', weeks: '5–8주차', desc: '키프레임 애니메이션, 타이틀 시퀀스, 마스크·트래킹을 제작합니다.' },
+      { phase: '04', title: '숏폼 포트폴리오', weeks: '9–10주차', desc: '릴스·쇼츠 최적화 편집부터 최종 포트폴리오 출력까지 완성합니다.' }
+    ],
+    images: [],
     curriculum: [
       { week: '1–2주차',  topic: 'Premiere Pro 편집 기초',         items: ['시퀀스 설정 · 소스 패널 이해','컷편집 · 트랜지션 · 속도 조절','자막 디자인 (Essential Graphics)'] },
       { week: '3–4주차',  topic: '색보정 · 오디오 믹싱',            items: ['Lumetri Color 전문 색보정','LUT 적용 · 영상 분위기 연출','오디오 레벨 · 노이즈 제거'] },
@@ -990,6 +1083,13 @@ let COURSES = {
     title: '앱·웹 디자인\n전문가 과정',
     desc: 'UX 리서치부터 Figma 실무 디자인, 프로토타이핑까지 전 과정을 익힙니다. 완성된 앱 디자인 포트폴리오로 취업 경쟁력을 확보합니다.',
     tags: ['Figma','UX 리서치','와이어프레임','컴포넌트 시스템','프로토타이핑'],
+    roadmap: [
+      { phase: '01', title: 'UX 리서치', weeks: '1–2주차', desc: '사용자 인터뷰, 페르소나, 사용자 여정 맵으로 문제를 정의합니다.' },
+      { phase: '02', title: 'Figma & 컴포넌트', weeks: '3–4주차', desc: 'Auto Layout, 컴포넌트·베리언트 시스템을 구축합니다.' },
+      { phase: '03', title: '와이어프레임 & 비주얼', weeks: '5–8주차', desc: '정보구조 설계부터 고품질 비주얼 디자인·디자인 토큰까지 완성합니다.' },
+      { phase: '04', title: '프로토타입 & 포트폴리오', weeks: '9–10주차', desc: '인터랙티브 프로토타입 제작과 케이스 스터디 포트폴리오를 완성합니다.' }
+    ],
+    images: [],
     curriculum: [
       { week: '1–2주차',  topic: 'UX 리서치 · 사용자 분석',         items: ['UX와 UI의 차이 완전 이해','사용자 인터뷰 · 페르소나 작성','사용자 여정 맵 · 문제 정의'] },
       { week: '3–4주차',  topic: 'Figma 기초 · 컴포넌트 시스템',    items: ['Figma 인터페이스 완전 정복','Auto Layout · 제약 조건 활용','컴포넌트 · 베리언트 설계'] },
@@ -1000,6 +1100,20 @@ let COURSES = {
     checklist: ['개인 노트북 (Mac 권장, Windows 가능)','Figma 계정 (무료)','스마트폰 (프로토타입 테스트용)','기본 디자인 감각 (미술 전공 불필요)']
   }
 };
+
+let INSTRUCTORS_DATA = [
+  { name: '강사명', title: '웹디자인 · 퍼블리싱', career: '현 SBS아카데미 강사\n실무 10년 경력\n삼성·LG 등 다수 기업 프로젝트', photo: '' },
+  { name: '강사명', title: '그래픽 디자인 · 포토샵·일러스트', career: '현 SBS아카데미 강사\n실무 8년 경력\n브랜드·광고 디자인 전문', photo: '' },
+  { name: '강사명', title: '영상편집 · 모션그래픽', career: '현 SBS아카데미 강사\n방송·유튜브 콘텐츠 제작 전문\n실무 7년 경력', photo: '' },
+  { name: '강사명', title: 'UI/UX · 피그마', career: '현 SBS아카데미 강사\n앱·서비스 디자인 전문\n실무 9년 경력', photo: '' }
+];
+
+let REVIEWS_DATA = [
+  { name: '김○○', course: '웹디자인·퍼블리싱', text: '취업에 직접적으로 도움이 됐습니다. 실무 위주의 수업이라 배운 것을 현장에서 바로 적용할 수 있었어요. 소수 정예라 강사님께 집중 피드백을 받을 수 있어 실력이 빠르게 늘었습니다.', star: 5 },
+  { name: '이○○', course: '포토샵·일러스트', text: '혼자서는 몇 달이 걸릴 내용을 체계적으로 배웠습니다. 포트폴리오 완성까지 도와주셔서 실제 면접에서 큰 도움이 됐어요.', star: 5 },
+  { name: '박○○', course: 'UI/UX·피그마', text: '강사님이 현업 트렌드를 정말 잘 아세요. 케이스 스터디 포트폴리오를 완성하고 디자이너로 취업에 성공했습니다!', star: 5 },
+  { name: '정○○', course: '영상편집·모션그래픽', text: '유튜브 채널을 운영하고 싶어서 수강했는데 편집 속도가 눈에 띄게 빨라졌어요. After Effects 모션그래픽까지 배워서 퀄리티가 완전히 달라졌습니다.', star: 5 }
+];
 
 /* ══════════════════════════════════════════════════
    STATE
@@ -1020,7 +1134,11 @@ function setByPath(path, value) {
   const parts = path.split('.');
   const root  = parts[0];
   const keys  = parts.slice(1);
-  let curr    = root === 'ui' ? UI_DATA : COURSES;
+  let curr;
+  if (root === 'ui')          curr = UI_DATA;
+  else if (root === 'instructors') curr = INSTRUCTORS_DATA;
+  else if (root === 'reviews')     curr = REVIEWS_DATA;
+  else                             curr = COURSES;
   for (let i = 0; i < keys.length - 1; i++) {
     const k = keys[i];
     curr = curr[isNaN(k) ? k : +k];
@@ -1060,7 +1178,9 @@ async function loadFromFirestore() {
     if (snap.exists) {
       const data = snap.data();
       if (data.courses && Object.keys(data.courses).length) COURSES = data.courses;
-      if (data.ui)      UI_DATA = data.ui;
+      if (data.ui)          UI_DATA          = data.ui;
+      if (data.instructors) INSTRUCTORS_DATA = data.instructors;
+      if (data.reviews)     REVIEWS_DATA     = data.reviews;
     }
   } catch(e) {
     console.warn('데이터 로드 실패, 기본값 사용:', e.message);
@@ -1074,9 +1194,11 @@ async function saveData() {
   }
   try {
     await db.collection('curriculum').doc('main').set({
-      courses:   COURSES,
-      ui:        UI_DATA,
-      updatedAt: new Date().toISOString()
+      courses:     COURSES,
+      ui:          UI_DATA,
+      instructors: INSTRUCTORS_DATA,
+      reviews:     REVIEWS_DATA,
+      updatedAt:   new Date().toISOString()
     });
     showToast('저장되었습니다 ✓');
   } catch(e) {
@@ -1235,8 +1357,99 @@ function renderSubNavs() {
   const ids    = Object.keys(COURSES);
   const addBtn = isEditMode ? `<button class="admin-add-course-btn" onclick="addCourse()">+ 강좌 추가</button>` : '';
   const btns   = ids.map(id => `<button class="sub-nav__btn" data-course="${id}">${COURSES[id].label}</button>`).join('') + addBtn;
-  document.getElementById('course-subnav').innerHTML = btns;
-  document.getElementById('curr-subnav').innerHTML   = btns;
+  document.getElementById('roadmap-subnav').innerHTML = btns;
+  document.getElementById('curr-subnav').innerHTML    = btns;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 로드맵 패널 (1개)
+══════════════════════════════════════════════════ */
+function renderRoadmapView(id) {
+  const c  = COURSES[id];
+  const em = isEditMode;
+  const steps = (c.roadmap || []).map((s, si) => `
+    <div class="roadmap-step">
+      <div class="roadmap-step__line">
+        <div class="roadmap-step__dot">${s.phase || String(si+1).padStart(2,'0')}</div>
+        <div class="roadmap-step__connector"></div>
+      </div>
+      <div class="roadmap-step__body">
+        <p class="roadmap-step__title">${em ? E('courses.'+id+'.roadmap.'+si+'.title', s.title) : s.title}</p>
+        <p class="roadmap-step__weeks">${em ? E('courses.'+id+'.roadmap.'+si+'.weeks', s.weeks) : s.weeks}</p>
+        <p class="roadmap-step__desc">${em ? E('courses.'+id+'.roadmap.'+si+'.desc', s.desc) : s.desc}</p>
+        ${em ? `<div style="margin-top:6px"><button class="admin-del-btn" onclick="deleteRoadmapStep('${id}',${si})">✕ 단계 삭제</button></div>` : ''}
+      </div>
+    </div>`).join('');
+
+  let el = document.getElementById('rm-'+id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'rm-'+id;
+    el.className = 'course-view';
+    document.getElementById('roadmap-views').appendChild(el);
+  }
+  el.innerHTML = `
+    <div class="curr-header">
+      <h2 class="curr-header__title">${c.label}</h2>
+      <div class="curr-header__meta">${c.duration}</div>
+    </div>
+    <div class="roadmap-steps">${steps || '<p style="color:var(--c-text-2)">로드맵 단계를 추가하세요.</p>'}</div>
+    ${em ? `<button class="admin-add-block" onclick="addRoadmapStep('${id}')">+ 단계 추가</button>` : ''}`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 강사 소개 페이지
+══════════════════════════════════════════════════ */
+function renderInstructorsPage() {
+  const em = isEditMode;
+  const cards = INSTRUCTORS_DATA.map((inst, i) => `
+    <div class="instructor-card">
+      <div class="instructor-avatar">
+        ${inst.photo ? `<img src="${inst.photo}" alt="${inst.name}">` : inst.name.charAt(0)}
+      </div>
+      <div style="flex:1">
+        <p class="instructor-name">${em ? E('instructors.'+i+'.name', inst.name) : inst.name}</p>
+        <span class="instructor-specialty">${em ? E('instructors.'+i+'.title', inst.title) : inst.title}</span>
+        <p class="instructor-career">${em ? E('instructors.'+i+'.career', inst.career) : inst.career}</p>
+        ${em ? `<div style="margin-top:8px"><button class="admin-del-btn" onclick="deleteInstructor(${i})">✕ 삭제</button></div>` : ''}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('instructors-content').innerHTML = `
+    <p class="page-label">강사 소개</p>
+    <div class="instructor-grid">
+      ${cards}
+      ${em ? `<button class="admin-add-block" onclick="addInstructor()" style="min-height:120px">+ 강사 추가</button>` : ''}
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 수강생 후기 페이지
+══════════════════════════════════════════════════ */
+function renderReviewsPage() {
+  const em = isEditMode;
+  const cards = REVIEWS_DATA.map((r, i) => `
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <p class="review-text">${em ? E('reviews.'+i+'.text', r.text) : r.text}</p>
+      <div class="review-footer">
+        <div class="review-meta">
+          <p class="review-name">${em ? E('reviews.'+i+'.name', r.name) : r.name}</p>
+          <span class="review-course-tag">${em ? E('reviews.'+i+'.course', r.course) : r.course}</span>
+        </div>
+        <div style="text-align:right">
+          <div class="review-stars">${'★'.repeat(r.star || 5)}</div>
+          ${em ? `<button class="admin-del-btn" onclick="deleteReview(${i})" style="margin-top:4px">✕</button>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('reviews-content').innerHTML = `
+    <p class="page-label">수강생 후기</p>
+    <div class="review-grid">
+      ${cards}
+      ${em ? `<button class="admin-add-block" onclick="addReview()" style="min-height:160px">+ 후기 추가</button>` : ''}
+    </div>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1325,11 +1538,24 @@ function renderCurriculumView(id) {
       </div>`;
   }).join('');
 
+  const imgs = (c.images || []);
+  const galleryItems = imgs.map((url, ii) => `
+    <div class="img-gallery__item" onclick="openLightbox('${url}')">
+      <img src="${url}" alt="참고 이미지 ${ii+1}" loading="lazy">
+      ${em ? `<button class="img-gallery__del" onclick="event.stopPropagation();deleteImage('${id}',${ii})">✕</button>` : ''}
+    </div>`).join('');
+  const gallery = (imgs.length > 0 || em) ? `
+    <div class="img-gallery">
+      ${galleryItems}
+      ${em ? `<button class="img-gallery__add" onclick="addImage('${id}')">+ 이미지<br>추가</button>` : ''}
+    </div>` : '';
+
   el.innerHTML = `
     <div class="curr-header">
       <h2 class="curr-header__title">${c.label}</h2>
       <div class="curr-header__meta">${c.duration}</div>
     </div>
+    ${gallery}
     ${weeks}
     ${em ? `<button class="admin-add-block" onclick="addCurrWeek('${id}')">+ 주차 추가</button>` : ''}`;
 }
@@ -1374,9 +1600,9 @@ function renderAll() {
   renderSubNavs();
 
   // 삭제된 강좌 뷰 제거
-  ['course-views','curr-views'].forEach(wrapperId => {
+  ['curr-views','roadmap-views'].forEach(wrapperId => {
     document.querySelectorAll('#'+wrapperId+' > .course-view').forEach(v => {
-      const vid = v.id.replace(/^(cv|cr)-/, '');
+      const vid = v.id.replace(/^(cv|cr|rm)-/, '');
       if (!COURSES[vid]) v.remove();
     });
   });
@@ -1387,10 +1613,12 @@ function renderAll() {
 
   // 강좌별 렌더링
   Object.keys(COURSES).forEach(id => {
-    renderCourseView(id);
+    renderRoadmapView(id);
     renderCurriculumView(id);
     renderChecklistCard(id);
   });
+  renderInstructorsPage();
+  renderReviewsPage();
 }
 
 /* ══════════════════════════════════════════════════
@@ -1414,8 +1642,8 @@ function activateCoursePanels(courseId) {
   document.querySelectorAll('.sub-nav__btn').forEach(b =>
     b.classList.toggle('is-active', b.dataset.course === courseId));
 
-  document.querySelectorAll('#course-views > .course-view').forEach(v =>
-    v.classList.toggle('is-active', v.id === 'cv-'+courseId));
+  document.querySelectorAll('#roadmap-views > .course-view').forEach(v =>
+    v.classList.toggle('is-active', v.id === 'rm-'+courseId));
   document.querySelectorAll('#curr-views > .course-view').forEach(v =>
     v.classList.toggle('is-active', v.id === 'cr-'+courseId));
 
@@ -1426,7 +1654,7 @@ function activateCoursePanels(courseId) {
 /* ══════════════════════════════════════════════════
    PAGE SWITCHING
 ══════════════════════════════════════════════════ */
-const PAGE_ORDER = ['intro','courses','curriculum','checklist'];
+const PAGE_ORDER = ['intro','roadmap','curriculum','instructors','reviews','checklist'];
 
 function goToPage(pageId) {
   if (pageId === currentPage) return;
@@ -1441,7 +1669,7 @@ function goToPage(pageId) {
     btn.classList.toggle('is-active', btn.dataset.page === pageId));
   document.getElementById('indicator').textContent =
     `${PAGE_ORDER.indexOf(pageId)+1} / ${PAGE_ORDER.length}`;
-  if (pageId === 'intro') setCourseColor(null);
+  if (['intro','instructors','reviews'].includes(pageId)) setCourseColor(null);
   currentPage = pageId;
 }
 
@@ -1518,6 +1746,8 @@ function addCourse() {
     title:      name.trim(),
     desc:       '강좌 설명을 입력하세요.',
     tags:       ['태그 입력'],
+    roadmap:    [{ phase: '01', title: '기초 입문', weeks: '1–4주차', desc: '설명을 입력하세요' }],
+    images:     [],
     curriculum: [{ week: '1–2주차', topic: '주제 입력', items: ['세부 항목 입력'] }],
     checklist:  ['준비물을 입력하세요']
   };
@@ -1573,6 +1803,85 @@ function deleteCurrItem(id, wi, ii) {
   COURSES[id].curriculum[wi].items.splice(ii, 1);
   renderCurriculumView(id);
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 로드맵
+══════════════════════════════════════════════════ */
+function addRoadmapStep(id) {
+  const title = prompt('단계 제목:');
+  if (!title?.trim()) return;
+  const weeks = prompt('기간 (예: 1–4주차):') || '';
+  const desc  = prompt('설명:') || '';
+  if (!COURSES[id].roadmap) COURSES[id].roadmap = [];
+  const num = String(COURSES[id].roadmap.length + 1).padStart(2, '0');
+  COURSES[id].roadmap.push({ phase: num, title: title.trim(), weeks, desc });
+  renderRoadmapView(id);
+  document.getElementById('rm-'+id)?.classList.add('is-active');
+}
+function deleteRoadmapStep(id, si) {
+  if (!confirm('이 단계를 삭제하시겠습니까?')) return;
+  COURSES[id].roadmap.splice(si, 1);
+  renderRoadmapView(id);
+  document.getElementById('rm-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 커리큘럼 이미지
+══════════════════════════════════════════════════ */
+function addImage(id) {
+  const url = prompt('이미지 URL을 입력하세요:');
+  if (!url?.trim()) return;
+  if (!COURSES[id].images) COURSES[id].images = [];
+  COURSES[id].images.push(url.trim());
+  renderCurriculumView(id);
+  document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function deleteImage(id, ii) {
+  COURSES[id].images.splice(ii, 1);
+  renderCurriculumView(id);
+  document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function openLightbox(url) {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = `<button class="lightbox__close" onclick="this.parentElement.remove()">✕</button><img src="${url}" alt="">`;
+  lb.addEventListener('click', e => { if (e.target === lb) lb.remove(); });
+  document.body.appendChild(lb);
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 강사 소개
+══════════════════════════════════════════════════ */
+function addInstructor() {
+  const name  = prompt('강사 이름:');
+  if (!name?.trim()) return;
+  const title  = prompt('전문 분야:') || '';
+  const career = prompt('경력 (줄바꿈은 \\n):') || '';
+  INSTRUCTORS_DATA.push({ name: name.trim(), title, career, photo: '' });
+  renderInstructorsPage();
+}
+function deleteInstructor(i) {
+  if (!confirm('이 강사를 삭제하시겠습니까?')) return;
+  INSTRUCTORS_DATA.splice(i, 1);
+  renderInstructorsPage();
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 수강생 후기
+══════════════════════════════════════════════════ */
+function addReview() {
+  const name   = prompt('수강생 이름 (예: 김○○):');
+  if (!name?.trim()) return;
+  const course = prompt('수강 과정:') || '';
+  const text   = prompt('후기 내용:') || '';
+  REVIEWS_DATA.push({ name: name.trim(), course, text, star: 5 });
+  renderReviewsPage();
+}
+function deleteReview(i) {
+  if (!confirm('이 후기를 삭제하시겠습니까?')) return;
+  REVIEWS_DATA.splice(i, 1);
+  renderReviewsPage();
 }
 
 /* ══════════════════════════════════════════════════
