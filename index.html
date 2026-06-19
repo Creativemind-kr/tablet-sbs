@@ -1593,11 +1593,17 @@ function deleteChecklistItem(id, ci) {
    BOOT
 ══════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
-  await initFirebase();
+  // 기본 데이터로 즉시 렌더링 (흰 화면 없음)
   renderUI();
   renderAll();
   activateCoursePanels('web');
   initAdminTrigger();
+
+  // 백그라운드에서 Firebase 로드 후 업데이트
+  await initFirebase();
+  renderUI();
+  renderAll();
+  activateCoursePanels(currentCourse);
 });
 </script>
 </body>
