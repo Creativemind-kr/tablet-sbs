@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SBS아카데미컴퓨터아트학원 — 강좌 안내</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase compat CDN (빌드 불필요) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <style>
+  /* ══════════════════════════════════════
+     1. TOKENS & COURSE COLOR SYSTEM
+  ══════════════════════════════════════ */
+  :root {
+    --c-bg:           #ffffff;
+    --c-bg-2:         #f7f7f5;
+    --c-text:         #111111;
+    --c-text-2:       #555555;
+    --c-text-3:       #aaaaaa;
+    --c-border:       #e8e8e8;
+    --c-black:        #000000;
+
+    --c-course:       #111111;
+    --c-course-tint:  #f7f7f5;
+
+    --font: 'Noto Sans KR', -apple-system, sans-serif;
+
+    --t-xs:   0.72rem;
+    --t-sm:   0.85rem;
+    --t-md:   1rem;
+    --t-lg:   1.15rem;
+    --t-xl:   1.4rem;
+    --t-2xl:  1.8rem;
+    --t-3xl:  2.4rem;
+    --t-4xl:  3.2rem;
+    --t-hero: 4.8rem;
+
+    --ease:   cubic-bezier(0.16, 1, 0.3, 1);
+    --fast:   130ms;
+    --base:   260ms;
+  }
+
+  .app.c-web   { --c-course: #3B82F6; --c-course-tint: #EFF6FF; }
+  .app.c-ps    { --c-course: #F97316; --c-course-tint: #FFF7ED; }
+  .app.c-video { --c-course: #EF4444; --c-course-tint: #FEF2F2; }
+  .app.c-uiux  { --c-course: #8B5CF6; --c-course-tint: #F5F3FF; }
+
+  /* ══════════════════════════════════════
+     2. RESET
+  ══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font);
+    color: var(--c-text);
+    background: var(--c-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  button {
+    cursor: pointer; border: none; background: none;
+    font: inherit; color: inherit;
+    touch-action: manipulation;
+  }
+  a { text-decoration: none; color: inherit; }
+  ul { list-style: none; }
+
+  /* ══════════════════════════════════════
+     3. LAYOUT
+  ══════════════════════════════════════ */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+
+  /* ══════════════════════════════════════
+     4. HEADER
+  ══════════════════════════════════════ */
+  .header {
+    flex-shrink: 0;
+    height: 58px;
+    border-bottom: 1px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 28px;
+    background: var(--c-bg);
+    position: relative;
+    z-index: 10;
+  }
+  .header__logo {
+    font-size: var(--t-sm);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .header__logo span {
+    color: var(--c-text-3);
+    font-weight: 400;
+    margin-left: 6px;
+    font-size: var(--t-xs);
+  }
+  .main-nav {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .main-nav::-webkit-scrollbar { display: none; }
+  .main-nav__btn {
+    padding: 7px 15px;
+    border-radius: 8px;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--c-text-3);
+    white-space: nowrap;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background var(--fast), color var(--fast);
+  }
+  .main-nav__btn .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--c-border);
+    flex-shrink: 0;
+    transition: background var(--base);
+  }
+  .main-nav__btn:hover { color: var(--c-text); background: var(--c-bg-2); }
+  .main-nav__btn.is-active { color: var(--c-text); font-weight: 700; background: var(--c-bg-2); }
+  .main-nav__btn.is-active .dot { background: var(--c-course); }
+
+  .header__indicator {
+    margin-left: auto;
+    font-size: var(--t-xs);
+    color: var(--c-text-3);
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    padding: 8px 4px;
+  }
+
+  /* ══════════════════════════════════════
+     5. CONTENT AREA & PAGES
+  ══════════════════════════════════════ */
+  .content-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px) scale(0.99);
+    transition: opacity 220ms var(--ease), transform 220ms var(--ease);
+    padding: 44px 40px 64px;
+  }
+  .page.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+  .page.exit {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+    transition: opacity 150ms, transform 150ms;
+  }
+  .app.is-admin .page { padding-bottom: 80px; }
+  .page__inner { max-width: 860px; margin: 0 auto; }
+  .page-label {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    margin-bottom: 12px;
+  }
+
+  /* ══════════════════════════════════════
+     6. PAGE 1 — 학원 소개
+  ══════════════════════════════════════ */
+  .hero-title {
+    font-size: var(--t-hero);
+    font-weight: 800;
+    letter-spacing: -.05em;
+    line-height: 1.04;
+    margin-bottom: 20px;
+  }
+  .hero-title em {
+    font-style: normal;
+    position: relative;
+    display: inline-block;
+  }
+  .hero-title em::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 2px;
+    height: 6px;
+    background: var(--c-course);
+    border-radius: 3px;
+    opacity: 0.35;
+    transition: background var(--base);
+  }
+  .hero-sub {
+    font-size: var(--t-lg);
+    color: var(--c-text-2);
+    margin-bottom: 48px;
+    font-weight: 400;
+  }
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--c-border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 52px;
+  }
+  .stat-card {
+    padding: 24px 28px;
+    border-right: 1px solid var(--c-border);
+  }
+  .stat-card:last-child { border-right: none; }
+  .stat-num {
+    display: block;
+    font-size: var(--t-3xl);
+    font-weight: 800;
+    letter-spacing: -.045em;
+    color: var(--c-text);
+    margin-bottom: 3px;
+    line-height: 1;
+  }
+  .stat-lbl { font-size: var(--t-sm); color: var(--c-text-3); }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .feature-card {
+    padding: 26px;
+    border: 1px solid var(--c-border);
+    border-radius: 18px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: border-color var(--base), box-shadow var(--base);
+    position: relative;
+  }
+  .feature-card:hover {
+    border-color: var(--c-course);
+    box-shadow: 0 0 0 1px var(--c-course);
+  }
+  .feature-card__icon-wrap {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--c-course-tint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    transition: background var(--base);
+  }
+  .feature-card__title { font-size: var(--t-md); font-weight: 700; margin-bottom: 5px; letter-spacing: -.01em; }
+  .feature-card__desc  { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.7; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge {
+    padding: 7px 14px;
+    border: 1px solid var(--c-border);
+    border-radius: 99px;
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     7. SUB-NAV
+  ══════════════════════════════════════ */
+  .sub-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    align-items: center;
+  }
+  .sub-nav::-webkit-scrollbar { display: none; }
+  .sub-nav__btn {
+    padding: 9px 18px;
+    border-radius: 99px;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--c-text-3);
+    white-space: nowrap;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+    transition: background var(--fast), color var(--fast), border-color var(--fast);
+  }
+  .sub-nav__btn:hover { color: var(--c-text); background: var(--c-bg-2); }
+  .sub-nav__btn.is-active {
+    background: var(--c-course);
+    color: #ffffff;
+    font-weight: 700;
+    border-color: var(--c-course);
+  }
+
+  /* ══════════════════════════════════════
+     8. COURSE VIEW
+  ══════════════════════════════════════ */
+  .course-view { display: none; }
+  .course-view.is-active {
+    display: block;
+    animation: fadeUp 210ms var(--ease);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .course-card {
+    border: 1px solid var(--c-border);
+    border-top: 4px solid var(--c-course);
+    border-radius: 0 0 20px 20px;
+    background: var(--c-course-tint);
+    padding: 32px;
+    transition: border-top-color var(--base), background var(--base);
+  }
+  .course-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .course-card__tag {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--c-course);
+    transition: color var(--base);
+  }
+  .course-card__duration { font-size: var(--t-sm); color: var(--c-text-3); font-weight: 500; }
+  .course-card__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .course-card__title {
+    font-size: var(--t-2xl);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.18;
+    margin-bottom: 14px;
+    white-space: pre-line;
+  }
+  .course-card__desc { font-size: var(--t-md); color: var(--c-text-2); line-height: 1.75; }
+  .course-card__skills {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .course-card__skills-label {
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--c-text-3);
+    margin-bottom: 14px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tags li {
+    padding: 6px 14px;
+    border: 1.5px solid var(--c-course);
+    border-radius: 99px;
+    font-size: var(--t-xs);
+    color: var(--c-course);
+    font-weight: 600;
+    transition: border-color var(--base), color var(--base);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     9. CURRICULUM ACCORDION
+  ══════════════════════════════════════ */
+  .curr-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .curr-header__title { font-size: var(--t-2xl); font-weight: 800; letter-spacing: -.03em; }
+  .curr-header__meta  { font-size: var(--t-sm); color: var(--c-text-3); text-align: right; line-height: 1.6; }
+
+  .accordion { border-top: 1px solid var(--c-border); }
+
+  /* Accordion head: wraps trigger + optional admin del button */
+  .accordion__head {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .accordion__head .admin-del-btn { flex-shrink: 0; margin-right: 8px; }
+
+  .accordion__trigger {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    text-align: left;
+    min-height: 56px;
+    transition: background var(--fast);
+  }
+  .accordion__trigger:active { background: var(--c-bg-2); }
+  .accordion__num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--c-border);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    color: var(--c-text-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--base), border-color var(--base), color var(--base);
+  }
+  .accordion__trigger[aria-expanded="true"] .accordion__num {
+    background: var(--c-course);
+    border-color: var(--c-course);
+    color: #fff;
+  }
+  .accordion__week { font-size: var(--t-sm); font-weight: 700; color: var(--c-text-3); min-width: 72px; flex-shrink: 0; }
+  .accordion__topic { flex: 1; font-size: var(--t-md); font-weight: 500; letter-spacing: -.01em; }
+  .accordion__chevron {
+    width: 7px; height: 7px;
+    border-right: 1.8px solid var(--c-text-3);
+    border-bottom: 1.8px solid var(--c-text-3);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    transition: transform 240ms var(--ease);
+    margin-right: 4px;
+  }
+  .accordion__trigger[aria-expanded="true"] .accordion__chevron { transform: rotate(-135deg); }
+  .accordion__body { max-height: 0; overflow: hidden; transition: max-height 260ms var(--ease); }
+  .accordion__body.is-open { max-height: 600px; }
+  .accordion__inner {
+    border-left: 3px solid var(--c-course);
+    margin-left: calc(28px + 14px);
+    padding: 12px 0 20px 18px;
+    transition: border-color var(--base);
+  }
+  .topic-list li {
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    line-height: 2.1;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .topic-list li::before { content: '—'; color: var(--c-text-3); flex-shrink: 0; }
+
+  /* ══════════════════════════════════════
+     10. CHECKLIST
+  ══════════════════════════════════════ */
+  .checklist-intro {
+    font-size: var(--t-lg);
+    color: var(--c-text-2);
+    margin-bottom: 32px;
+    line-height: 1.7;
+  }
+  .checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .checklist-card {
+    padding: 26px 26px 26px 22px;
+    border: 1px solid var(--c-border);
+    border-left: 4px solid var(--c-border);
+    border-radius: 16px;
+    transition: border-left-color var(--base);
+  }
+  .checklist-card[data-colorkey="web"]   { --cl: #3B82F6; }
+  .checklist-card[data-colorkey="ps"]    { --cl: #F97316; }
+  .checklist-card[data-colorkey="video"] { --cl: #EF4444; }
+  .checklist-card[data-colorkey="uiux"]  { --cl: #8B5CF6; }
+  .checklist-card { border-left-color: var(--cl, #e8e8e8); }
+  .checklist-card__tag {
+    display: inline-block;
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--cl, var(--c-text-3));
+    margin-bottom: 8px;
+  }
+  .checklist-card__title { font-size: var(--t-md); font-weight: 700; margin-bottom: 18px; letter-spacing: -.01em; }
+  .checklist-card__list { display: flex; flex-direction: column; gap: 10px; }
+  .checklist-card__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: var(--t-sm);
+    color: var(--c-text-2);
+    line-height: 1.6;
+  }
+  .check-icon {
+    width: 20px; height: 20px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--cl, var(--c-text-3));
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  /* ══════════════════════════════════════
+     11. FOCUS
+  ══════════════════════════════════════ */
+  :focus-visible { outline: 2px solid var(--c-course); outline-offset: 2px; border-radius: 4px; }
+
+  /* ══════════════════════════════════════
+     12. RESPONSIVE
+  ══════════════════════════════════════ */
+  @media (max-width: 680px) {
+    :root { --t-hero: 3rem; --t-3xl: 1.8rem; --t-2xl: 1.4rem; }
+    .page { padding: 28px 18px 48px; }
+    .stat-row { grid-template-columns: 1fr; border-radius: 12px; }
+    .stat-card { border-right: none; border-bottom: 1px solid var(--c-border); }
+    .stat-card:last-child { border-bottom: none; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .feature-card { padding: 18px; gap: 14px; }
+    .checklist-grid { grid-template-columns: 1fr; }
+    .course-card__body { grid-template-columns: 1fr; }
+    .header { padding: 0 16px; gap: 14px; }
+  }
+  @media (min-width: 1100px) {
+    :root { --t-hero: 5.5rem; }
+    .feature-grid { grid-template-columns: repeat(4, 1fr); }
+    .checklist-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ══════════════════════════════════════
+     13. ADMIN — 로그인 모달
+  ══════════════════════════════════════ */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: min(360px, 90vw);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+  }
+  .modal-box h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 20px; }
+  .modal-box input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 10px;
+    font: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 150ms;
+  }
+  .modal-box input[type="password"]:focus { border-color: #3B82F6; }
+  .modal-error { color: #EF4444; font-size: 0.78rem; margin-top: 8px; display: none; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 20px; }
+  .modal-btn {
+    flex: 1; padding: 12px;
+    border-radius: 10px;
+    font: inherit; font-size: 0.9rem; font-weight: 700;
+    border: none; cursor: pointer;
+    transition: background 150ms;
+  }
+  .modal-btn-cancel  { background: var(--c-bg-2); color: var(--c-text-2); }
+  .modal-btn-cancel:hover { background: #e0e0de; }
+  .modal-btn-confirm { background: #111; color: #fff; }
+  .modal-btn-confirm:hover { background: #333; }
+
+  /* ══════════════════════════════════════
+     14. ADMIN — 툴바
+  ══════════════════════════════════════ */
+  .admin-toolbar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: #111;
+    color: #fff;
+    padding: 0 20px;
+    height: 52px;
+    gap: 8px;
+    align-items: center;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+  }
+  .admin-tb-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background 150ms;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .btn-edit-mode { background: rgba(255,255,255,0.1); color: #fff; }
+  .btn-edit-mode:hover { background: rgba(255,255,255,0.18); }
+  .btn-edit-mode.is-on { background: #3B82F6; }
+  .btn-save { background: #22c55e; color: #fff; }
+  .btn-save:hover { background: #16a34a; }
+  .btn-logout { background: transparent; color: rgba(255,255,255,0.4); margin-left: auto; }
+  .btn-logout:hover { color: #fff; }
+  .admin-tb-status { font-size: 0.72rem; color: rgba(255,255,255,0.35); }
+
+  /* ══════════════════════════════════════
+     15. ADMIN — 편집 모드
+  ══════════════════════════════════════ */
+  .admin-editable {
+    display: inline;
+    min-width: 8px;
+  }
+  .app.admin-edit .admin-editable {
+    outline: 1.5px dashed rgba(59,130,246,0.55);
+    outline-offset: 2px;
+    border-radius: 3px;
+    cursor: text;
+  }
+  .app.admin-edit .admin-editable:focus {
+    outline: 2px solid #3B82F6;
+    background: rgba(59,130,246,0.04);
+  }
+
+  /* Delete button (inline ✕) */
+  .admin-del-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #EF4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    vertical-align: middle;
+    line-height: 1;
+    transition: background 120ms;
+  }
+  .admin-del-btn:hover { background: #dc2626; }
+
+  /* Floating delete button (for cards, positioned top-right) */
+  .admin-del-float {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(239,68,68,0.9);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: background 120ms;
+  }
+  .admin-del-float:hover { background: #dc2626; }
+
+  /* Add button (pill dashed) */
+  .admin-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    background: transparent;
+    color: #3B82F6;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1.5px dashed rgba(59,130,246,0.6);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 150ms;
+    vertical-align: middle;
+  }
+  .admin-add-btn:hover { background: rgba(59,130,246,0.08); }
+
+  /* Wide add button (full width, for blocks) */
+  .admin-add-block {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border: 1.5px dashed rgba(59,130,246,0.45);
+    border-radius: 14px;
+    background: rgba(59,130,246,0.03);
+    color: #3B82F6;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: background 150ms;
+  }
+  .admin-add-block:hover { background: rgba(59,130,246,0.08); }
+
+  /* Course delete button */
+  .admin-course-del {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: rgba(239,68,68,0.08);
+    color: #EF4444;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid rgba(239,68,68,0.3);
+    cursor: pointer;
+    transition: background 150ms;
+  }
+  .admin-course-del:hover { background: rgba(239,68,68,0.15); }
+
+  /* Add course button in sub-nav */
+  .admin-add-course-btn {
+    padding: 9px 16px;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #3B82F6;
+    border: 1.5px dashed rgba(59,130,246,0.6);
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 40px;
+    transition: background 150ms;
+    flex-shrink: 0;
+  }
+  .admin-add-course-btn:hover { background: rgba(59,130,246,0.07); }
+
+  /* Inline row for editable + del */
+  .admin-inline-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    vertical-align: middle;
+  }
+
+  /* ══════════════════════════════════════
+     16. TOAST
+  ══════════════════════════════════════ */
+  .toast {
+    position: fixed;
+    bottom: 68px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: #111;
+    color: #fff;
+    padding: 11px 22px;
+    border-radius: 99px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 600;
+    opacity: 0;
+    transition: opacity 200ms, transform 200ms;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #EF4444; }
+  </style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ══ HEADER ══ -->
+  <header class="header">
+    <div class="header__logo">
+      SBS아카데미
+      <span>컴퓨터아트학원</span>
+    </div>
+    <nav class="main-nav" role="tablist">
+      <button class="main-nav__btn is-active" data-page="intro"      role="tab"><span class="dot"></span>학원 소개</button>
+      <button class="main-nav__btn"           data-page="courses"    role="tab"><span class="dot"></span>강좌 안내</button>
+      <button class="main-nav__btn"           data-page="curriculum" role="tab"><span class="dot"></span>커리큘럼</button>
+      <button class="main-nav__btn"           data-page="checklist"  role="tab"><span class="dot"></span>준비물</button>
+    </nav>
+    <!-- 2초 길게 누르면 관리자 로그인 -->
+    <div class="header__indicator" id="indicator" title="">1 / 4</div>
+  </header>
+
+  <!-- ══ CONTENT ══ -->
+  <div class="content-area">
+
+    <!-- ── PAGE 1: 학원 소개 (동적 렌더링) ── -->
+    <div class="page is-active" id="page-intro">
+      <div class="page__inner" id="intro-content"></div>
+    </div>
+
+    <!-- ── PAGE 2: 강좌 안내 ── -->
+    <div class="page" id="page-courses">
+      <div class="page__inner">
+        <p class="page-label">강좌 안내</p>
+        <nav class="sub-nav" id="course-subnav"></nav>
+        <div id="course-views"></div>
+      </div>
+    </div>
+
+    <!-- ── PAGE 3: 커리큘럼 ── -->
+    <div class="page" id="page-curriculum">
+      <div class="page__inner">
+        <p class="page-label">커리큘럼</p>
+        <nav class="sub-nav" id="curr-subnav"></nav>
+        <div id="curr-views"></div>
+      </div>
+    </div>
+
+    <!-- ── PAGE 4: 준비물 ── -->
+    <div class="page" id="page-checklist">
+      <div class="page__inner">
+        <p class="page-label">수강 준비물</p>
+        <p class="checklist-intro">
+          수강 등록 전 아래 준비물을 확인해 주세요.<br>
+          장비 구매 전 반드시 상담을 먼저 받아보시길 권장합니다.
+        </p>
+        <div class="checklist-grid" id="checklist-grid"></div>
+      </div>
+    </div>
+
+  </div><!-- .content-area -->
+</div><!-- .app -->
+
+<!-- ══ 관리자 로그인 모달 ══ -->
+<div id="login-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <h3>🔒 관리자 로그인</h3>
+    <input type="password" id="admin-pw" placeholder="비밀번호 입력"
+           onkeydown="if(event.key==='Enter')submitLogin()">
+    <p id="login-error" class="modal-error">비밀번호가 올바르지 않습니다.</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel"  onclick="cancelLogin()">취소</button>
+      <button class="modal-btn modal-btn-confirm" onclick="submitLogin()">로그인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 관리자 툴바 ══ -->
+<div class="admin-toolbar" id="admin-toolbar">
+  <button class="admin-tb-btn btn-edit-mode" id="edit-btn" onclick="toggleEditMode()">✏️ 편집 모드</button>
+  <span class="admin-tb-status" id="admin-status"></span>
+  <button class="admin-tb-btn btn-save" onclick="saveData()">💾 저장</button>
+  <button class="admin-tb-btn btn-logout" onclick="adminLogout()">로그아웃</button>
+</div>
+
+<!-- ══ 토스트 알림 ══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   FIREBASE CONFIG
+   Firebase Console > 프로젝트 설정 > 웹앱 > SDK 스니펫 > 구성
+   아래 값을 본인 프로젝트 것으로 교체하세요
+══════════════════════════════════════════════════ */
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBfduxY-4oKelySR1l9RuDOSFBFayFxstE",
+  authDomain:        "tablet-sbs.firebaseapp.com",
+  projectId:         "tablet-sbs",
+  storageBucket:     "tablet-sbs.firebasestorage.app",
+  messagingSenderId: "652829486444",
+  appId:             "1:652829486444:web:17a334a084b88051695749"
+};
+
+/* ══════════════════════════════════════════════════
+   관리자 비밀번호  ← 이 값만 바꾸면 됩니다
+══════════════════════════════════════════════════ */
+const ADMIN_PASSWORD = 'sbs2025';
+
+/* ══════════════════════════════════════════════════
+   기본 데이터  (Firestore 미연결·로드 실패 시 사용)
+══════════════════════════════════════════════════ */
+let UI_DATA = {
+  hero: {
+    line1:    '디자인의 시작,',
+    emphasis: '여기서',
+    line2:    ' 완성됩니다.',
+    sub:      '실무 중심 커리큘럼 · 소수 정예 수업 · 취업 연계 지원'
+  },
+  stats: [
+    { num: '20+', label: '년 교육 경력'   },
+    { num: '6인',  label: '이하 소수 정예' },
+    { num: '4개',  label: '전문 과정 운영' }
+  ],
+  features: [
+    { icon: '✦', title: '실무 전문 강사진', desc: '현업에서 직접 활동하는 강사가 최신 실무 트렌드를 그대로 전달합니다.' },
+    { icon: '◈', title: '소수 정예 수업',   desc: '소규모 인원으로 운영되어 개인별 집중 피드백과 맞춤 지도가 가능합니다.' },
+    { icon: '◉', title: '포트폴리오 완성',  desc: '수료 시 취업에 바로 사용할 수 있는 실전 포트폴리오를 함께 완성합니다.' },
+    { icon: '◎', title: '취업 연계 지원',   desc: '수료 후 취업처 연계 및 이력서·면접 컨설팅을 함께 제공합니다.' }
+  ],
+  badges: ['최신 맥·윈도우 장비','Adobe 정품 소프트웨어','쾌적한 강의 환경','개인 작업 공간','복습 영상 제공','6인 이하 소수 정예']
+};
+
+let COURSES = {
+  web: {
+    colorKey: 'web',
+    label: '웹디자인·퍼블리싱', duration: '12주 과정 · 주 3회',
+    title: 'HTML/CSS/JS부터\n포트폴리오까지',
+    desc: '반응형 웹 제작의 처음부터 끝까지 배웁니다. 디자인 감각과 코딩 실력을 함께 키워 현업 바로 투입 가능한 웹 퍼블리셔·프론트엔드 기초 역량을 완성합니다.',
+    tags: ['HTML5 / CSS3','JavaScript ES6+','반응형 웹','Figma 협업','포트폴리오 배포'],
+    curriculum: [
+      { week: '1–2주차',   topic: 'HTML5 구조 · CSS Box Model',   items: ['HTML5 시맨틱 태그 이해','CSS Box Model · Flexbox 레이아웃','기본 웹 페이지 제작 실습'] },
+      { week: '3–4주차',   topic: 'Grid · 반응형 미디어쿼리',      items: ['CSS Grid 고급 레이아웃','미디어 쿼리 · Clamp 반응형 대응','CSS 변수(Custom Properties) 활용'] },
+      { week: '5–6주차',   topic: 'JavaScript DOM · 이벤트 처리',  items: ['DOM 선택·조작 완전 이해','이벤트 리스너 · 인터랙티브 UI','폼 유효성 검사 구현'] },
+      { week: '7–8주차',   topic: 'API 연동 · 비동기 처리',        items: ['fetch / async·await 기초','공공 API 데이터 렌더링 실습','로딩·에러 처리 UX 패턴'] },
+      { week: '9–10주차',  topic: 'CSS 애니메이션 · 인터랙션',     items: ['keyframe 애니메이션 제작','스크롤 트리거 인터랙션','Intersection Observer 활용'] },
+      { week: '11–12주차', topic: '포트폴리오 제작 · 배포',        items: ['개인 포트폴리오 사이트 기획·설계','GitHub Pages / Vercel 배포','코드 리뷰 및 완성도 다듬기'] }
+    ],
+    checklist: ['개인 노트북 (Windows / Mac)','VS Code 편집기 (무료)','Chrome 브라우저','Figma 계정 (무료)','기초 컴퓨터 활용 능력']
+  },
+  ps: {
+    colorKey: 'ps',
+    label: '포토샵·일러스트', duration: '8주 과정 · 주 3회',
+    title: '그래픽 디자인의\n모든 것',
+    desc: 'Photoshop과 Illustrator를 완전 마스터합니다. 사진 보정부터 브랜드 아이덴티티 디자인까지 실무 전 영역을 다루며 즉시 사용 가능한 실력을 키웁니다.',
+    tags: ['Adobe Photoshop','Adobe Illustrator','사진 보정·합성','벡터 드로잉','브랜드 디자인'],
+    curriculum: [
+      { week: '1–2주차', topic: 'Photoshop 기초 · 레이어 시스템', items: ['인터페이스 및 주요 도구 이해','레이어·마스크·채널 활용','기본 사진 보정 실습'] },
+      { week: '3–4주차', topic: '고급 합성 · 색보정',              items: ['블렌딩 모드 고급 합성','Curves·Levels 전문 색보정','누끼 따기 · 자연스러운 합성 기법'] },
+      { week: '5–6주차', topic: 'Illustrator 벡터 · 타이포그래피', items: ['펜툴 벡터 드로잉 완전 정복','로고·아이콘 디자인 실습','타이포그래피 레이아웃 구성'] },
+      { week: '7–8주차', topic: '브랜드 아이덴티티 포트폴리오',    items: ['BI/CI 시스템 기획·설계','명함·브로슈어·SNS 템플릿','포트폴리오 PDF 완성 및 발표'] }
+    ],
+    checklist: ['개인 노트북 (Mac 권장, Windows 가능)','Adobe CC 구독 (학원 지원 가능)','외장 마우스 (강력 권장)','스케치북 (아이디어 메모용)']
+  },
+  video: {
+    colorKey: 'video',
+    label: '영상편집 프리미어·에펙', duration: '10주 과정 · 주 3회',
+    title: '영상 편집부터\n모션그래픽까지',
+    desc: 'Premiere Pro로 탄탄한 편집 기초를 쌓고 After Effects로 모션그래픽을 완성합니다. 유튜브·릴스·숏폼까지 실전 콘텐츠 제작 능력을 갖춥니다.',
+    tags: ['Adobe Premiere Pro','Adobe After Effects','색보정 LUT','모션그래픽','숏폼 콘텐츠'],
+    curriculum: [
+      { week: '1–2주차',  topic: 'Premiere Pro 편집 기초',         items: ['시퀀스 설정 · 소스 패널 이해','컷편집 · 트랜지션 · 속도 조절','자막 디자인 (Essential Graphics)'] },
+      { week: '3–4주차',  topic: '색보정 · 오디오 믹싱',            items: ['Lumetri Color 전문 색보정','LUT 적용 · 영상 분위기 연출','오디오 레벨 · 노이즈 제거'] },
+      { week: '5–6주차',  topic: 'After Effects 모션그래픽 기초',   items: ['레이어 · 키프레임 개념','텍스트 애니메이션 제작','Shape Layer 로고 애니메이션'] },
+      { week: '7–8주차',  topic: '타이틀 시퀀스 · 고급 트랜지션',  items: ['오프닝 타이틀 시퀀스 제작','마스크·트래킹 활용','PR·AE 다이나믹 링크 워크플로'] },
+      { week: '9–10주차', topic: '숏폼 포트폴리오 완성',            items: ['릴스·쇼츠 최적화 편집','썸네일 디자인 (PS 연계)','최종 포트폴리오 출력 및 발표'] }
+    ],
+    checklist: ['개인 노트북 (RAM 16GB 이상 권장)','Adobe CC 구독 (학원 지원 가능)','외장 저장장치 (SSD 500GB+)','이어폰 또는 헤드폰']
+  },
+  uiux: {
+    colorKey: 'uiux',
+    label: 'UI/UX·피그마', duration: '10주 과정 · 주 3회',
+    title: '앱·웹 디자인\n전문가 과정',
+    desc: 'UX 리서치부터 Figma 실무 디자인, 프로토타이핑까지 전 과정을 익힙니다. 완성된 앱 디자인 포트폴리오로 취업 경쟁력을 확보합니다.',
+    tags: ['Figma','UX 리서치','와이어프레임','컴포넌트 시스템','프로토타이핑'],
+    curriculum: [
+      { week: '1–2주차',  topic: 'UX 리서치 · 사용자 분석',         items: ['UX와 UI의 차이 완전 이해','사용자 인터뷰 · 페르소나 작성','사용자 여정 맵 · 문제 정의'] },
+      { week: '3–4주차',  topic: 'Figma 기초 · 컴포넌트 시스템',    items: ['Figma 인터페이스 완전 정복','Auto Layout · 제약 조건 활용','컴포넌트 · 베리언트 설계'] },
+      { week: '5–6주차',  topic: '와이어프레임 · 정보구조 설계',     items: ['사이트맵 · 플로우 차트 작성','로우·하이 피델리티 와이어프레임','사용성 테스트 방법론'] },
+      { week: '7–8주차',  topic: '비주얼 디자인 · 디자인 토큰',      items: ['색상·타이포 시스템 구축','디자인 토큰 관리 (Variables)','iOS · Android 가이드라인 적용'] },
+      { week: '9–10주차', topic: '프로토타이핑 · 포트폴리오 완성',   items: ['인터랙티브 프로토타입 제작','개발자 핸드오프 스펙 작성','케이스 스터디 포트폴리오 완성'] }
+    ],
+    checklist: ['개인 노트북 (Mac 권장, Windows 가능)','Figma 계정 (무료)','스마트폰 (프로토타입 테스트용)','기본 디자인 감각 (미술 전공 불필요)']
+  }
+};
+
+/* ══════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════ */
+const appEl        = document.getElementById('app');
+const PALETTE_KEYS = ['web','ps','video','uiux'];
+
+let isAdmin    = false;
+let isEditMode = false;
+let currentPage   = 'intro';
+let currentCourse = 'web';
+let db = null;
+
+/* ══════════════════════════════════════════════════
+   PATH HELPERS
+══════════════════════════════════════════════════ */
+function setByPath(path, value) {
+  const parts = path.split('.');
+  const root  = parts[0];
+  const keys  = parts.slice(1);
+  let curr    = root === 'ui' ? UI_DATA : COURSES;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = keys[i];
+    curr = curr[isNaN(k) ? k : +k];
+    if (curr == null) return;
+  }
+  const last = keys[keys.length - 1];
+  curr[isNaN(last) ? last : +last] = value;
+}
+
+/* Editable span helper — wraps text in contenteditable only in edit mode */
+function E(path, text) {
+  if (!isEditMode) return String(text);
+  const safe = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return `<span contenteditable="true" data-path="${path}" class="admin-editable">${safe}</span>`;
+}
+
+/* ══════════════════════════════════════════════════
+   FIREBASE
+══════════════════════════════════════════════════ */
+const FB_READY = !FIREBASE_CONFIG.apiKey.startsWith('여기에');
+
+async function initFirebase() {
+  if (!FB_READY) { console.info('Firebase 미설정 — 오프라인 모드로 실행 중'); return; }
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    await loadFromFirestore();
+  } catch(e) {
+    console.warn('Firebase 초기화 실패:', e.message);
+  }
+}
+
+async function loadFromFirestore() {
+  if (!db) return;
+  try {
+    const snap = await db.collection('curriculum').doc('main').get();
+    if (snap.exists) {
+      const data = snap.data();
+      if (data.courses && Object.keys(data.courses).length) COURSES = data.courses;
+      if (data.ui)      UI_DATA = data.ui;
+    }
+  } catch(e) {
+    console.warn('데이터 로드 실패, 기본값 사용:', e.message);
+  }
+}
+
+async function saveData() {
+  if (!db) {
+    showToast('Firebase 미연결 — FIREBASE_CONFIG 설정 필요', 'error');
+    return;
+  }
+  try {
+    await db.collection('curriculum').doc('main').set({
+      courses:   COURSES,
+      ui:        UI_DATA,
+      updatedAt: new Date().toISOString()
+    });
+    showToast('저장되었습니다 ✓');
+  } catch(e) {
+    showToast('저장 실패: ' + e.message, 'error');
+    console.error(e);
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════ */
+let _toastTimer;
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ══════════════════════════════════════════════════
+   ADMIN AUTH
+══════════════════════════════════════════════════ */
+let _holdTimer;
+
+function initAdminTrigger() {
+  const ind = document.getElementById('indicator');
+  ind.addEventListener('pointerdown', () => {
+    _holdTimer = setTimeout(showLoginModal, 2000);
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev =>
+    ind.addEventListener(ev, () => clearTimeout(_holdTimer))
+  );
+  if (sessionStorage.getItem('admin') === '1') {
+    isAdmin = true;
+    showAdminUI();
+  }
+}
+
+function showLoginModal() {
+  if (isAdmin) return;
+  document.getElementById('login-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('admin-pw').focus(), 60);
+}
+
+function submitLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  if (pw === ADMIN_PASSWORD) {
+    isAdmin = true;
+    sessionStorage.setItem('admin', '1');
+    document.getElementById('login-modal').style.display = 'none';
+    document.getElementById('admin-pw').value = '';
+    document.getElementById('login-error').style.display = 'none';
+    showAdminUI();
+    showToast('관리자로 로그인됨');
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('admin-pw').value = '';
+    document.getElementById('admin-pw').focus();
+  }
+}
+
+function cancelLogin() {
+  document.getElementById('login-modal').style.display = 'none';
+  document.getElementById('admin-pw').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function showAdminUI() {
+  document.getElementById('admin-toolbar').style.display = 'flex';
+  appEl.classList.add('is-admin');
+}
+
+function adminLogout() {
+  isAdmin    = false;
+  isEditMode = false;
+  sessionStorage.removeItem('admin');
+  document.getElementById('admin-toolbar').style.display = 'none';
+  appEl.classList.remove('is-admin','admin-edit');
+  document.getElementById('edit-btn').classList.remove('is-on');
+  document.getElementById('edit-btn').textContent = '✏️ 편집 모드';
+  document.getElementById('admin-status').textContent = '';
+  renderAll();
+  renderUI();
+}
+
+/* ══════════════════════════════════════════════════
+   EDIT MODE TOGGLE
+══════════════════════════════════════════════════ */
+function toggleEditMode() {
+  isEditMode = !isEditMode;
+  appEl.classList.toggle('admin-edit', isEditMode);
+  const btn = document.getElementById('edit-btn');
+  btn.classList.toggle('is-on', isEditMode);
+  btn.textContent = isEditMode ? '👁 미리보기' : '✏️ 편집 모드';
+  document.getElementById('admin-status').textContent = isEditMode ? '— 텍스트 클릭 후 수정' : '';
+  renderUI();
+  renderAll();
+  activateCoursePanels(currentCourse);
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 학원 소개 (intro page)
+══════════════════════════════════════════════════ */
+function renderUI() {
+  const d  = UI_DATA;
+  const em = isEditMode;
+
+  const stats = d.stats.map((s, i) => `
+    <div class="stat-card">
+      <span class="stat-num">${E('ui.stats.'+i+'.num',   s.num)}</span>
+      <span class="stat-lbl">${E('ui.stats.'+i+'.label', s.label)}</span>
+    </div>`).join('');
+
+  const features = d.features.map((f, i) => `
+    <article class="feature-card">
+      ${em ? `<button class="admin-del-float" onclick="deleteFeature(${i})" title="카드 삭제">✕</button>` : ''}
+      <div class="feature-card__icon-wrap">${E('ui.features.'+i+'.icon', f.icon)}</div>
+      <div class="feature-card__body">
+        <h3 class="feature-card__title">${E('ui.features.'+i+'.title', f.title)}</h3>
+        <p  class="feature-card__desc">${E('ui.features.'+i+'.desc',   f.desc)}</p>
+      </div>
+    </article>`).join('');
+
+  const badges = d.badges.map((b, i) => `
+    <span class="badge">
+      ${em
+        ? `<span class="admin-inline-row">${E('ui.badges.'+i, b)}<button class="admin-del-btn" onclick="deleteBadge(${i})" title="삭제">✕</button></span>`
+        : b
+      }
+    </span>`).join('');
+
+  document.getElementById('intro-content').innerHTML = `
+    <p class="page-label">학원 소개</p>
+    <h1 class="hero-title">
+      ${E('ui.hero.line1', d.hero.line1)}<br>
+      <em>${E('ui.hero.emphasis', d.hero.emphasis)}</em>${E('ui.hero.line2', d.hero.line2)}
+    </h1>
+    <p class="hero-sub">${E('ui.hero.sub', d.hero.sub)}</p>
+    <div class="stat-row">${stats}</div>
+    <div class="feature-grid">
+      ${features}
+      ${em ? '<button class="admin-add-block" onclick="addFeature()">+ 특징 카드 추가</button>' : ''}
+    </div>
+    <div class="badge-row">
+      ${badges}
+      ${em ? '<button class="admin-add-btn" onclick="addBadge()">+ 배지 추가</button>' : ''}
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: SUB-NAVS
+══════════════════════════════════════════════════ */
+function renderSubNavs() {
+  const ids    = Object.keys(COURSES);
+  const addBtn = isEditMode ? `<button class="admin-add-course-btn" onclick="addCourse()">+ 강좌 추가</button>` : '';
+  const btns   = ids.map(id => `<button class="sub-nav__btn" data-course="${id}">${COURSES[id].label}</button>`).join('') + addBtn;
+  document.getElementById('course-subnav').innerHTML = btns;
+  document.getElementById('curr-subnav').innerHTML   = btns;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 강좌 소개 패널 (1개)
+══════════════════════════════════════════════════ */
+function renderCourseView(id) {
+  const c  = COURSES[id];
+  const em = isEditMode;
+
+  const tags = c.tags.map((t, ti) => `
+    <li>${em
+      ? `<span class="admin-inline-row">${E('courses.'+id+'.tags.'+ti, t)}<button class="admin-del-btn" onclick="deleteCourseTag('${id}',${ti})">✕</button></span>`
+      : t
+    }</li>`).join('');
+
+  let el = document.getElementById('cv-'+id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'cv-'+id;
+    el.className = 'course-view';
+    document.getElementById('course-views').appendChild(el);
+  }
+
+  el.innerHTML = `
+    <div class="course-card">
+      ${em ? `<div style="text-align:right;margin-bottom:10px">
+        <button class="admin-course-del" onclick="deleteCourse('${id}')">🗑 강좌 삭제</button>
+      </div>` : ''}
+      <div class="course-card__meta">
+        <span class="course-card__tag">${E('courses.'+id+'.label', c.label)}</span>
+        <span class="course-card__duration">${E('courses.'+id+'.duration', c.duration)}</span>
+      </div>
+      <div class="course-card__body">
+        <div>
+          <h2 class="course-card__title">${E('courses.'+id+'.title', c.title)}</h2>
+          <p  class="course-card__desc">${E('courses.'+id+'.desc', c.desc)}</p>
+        </div>
+        <div class="course-card__skills">
+          <p class="course-card__skills-label">배우는 기술</p>
+          <ul class="skill-tags">${tags}</ul>
+          ${em ? `<div style="margin-top:10px"><button class="admin-add-btn" onclick="addCourseTag('${id}')">+ 태그 추가</button></div>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 커리큘럼 패널 (1개)
+══════════════════════════════════════════════════ */
+function renderCurriculumView(id) {
+  const c  = COURSES[id];
+  const em = isEditMode;
+
+  let el = document.getElementById('cr-'+id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'cr-'+id;
+    el.className = 'course-view';
+    document.getElementById('curr-views').appendChild(el);
+  }
+
+  const weeks = c.curriculum.map((item, wi) => {
+    const items = item.items.map((it, ii) => `
+      <li>${em
+        ? `<span class="admin-inline-row">${E('courses.'+id+'.curriculum.'+wi+'.items.'+ii, it)}<button class="admin-del-btn" onclick="deleteCurrItem('${id}',${wi},${ii})">✕</button></span>`
+        : it
+      }</li>`).join('');
+
+    return `
+      <div class="accordion">
+        <div class="accordion__head">
+          <button class="accordion__trigger" aria-expanded="false">
+            <span class="accordion__num">${wi+1}</span>
+            <span class="accordion__week">${em ? E('courses.'+id+'.curriculum.'+wi+'.week', item.week) : item.week}</span>
+            <span class="accordion__topic">${em ? E('courses.'+id+'.curriculum.'+wi+'.topic', item.topic) : item.topic}</span>
+            <span class="accordion__chevron" aria-hidden="true"></span>
+          </button>
+          ${em ? `<button class="admin-del-btn" onclick="deleteCurrWeek('${id}',${wi})" title="주차 삭제" style="margin-right:8px">✕</button>` : ''}
+        </div>
+        <div class="accordion__body">
+          <div class="accordion__inner">
+            <ul class="topic-list">${items}</ul>
+            ${em ? `<div style="margin-top:10px"><button class="admin-add-btn" onclick="addCurrItem('${id}',${wi})">+ 항목 추가</button></div>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="curr-header">
+      <h2 class="curr-header__title">${c.label}</h2>
+      <div class="curr-header__meta">${c.duration}</div>
+    </div>
+    ${weeks}
+    ${em ? `<button class="admin-add-block" onclick="addCurrWeek('${id}')">+ 주차 추가</button>` : ''}`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 준비물 카드 (1개)
+══════════════════════════════════════════════════ */
+function renderChecklistCard(id) {
+  const c  = COURSES[id];
+  const em = isEditMode;
+  const ck = PALETTE_KEYS.includes(c.colorKey) ? c.colorKey : 'web';
+
+  let el = document.getElementById('cl-'+id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'cl-'+id;
+    el.className = 'checklist-card';
+    document.getElementById('checklist-grid').appendChild(el);
+  }
+  el.setAttribute('data-colorkey', ck);
+
+  const items = c.checklist.map((item, ci) => `
+    <li>
+      <span class="check-icon">✓</span>
+      ${em
+        ? `<span class="admin-inline-row">${E('courses.'+id+'.checklist.'+ci, item)}<button class="admin-del-btn" onclick="deleteChecklistItem('${id}',${ci})">✕</button></span>`
+        : item
+      }
+    </li>`).join('');
+
+  el.innerHTML = `
+    <span class="checklist-card__tag">${c.duration}</span>
+    <h3 class="checklist-card__title">${c.label}</h3>
+    <ul class="checklist-card__list">${items}</ul>
+    ${em ? `<div style="margin-top:12px"><button class="admin-add-btn" onclick="addChecklistItem('${id}')">+ 항목 추가</button></div>` : ''}`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER ALL
+══════════════════════════════════════════════════ */
+function renderAll() {
+  renderSubNavs();
+
+  // 삭제된 강좌 뷰 제거
+  ['course-views','curr-views'].forEach(wrapperId => {
+    document.querySelectorAll('#'+wrapperId+' > .course-view').forEach(v => {
+      const vid = v.id.replace(/^(cv|cr)-/, '');
+      if (!COURSES[vid]) v.remove();
+    });
+  });
+  document.querySelectorAll('#checklist-grid > [id^="cl-"]').forEach(v => {
+    const vid = v.id.replace('cl-', '');
+    if (!COURSES[vid]) v.remove();
+  });
+
+  // 강좌별 렌더링
+  Object.keys(COURSES).forEach(id => {
+    renderCourseView(id);
+    renderCurriculumView(id);
+    renderChecklistCard(id);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   COLOR SYSTEM
+══════════════════════════════════════════════════ */
+function setCourseColor(courseId) {
+  PALETTE_KEYS.forEach(k => appEl.classList.remove('c-'+k));
+  if (!courseId) return;
+  const ck = COURSES[courseId]?.colorKey || courseId;
+  appEl.classList.add('c-' + (PALETTE_KEYS.includes(ck) ? ck : 'web'));
+}
+
+/* ══════════════════════════════════════════════════
+   COURSE PANEL ACTIVATION
+══════════════════════════════════════════════════ */
+function activateCoursePanels(courseId) {
+  const ids = Object.keys(COURSES);
+  if (!COURSES[courseId]) courseId = ids[0];
+  if (!courseId) return;
+
+  document.querySelectorAll('.sub-nav__btn').forEach(b =>
+    b.classList.toggle('is-active', b.dataset.course === courseId));
+
+  document.querySelectorAll('#course-views > .course-view').forEach(v =>
+    v.classList.toggle('is-active', v.id === 'cv-'+courseId));
+  document.querySelectorAll('#curr-views > .course-view').forEach(v =>
+    v.classList.toggle('is-active', v.id === 'cr-'+courseId));
+
+  setCourseColor(courseId);
+  currentCourse = courseId;
+}
+
+/* ══════════════════════════════════════════════════
+   PAGE SWITCHING
+══════════════════════════════════════════════════ */
+const PAGE_ORDER = ['intro','courses','curriculum','checklist'];
+
+function goToPage(pageId) {
+  if (pageId === currentPage) return;
+  const outEl = document.getElementById('page-'+currentPage);
+  const inEl  = document.getElementById('page-'+pageId);
+  outEl.classList.add('exit');
+  outEl.classList.remove('is-active');
+  setTimeout(() => outEl.classList.remove('exit'), 200);
+  inEl.classList.add('is-active');
+  inEl.scrollTop = 0;
+  document.querySelectorAll('.main-nav__btn').forEach(btn =>
+    btn.classList.toggle('is-active', btn.dataset.page === pageId));
+  document.getElementById('indicator').textContent =
+    `${PAGE_ORDER.indexOf(pageId)+1} / ${PAGE_ORDER.length}`;
+  if (pageId === 'intro') setCourseColor(null);
+  currentPage = pageId;
+}
+
+/* ══════════════════════════════════════════════════
+   GLOBAL EVENT DELEGATION
+══════════════════════════════════════════════════ */
+// Blur (capture) — editable field 반영
+document.addEventListener('blur', e => {
+  if (!isEditMode) return;
+  const el = e.target;
+  if (!el.dataset.path) return;
+  setByPath(el.dataset.path, el.innerText.trim());
+}, true);
+
+// Click — main-nav / sub-nav / accordion
+document.addEventListener('click', e => {
+  // Main nav
+  const mainBtn = e.target.closest('.main-nav__btn');
+  if (mainBtn?.dataset.page) { goToPage(mainBtn.dataset.page); return; }
+
+  // Sub-nav
+  const subBtn = e.target.closest('.sub-nav__btn');
+  if (subBtn?.dataset.course) { activateCoursePanels(subBtn.dataset.course); return; }
+
+  // Accordion trigger (admin del btn 제외)
+  const trigger = e.target.closest('.accordion__trigger');
+  if (trigger && !e.target.closest('.admin-del-btn')) {
+    const accordion = trigger.closest('.accordion');
+    const body = accordion?.querySelector('.accordion__body');
+    if (!body) return;
+    const open = trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(!open));
+    body.classList.toggle('is-open', !open);
+  }
+});
+
+/* ══════════════════════════════════════════════════
+   CRUD — 학원 소개
+══════════════════════════════════════════════════ */
+function addFeature() {
+  const title = prompt('특징 카드 제목:');
+  if (!title?.trim()) return;
+  const desc = prompt('한 줄 설명:') || '';
+  UI_DATA.features.push({ icon: '◆', title: title.trim(), desc: desc.trim() });
+  renderUI();
+}
+function deleteFeature(idx) {
+  if (!confirm('이 카드를 삭제하시겠습니까?')) return;
+  UI_DATA.features.splice(idx, 1);
+  renderUI();
+}
+function addBadge() {
+  const text = prompt('배지 텍스트:');
+  if (!text?.trim()) return;
+  UI_DATA.badges.push(text.trim());
+  renderUI();
+}
+function deleteBadge(idx) {
+  UI_DATA.badges.splice(idx, 1);
+  renderUI();
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 강좌
+══════════════════════════════════════════════════ */
+function addCourse() {
+  const name = prompt('새 강좌 이름:');
+  if (!name?.trim()) return;
+  const key = 'c' + Date.now();
+  COURSES[key] = {
+    colorKey:   'web',
+    label:      name.trim(),
+    duration:   '8주 과정 · 주 3회',
+    title:      name.trim(),
+    desc:       '강좌 설명을 입력하세요.',
+    tags:       ['태그 입력'],
+    curriculum: [{ week: '1–2주차', topic: '주제 입력', items: ['세부 항목 입력'] }],
+    checklist:  ['준비물을 입력하세요']
+  };
+  renderAll();
+  activateCoursePanels(key);
+}
+function deleteCourse(id) {
+  if (!confirm(`'${COURSES[id].label}' 강좌를 삭제하시겠습니까?`)) return;
+  delete COURSES[id];
+  const remaining = Object.keys(COURSES);
+  renderAll();
+  if (remaining.length) activateCoursePanels(remaining[0]);
+}
+function addCourseTag(id) {
+  const tag = prompt('새 기술 태그:');
+  if (!tag?.trim()) return;
+  COURSES[id].tags.push(tag.trim());
+  renderCourseView(id);
+  if (currentCourse === id) {
+    document.getElementById('cv-'+id)?.classList.add('is-active');
+  }
+}
+function deleteCourseTag(id, idx) {
+  COURSES[id].tags.splice(idx, 1);
+  renderCourseView(id);
+  if (currentCourse === id) document.getElementById('cv-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 커리큘럼
+══════════════════════════════════════════════════ */
+function addCurrWeek(id) {
+  const week  = prompt('주차 표시 (예: 13–14주차):') || '신규 주차';
+  const topic = prompt('주제:') || '주제 입력';
+  COURSES[id].curriculum.push({ week, topic, items: ['항목 입력'] });
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function deleteCurrWeek(id, wi) {
+  if (!confirm('이 주차를 삭제하시겠습니까?')) return;
+  COURSES[id].curriculum.splice(wi, 1);
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function addCurrItem(id, wi) {
+  const item = prompt('새 세부 항목:');
+  if (!item?.trim()) return;
+  COURSES[id].curriculum[wi].items.push(item.trim());
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function deleteCurrItem(id, wi, ii) {
+  COURSES[id].curriculum[wi].items.splice(ii, 1);
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 준비물
+══════════════════════════════════════════════════ */
+function addChecklistItem(id) {
+  const item = prompt('새 준비물:');
+  if (!item?.trim()) return;
+  COURSES[id].checklist.push(item.trim());
+  renderChecklistCard(id);
+}
+function deleteChecklistItem(id, ci) {
+  COURSES[id].checklist.splice(ci, 1);
+  renderChecklistCard(id);
+}
+
+/* ══════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  await initFirebase();
+  renderUI();
+  renderAll();
+  activateCoursePanels('web');
+  initAdminTrigger();
+});
+</script>
+</body>
+</html>
