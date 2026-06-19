@@ -11,6 +11,7 @@
   <!-- Firebase compat CDN (빌드 불필요) -->
   <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
   <style>
   /* ══════════════════════════════════════
@@ -1125,7 +1126,8 @@ let isAdmin    = false;
 let isEditMode = false;
 let currentPage   = 'intro';
 let currentCourse = 'web';
-let db = null;
+let db      = null;
+let storage = null;
 
 /* ══════════════════════════════════════════════════
    PATH HELPERS
@@ -1164,7 +1166,8 @@ async function initFirebase() {
   if (!FB_READY) { console.info('Firebase 미설정 — 오프라인 모드로 실행 중'); return; }
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.firestore();
+    db      = firebase.firestore();
+    storage = firebase.storage();
     await loadFromFirestore();
   } catch(e) {
     console.warn('Firebase 초기화 실패:', e.message);
@@ -1830,12 +1833,31 @@ function deleteRoadmapStep(id, si) {
    CRUD — 커리큘럼 이미지
 ══════════════════════════════════════════════════ */
 function addImage(id) {
-  const url = prompt('이미지 URL을 입력하세요:');
-  if (!url?.trim()) return;
-  if (!COURSES[id].images) COURSES[id].images = [];
-  COURSES[id].images.push(url.trim());
-  renderCurriculumView(id);
-  document.getElementById('cr-'+id)?.classList.add('is-active');
+  if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.multiple = true;
+  input.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    showToast('업로드 중...');
+    try {
+      for (const file of files) {
+        const ref = storage.ref(`curriculum/${id}/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        if (!COURSES[id].images) COURSES[id].images = [];
+        COURSES[id].images.push(url);
+      }
+      renderCurriculumView(id);
+      document.getElementById('cr-'+id)?.classList.add('is-active');
+      showToast(`이미지 ${files.length}장 업로드 완료 ✓`);
+    } catch(err) {
+      showToast('업로드 실패: ' + err.message, 'error');
+    }
+  };
+  input.click();
 }
 function deleteImage(id, ii) {
   COURSES[id].images.splice(ii, 1);
