@@ -468,8 +468,7 @@
     margin-right: 4px;
   }
   .accordion__trigger[aria-expanded="true"] .accordion__chevron { transform: rotate(-135deg); }
-  .accordion__body { max-height: 0; overflow: hidden; transition: max-height 260ms var(--ease); }
-  .accordion__body.is-open { max-height: 600px; }
+  .accordion__body { max-height: 0; overflow: hidden; transition: max-height 320ms var(--ease); }
   .accordion__inner {
     border-left: 3px solid var(--c-course);
     margin-left: calc(28px + 14px);
@@ -1521,6 +1520,18 @@ function renderCurriculumView(id) {
         : it
       }</li>`).join('');
 
+    const wImgs = (item.images || []);
+    const wGalleryItems = wImgs.map((url, ii) => `
+      <div class="img-gallery__item" onclick="openLightbox('${url}')">
+        <img src="${url}" alt="이미지 ${ii+1}" loading="lazy">
+        ${em ? `<button class="img-gallery__del" onclick="event.stopPropagation();deleteImage('${id}',${wi},${ii})">✕</button>` : ''}
+      </div>`).join('');
+    const wGallery = (wImgs.length > 0 || em) ? `
+      <div class="img-gallery" style="margin-top:14px">
+        ${wGalleryItems}
+        ${em ? `<button class="img-gallery__add" onclick="addImage('${id}',${wi})">+ 이미지<br>추가</button>` : ''}
+      </div>` : '';
+
     return `
       <div class="accordion">
         <div class="accordion__head">
@@ -1536,29 +1547,17 @@ function renderCurriculumView(id) {
           <div class="accordion__inner">
             <ul class="topic-list">${items}</ul>
             ${em ? `<div style="margin-top:10px"><button class="admin-add-btn" onclick="addCurrItem('${id}',${wi})">+ 항목 추가</button></div>` : ''}
+            ${wGallery}
           </div>
         </div>
       </div>`;
   }).join('');
-
-  const imgs = (c.images || []);
-  const galleryItems = imgs.map((url, ii) => `
-    <div class="img-gallery__item" onclick="openLightbox('${url}')">
-      <img src="${url}" alt="참고 이미지 ${ii+1}" loading="lazy">
-      ${em ? `<button class="img-gallery__del" onclick="event.stopPropagation();deleteImage('${id}',${ii})">✕</button>` : ''}
-    </div>`).join('');
-  const gallery = (imgs.length > 0 || em) ? `
-    <div class="img-gallery">
-      ${galleryItems}
-      ${em ? `<button class="img-gallery__add" onclick="addImage('${id}')">+ 이미지<br>추가</button>` : ''}
-    </div>` : '';
 
   el.innerHTML = `
     <div class="curr-header">
       <h2 class="curr-header__title">${c.label}</h2>
       <div class="curr-header__meta">${c.duration}</div>
     </div>
-    ${gallery}
     ${weeks}
     ${em ? `<button class="admin-add-block" onclick="addCurrWeek('${id}')">+ 주차 추가</button>` : ''}`;
 }
@@ -1705,7 +1704,7 @@ document.addEventListener('click', e => {
     if (!body) return;
     const open = trigger.getAttribute('aria-expanded') === 'true';
     trigger.setAttribute('aria-expanded', String(!open));
-    body.classList.toggle('is-open', !open);
+    body.style.maxHeight = open ? '0' : body.scrollHeight + 'px';
   }
 });
 
@@ -1742,8 +1741,11 @@ function addCourse() {
   const name = prompt('새 강좌 이름:');
   if (!name?.trim()) return;
   const key = 'c' + Date.now();
+  const _usedColors = Object.values(COURSES).map(c => c.colorKey);
+  const _colorKey = PALETTE_KEYS.find(k => !_usedColors.includes(k))
+    || PALETTE_KEYS[Object.keys(COURSES).length % PALETTE_KEYS.length];
   COURSES[key] = {
-    colorKey:   'web',
+    colorKey:   _colorKey,
     label:      name.trim(),
     duration:   '8주 과정 · 주 3회',
     title:      name.trim(),
@@ -1832,7 +1834,7 @@ function deleteRoadmapStep(id, si) {
 /* ══════════════════════════════════════════════════
    CRUD — 커리큘럼 이미지
 ══════════════════════════════════════════════════ */
-function addImage(id) {
+function addImage(id, wi) {
   if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
   const input = document.createElement('input');
   input.type = 'file';
@@ -1844,11 +1846,11 @@ function addImage(id) {
     showToast('업로드 중...');
     try {
       for (const file of files) {
-        const ref = storage.ref(`curriculum/${id}/${Date.now()}_${file.name}`);
+        const ref = storage.ref(`curriculum/${id}/w${wi}_${Date.now()}_${file.name}`);
         await ref.put(file);
         const url = await ref.getDownloadURL();
-        if (!COURSES[id].images) COURSES[id].images = [];
-        COURSES[id].images.push(url);
+        if (!COURSES[id].curriculum[wi].images) COURSES[id].curriculum[wi].images = [];
+        COURSES[id].curriculum[wi].images.push(url);
       }
       renderCurriculumView(id);
       document.getElementById('cr-'+id)?.classList.add('is-active');
@@ -1859,8 +1861,8 @@ function addImage(id) {
   };
   input.click();
 }
-function deleteImage(id, ii) {
-  COURSES[id].images.splice(ii, 1);
+function deleteImage(id, wi, ii) {
+  COURSES[id].curriculum[wi].images.splice(ii, 1);
   renderCurriculumView(id);
   document.getElementById('cr-'+id)?.classList.add('is-active');
 }
