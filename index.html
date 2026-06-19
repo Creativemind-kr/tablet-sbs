@@ -638,17 +638,64 @@
   .instructor-career { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.7; white-space: pre-line; }
 
   /* ══════════════════════════════════════
-     16. REVIEWS
+     16. REVIEWS v2
   ══════════════════════════════════════ */
-  .review-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px; }
-  .review-card { background: var(--c-bg-2); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
-  .review-quote { font-size: 2.8rem; line-height: 1; color: var(--c-black); opacity: .12; margin-bottom: -6px; font-family: Georgia, serif; }
-  .review-text { font-size: var(--t-md); color: var(--c-text); line-height: 1.75; margin-bottom: 18px; flex: 1; }
-  .review-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
-  .review-meta { display: flex; flex-direction: column; gap: 5px; }
-  .review-name { font-size: var(--t-sm); font-weight: 700; }
-  .review-course-tag { font-size: var(--t-xs); color: var(--c-text-2); background: var(--c-bg); border: 1px solid var(--c-border); padding: 3px 10px; border-radius: 20px; display: inline-block; }
-  .review-stars { color: #FBBF24; font-size: var(--t-md); letter-spacing: 2px; }
+  .review-summary {
+    display: flex; align-items: center; gap: 24px;
+    padding: 20px 28px; background: var(--c-bg-2);
+    border-radius: 16px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .review-summary__big { display: flex; align-items: baseline; gap: 8px; }
+  .review-summary__big-num { font-size: 2.4rem; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+  .review-summary__big-stars { color: #FBBF24; font-size: .95rem; letter-spacing: 2px; }
+  .review-summary__sep { width: 1px; height: 36px; background: var(--c-border); flex-shrink: 0; }
+  .review-summary__stat { text-align: center; }
+  .review-summary__stat b { display: block; font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; }
+  .review-summary__stat span { font-size: var(--t-xs); color: var(--c-text-2); }
+
+  .review-grid-v2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .review-card-v2 {
+    background: #fff; border: 1px solid var(--c-border); border-radius: 18px;
+    padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 12px;
+    position: relative; overflow: hidden;
+    transition: box-shadow 220ms, transform 220ms;
+  }
+  .review-card-v2:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.09); transform: translateY(-2px); }
+  .review-card-v2::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%; background: var(--rv-accent, #3B82F6);
+  }
+  .review-card-v2__deco {
+    position: absolute; top: 12px; right: 18px;
+    font-size: 3.6rem; line-height: 1;
+    color: var(--rv-accent, #3B82F6); opacity: .07;
+    font-family: Georgia, serif; pointer-events: none; user-select: none;
+  }
+  .review-card-v2__head { display: flex; align-items: center; gap: 11px; }
+  .review-avatar-v2 {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--rv-accent, #3B82F6); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; font-weight: 800; flex-shrink: 0;
+  }
+  .review-card-v2__name { font-size: var(--t-sm); font-weight: 700; margin-bottom: 4px; }
+  .review-card-v2__tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .rv-tag-course {
+    font-size: 10px; font-weight: 600; color: var(--c-text-2);
+    background: var(--c-bg-2); border: 1px solid var(--c-border);
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .rv-tag-pass {
+    font-size: 10px; font-weight: 700; color: #15803d;
+    background: #f0fdf4; border: 1px solid #86efac;
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .review-card-v2__text { font-size: var(--t-sm); color: var(--c-text); line-height: 1.82; flex: 1; }
+  .review-card-v2__foot { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+  .rv-stars { color: #FBBF24; font-size: .78rem; letter-spacing: 1.5px; }
+  .rv-date  { font-size: 11px; color: var(--c-text-3); }
+
+  @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } }
 
   /* ══════════════════════════════════════
      17. IMAGE GALLERY & LIGHTBOX
@@ -1109,10 +1156,12 @@ let INSTRUCTORS_DATA = [
 ];
 
 let REVIEWS_DATA = [
-  { name: '김○○', course: '웹디자인·퍼블리싱', text: '취업에 직접적으로 도움이 됐습니다. 실무 위주의 수업이라 배운 것을 현장에서 바로 적용할 수 있었어요. 소수 정예라 강사님께 집중 피드백을 받을 수 있어 실력이 빠르게 늘었습니다.', star: 5 },
-  { name: '이○○', course: '포토샵·일러스트', text: '혼자서는 몇 달이 걸릴 내용을 체계적으로 배웠습니다. 포트폴리오 완성까지 도와주셔서 실제 면접에서 큰 도움이 됐어요.', star: 5 },
-  { name: '박○○', course: 'UI/UX·피그마', text: '강사님이 현업 트렌드를 정말 잘 아세요. 케이스 스터디 포트폴리오를 완성하고 디자이너로 취업에 성공했습니다!', star: 5 },
-  { name: '정○○', course: '영상편집·모션그래픽', text: '유튜브 채널을 운영하고 싶어서 수강했는데 편집 속도가 눈에 띄게 빨라졌어요. After Effects 모션그래픽까지 배워서 퀄리티가 완전히 달라졌습니다.', star: 5 }
+  { name: '음유진', course: '실내건축기사 자격증', text: '2회차 목표로 준비하고 있었는데 강사님께서 시험에 중요한 내용들과 팁을 자세히 알려주셔서 준비 기간을 줄일 수 있었습니다. 1:1피드백도 자세하고 적극적으로 해주셔서 큰 도움이 됐습니다. 강사님 덕분에 1회차 합격했습니다!', star: 5, date: '25.06.14', badge: '1회 합격' },
+  { name: '김진령', course: '실내건축기사 자격증', text: '늦은 나이에 시작해서 많은 걱정이었는데 선생님의 열정으로 시험까지 칠 수 있었고, 도면도 하나하나 검토해 주시고 시험 당일까지 좋은 정보를 주셔서 많은 도움이 되었습니다. 실내건축기사 시험 보시는 분들 꼭 추천드립니다!', star: 5, date: '25.05.03', badge: '합격' },
+  { name: '이주호', course: '전산응용 기계·건축제도', text: '단기간(3개월)에 두 가지 자격증을 동시에 준비하는 것이 쉽지 않았지만 강사님의 세세한 지도 덕분에 동시 합격이라는 결과를 얻을 수 있었습니다. 자격증이 필요한 분들에게 강력 추천드립니다!', star: 5, date: '25.12.24', badge: '2종 동시합격' },
+  { name: '김태우', course: '전산응용기계제도기능사', text: '2D·3D 캐드 기초부터 심화까지 완벽히 익히고 자격증도 취득했습니다. 질문이 많았음에도 하나하나 꼼꼼히 알려주셨고 시험 전에도 자신감을 붙여주셨습니다. 연습만 잘하면 누구나 자격증 딸 수 있습니다!', star: 5, date: '25.12.24', badge: '합격' },
+  { name: '이윤찬', course: '전산응용기계제도기능사', text: '강사님이 정말 친절하시고 질문 하나하나 놓치지 않고 모두 알려주십니다. 시설과 장비도 정말 깨끗하고 깔끔했습니다. 좋은 환경과 좋은 강사님 덕분에 자격증을 취득할 수 있었습니다. 진심으로 감사드립니다.', star: 5, date: '25.12.24', badge: '합격' },
+  { name: '양예린', course: '실내건축 자격증', text: '매 수업마다 새로운 예제문제를 만들어주셔서 시험 대비에 많은 도움이 됐습니다. 프로그램 사용 기술부터 시험 관련 정보도 상세하게 알려주셔서 개편 이후 첫 시험인데도 좋은 컨디션으로 시험을 볼 수 있었어요.', star: 5, date: '25.05.02', badge: '합격' }
 ];
 
 /* ══════════════════════════════════════════════════
@@ -1430,25 +1479,48 @@ function renderInstructorsPage() {
 ══════════════════════════════════════════════════ */
 function renderReviewsPage() {
   const em = isEditMode;
-  const cards = REVIEWS_DATA.map((r, i) => `
-    <div class="review-card">
-      <div class="review-quote">"</div>
-      <p class="review-text">${em ? E('reviews.'+i+'.text', r.text) : r.text}</p>
-      <div class="review-footer">
-        <div class="review-meta">
-          <p class="review-name">${em ? E('reviews.'+i+'.name', r.name) : r.name}</p>
-          <span class="review-course-tag">${em ? E('reviews.'+i+'.course', r.course) : r.course}</span>
-        </div>
-        <div style="text-align:right">
-          <div class="review-stars">${'★'.repeat(r.star || 5)}</div>
-          ${em ? `<button class="admin-del-btn" onclick="deleteReview(${i})" style="margin-top:4px">✕</button>` : ''}
+  const ACCENTS = ['#3B82F6','#F97316','#EF4444','#8B5CF6','#10B981','#F59E0B','#EC4899','#06B6D4'];
+  const avgRating = REVIEWS_DATA.length
+    ? (REVIEWS_DATA.reduce((s,r) => s+(r.star||5), 0) / REVIEWS_DATA.length).toFixed(1) : '5.0';
+  const passCount = REVIEWS_DATA.filter(r => r.badge).length;
+
+  const cards = REVIEWS_DATA.map((r, i) => {
+    const accent = ACCENTS[i % ACCENTS.length];
+    return `
+    <div class="review-card-v2" style="--rv-accent:${accent}">
+      <div class="review-card-v2__deco">"</div>
+      <div class="review-card-v2__head">
+        <div class="review-avatar-v2">${r.name.charAt(0)}</div>
+        <div>
+          <p class="review-card-v2__name">${em ? E('reviews.'+i+'.name', r.name) : r.name}</p>
+          <div class="review-card-v2__tags">
+            <span class="rv-tag-course">${em ? E('reviews.'+i+'.course', r.course) : r.course}</span>
+            ${r.badge ? `<span class="rv-tag-pass">✓ ${r.badge}</span>` : ''}
+          </div>
         </div>
       </div>
-    </div>`).join('');
+      <p class="review-card-v2__text">${em ? E('reviews.'+i+'.text', r.text) : r.text}</p>
+      <div class="review-card-v2__foot">
+        <span class="rv-stars">${'★'.repeat(r.star || 5)}</span>
+        <span class="rv-date">${r.date || ''}</span>
+        ${em ? `<button class="admin-del-btn" onclick="deleteReview(${i})">✕</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 
   document.getElementById('reviews-content').innerHTML = `
     <p class="page-label">수강생 후기</p>
-    <div class="review-grid">
+    <div class="review-summary">
+      <div class="review-summary__big">
+        <span class="review-summary__big-num">${avgRating}</span>
+        <span class="review-summary__big-stars">★★★★★</span>
+      </div>
+      <div class="review-summary__sep"></div>
+      <div class="review-summary__stat"><b>${REVIEWS_DATA.length}</b><span>총 후기</span></div>
+      <div class="review-summary__sep"></div>
+      <div class="review-summary__stat"><b>${passCount}</b><span>합격 인증</span></div>
+    </div>
+    <div class="review-grid-v2">
       ${cards}
       ${em ? `<button class="admin-add-block" onclick="addReview()" style="min-height:160px">+ 후기 추가</button>` : ''}
     </div>`;
@@ -1895,11 +1967,14 @@ function deleteInstructor(i) {
    CRUD — 수강생 후기
 ══════════════════════════════════════════════════ */
 function addReview() {
-  const name   = prompt('수강생 이름 (예: 김○○):');
+  const name   = prompt('수강생 이름:');
   if (!name?.trim()) return;
   const course = prompt('수강 과정:') || '';
   const text   = prompt('후기 내용:') || '';
-  REVIEWS_DATA.push({ name: name.trim(), course, text, star: 5 });
+  const badge  = prompt('합격 배지 (없으면 빈칸):') || '';
+  const today  = new Date();
+  const date   = `${String(today.getFullYear()).slice(2)}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+  REVIEWS_DATA.push({ name: name.trim(), course, text, star: 5, badge, date });
   renderReviewsPage();
 }
 function deleteReview(i) {
