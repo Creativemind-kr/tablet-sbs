@@ -695,7 +695,18 @@
   .rv-stars { color: #FBBF24; font-size: .78rem; letter-spacing: 1.5px; }
   .rv-date  { font-size: 11px; color: var(--c-text-3); }
 
-  @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } }
+  .review-ghost {
+    background: var(--c-bg-2); border: 1px dashed var(--c-border);
+    border-radius: 18px; height: 110px; opacity: 0.45;
+  }
+  .review-more-label {
+    grid-column: 1 / -1; text-align: center;
+    padding: 4px 0 2px;
+    font-size: var(--t-sm); color: var(--c-text-3);
+    letter-spacing: .12em; font-weight: 500;
+  }
+
+  @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } .review-ghost { display: none; } }
 
   /* ══════════════════════════════════════
      17. IMAGE GALLERY & LIGHTBOX
@@ -1198,6 +1209,11 @@ function setByPath(path, value) {
   curr[isNaN(last) ? last : +last] = value;
 }
 
+function maskName(name) {
+  if (!name) return name;
+  return name.charAt(0) + '○'.repeat(Math.min(name.length - 1, 2));
+}
+
 /* Editable span helper — wraps text in contenteditable only in edit mode */
 function E(path, text) {
   if (!isEditMode) return String(text);
@@ -1492,7 +1508,7 @@ function renderReviewsPage() {
       <div class="review-card-v2__head">
         <div class="review-avatar-v2">${r.name.charAt(0)}</div>
         <div>
-          <p class="review-card-v2__name">${em ? E('reviews.'+i+'.name', r.name) : r.name}</p>
+          <p class="review-card-v2__name">${em ? E('reviews.'+i+'.name', r.name) : maskName(r.name)}</p>
           <div class="review-card-v2__tags">
             <span class="rv-tag-course">${em ? E('reviews.'+i+'.course', r.course) : r.course}</span>
             ${r.badge ? `<span class="rv-tag-pass">✓ ${r.badge}</span>` : ''}
@@ -1522,7 +1538,10 @@ function renderReviewsPage() {
     </div>
     <div class="review-grid-v2">
       ${cards}
-      ${em ? `<button class="admin-add-block" onclick="addReview()" style="min-height:160px">+ 후기 추가</button>` : ''}
+      ${em ? `<button class="admin-add-block" onclick="addReview()" style="min-height:160px">+ 후기 추가</button>` : `
+      <div class="review-ghost" aria-hidden="true"></div>
+      <div class="review-ghost" aria-hidden="true"></div>
+      <p class="review-more-label">· · · 등등</p>`}
     </div>`;
 }
 
