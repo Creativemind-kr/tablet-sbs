@@ -1051,7 +1051,7 @@ let UI_DATA = {
   stats: [
     { num: '20+', label: '년 교육 경력'   },
     { num: '6인',  label: '이하 소수 정예' },
-    { num: '4개',  label: '전문 과정 운영' }
+    { num: '10개', label: '전문 과정 운영' }
   ],
   features: [
     { icon: '✦', title: '실무 전문 강사진', desc: '현업에서 직접 활동하는 강사가 최신 실무 트렌드를 그대로 전달합니다.' },
@@ -1063,96 +1063,221 @@ let UI_DATA = {
 };
 
 let COURSES = {
-  web: {
-    colorKey: 'web',
-    label: '웹디자인·퍼블리싱', duration: '12주 과정 · 주 3회',
-    title: 'HTML/CSS/JS부터\n포트폴리오까지',
-    desc: '반응형 웹 제작의 처음부터 끝까지 배웁니다. 디자인 감각과 코딩 실력을 함께 키워 현업 바로 투입 가능한 웹 퍼블리셔·프론트엔드 기초 역량을 완성합니다.',
-    tags: ['HTML5 / CSS3','JavaScript ES6+','반응형 웹','Figma 협업','포트폴리오 배포'],
-    roadmap: [
-      { phase: '01', title: '웹의 구조 이해', weeks: '1–4주차', desc: 'HTML5 시맨틱 구조와 CSS Flexbox/Grid로 반응형 레이아웃을 완성합니다.' },
-      { phase: '02', title: '인터랙션 구현', weeks: '5–8주차', desc: 'JavaScript DOM 조작과 API 연동으로 동적인 웹 페이지를 만듭니다.' },
-      { phase: '03', title: '심화 & 실전', weeks: '9–10주차', desc: 'CSS 애니메이션, 스크롤 인터랙션, 성능 최적화를 다룹니다.' },
-      { phase: '04', title: '포트폴리오 완성', weeks: '11–12주차', desc: '개인 포트폴리오 사이트 제작부터 GitHub Pages 배포까지 완성합니다.' }
-    ],
-    images: [],
-    curriculum: [
-      { week: '1–2주차',   topic: 'HTML5 구조 · CSS Box Model',   items: ['HTML5 시맨틱 태그 이해','CSS Box Model · Flexbox 레이아웃','기본 웹 페이지 제작 실습'] },
-      { week: '3–4주차',   topic: 'Grid · 반응형 미디어쿼리',      items: ['CSS Grid 고급 레이아웃','미디어 쿼리 · Clamp 반응형 대응','CSS 변수(Custom Properties) 활용'] },
-      { week: '5–6주차',   topic: 'JavaScript DOM · 이벤트 처리',  items: ['DOM 선택·조작 완전 이해','이벤트 리스너 · 인터랙티브 UI','폼 유효성 검사 구현'] },
-      { week: '7–8주차',   topic: 'API 연동 · 비동기 처리',        items: ['fetch / async·await 기초','공공 API 데이터 렌더링 실습','로딩·에러 처리 UX 패턴'] },
-      { week: '9–10주차',  topic: 'CSS 애니메이션 · 인터랙션',     items: ['keyframe 애니메이션 제작','스크롤 트리거 인터랙션','Intersection Observer 활용'] },
-      { week: '11–12주차', topic: '포트폴리오 제작 · 배포',        items: ['개인 포트폴리오 사이트 기획·설계','GitHub Pages / Vercel 배포','코드 리뷰 및 완성도 다듬기'] }
-    ],
-    checklist: ['개인 노트북 (Windows / Mac)','VS Code 편집기 (무료)','Chrome 브라우저','Figma 계정 (무료)','기초 컴퓨터 활용 능력']
-  },
-  ps: {
+  d01: {
     colorKey: 'ps',
-    label: '포토샵·일러스트', duration: '8주 과정 · 주 3회',
-    title: '그래픽 디자인의\n모든 것',
-    desc: 'Photoshop과 Illustrator를 완전 마스터합니다. 사진 보정부터 브랜드 아이덴티티 디자인까지 실무 전 영역을 다루며 즉시 사용 가능한 실력을 키웁니다.',
-    tags: ['Adobe Photoshop','Adobe Illustrator','사진 보정·합성','벡터 드로잉','브랜드 디자인'],
-    roadmap: [
-      { phase: '01', title: 'Photoshop 기초', weeks: '1–2주차', desc: '레이어·마스크 시스템을 이해하고 기본 사진 보정을 익힙니다.' },
-      { phase: '02', title: '고급 합성 & 색보정', weeks: '3–4주차', desc: '블렌딩 모드, Curves를 활용한 전문 사진 합성을 다룹니다.' },
-      { phase: '03', title: 'Illustrator 벡터', weeks: '5–6주차', desc: '펜툴 드로잉, 로고·아이콘 디자인, 타이포그래피를 완성합니다.' },
-      { phase: '04', title: '브랜드 포트폴리오', weeks: '7–8주차', desc: 'BI/CI 시스템 기획부터 최종 포트폴리오 PDF까지 완성합니다.' }
-    ],
-    images: [],
+    label: '시각편집학과', duration: '정규·단기·주말반',
+    title: '시각편집학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '1–2주차', topic: 'Photoshop 기초 · 레이어 시스템', items: ['인터페이스 및 주요 도구 이해','레이어·마스크·채널 활용','기본 사진 보정 실습'] },
-      { week: '3–4주차', topic: '고급 합성 · 색보정',              items: ['블렌딩 모드 고급 합성','Curves·Levels 전문 색보정','누끼 따기 · 자연스러운 합성 기법'] },
-      { week: '5–6주차', topic: 'Illustrator 벡터 · 타이포그래피', items: ['펜툴 벡터 드로잉 완전 정복','로고·아이콘 디자인 실습','타이포그래피 레이아웃 구성'] },
-      { week: '7–8주차', topic: '브랜드 아이덴티티 포트폴리오',    items: ['BI/CI 시스템 기획·설계','명함·브로슈어·SNS 템플릿','포트폴리오 PDF 완성 및 발표'] }
+      { week: 'Photoshop',           topic: '', items: [], images: [] },
+      { week: 'PhotoWorks',          topic: '', items: [], images: [] },
+      { week: 'Detail Illust',       topic: '', items: [], images: [] },
+      { week: '일러스트',             topic: '', items: [], images: [] },
+      { week: '드로잉Total 1',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 2',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 3',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 4',        topic: '', items: [], images: [] },
+      { week: 'InDesign',            topic: '', items: [], images: [] },
+      { week: '그래픽아트웍',          topic: '', items: [], images: [] },
+      { week: 'UI/UX 1',             topic: '', items: [], images: [] },
+      { week: 'UI/UX 2',             topic: '', items: [], images: [] },
+      { week: '컴퓨터그래픽기능사',    topic: '', items: [], images: [] },
+      { week: '브랜딩디자인',          topic: '', items: [], images: [] },
+      { week: '편집 포트폴리오',       topic: '', items: [], images: [] },
+      { week: '컬러리스트',            topic: '', items: [], images: [] },
+      { week: 'GTQ/GTQ-I',           topic: '', items: [], images: [] }
     ],
-    checklist: ['개인 노트북 (Mac 권장, Windows 가능)','Adobe CC 구독 (학원 지원 가능)','외장 마우스 (강력 권장)','스케치북 (아이디어 메모용)']
+    checklist: []
   },
-  video: {
+  d02: {
     colorKey: 'video',
-    label: '영상편집 프리미어·에펙', duration: '10주 과정 · 주 3회',
-    title: '영상 편집부터\n모션그래픽까지',
-    desc: 'Premiere Pro로 탄탄한 편집 기초를 쌓고 After Effects로 모션그래픽을 완성합니다. 유튜브·릴스·숏폼까지 실전 콘텐츠 제작 능력을 갖춥니다.',
-    tags: ['Adobe Premiere Pro','Adobe After Effects','색보정 LUT','모션그래픽','숏폼 콘텐츠'],
-    roadmap: [
-      { phase: '01', title: 'Premiere 편집 기초', weeks: '1–2주차', desc: '시퀀스 설정, 컷편집, 자막 디자인을 익혀 영상 편집의 기본기를 다집니다.' },
-      { phase: '02', title: '색보정 & 오디오', weeks: '3–4주차', desc: 'Lumetri Color로 전문 색보정과 오디오 믹싱·노이즈 제거를 다룹니다.' },
-      { phase: '03', title: 'After Effects 모션', weeks: '5–8주차', desc: '키프레임 애니메이션, 타이틀 시퀀스, 마스크·트래킹을 제작합니다.' },
-      { phase: '04', title: '숏폼 포트폴리오', weeks: '9–10주차', desc: '릴스·쇼츠 최적화 편집부터 최종 포트폴리오 출력까지 완성합니다.' }
-    ],
-    images: [],
+    label: 'CG학과', duration: '정규·단기·주말반',
+    title: 'CG학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '1–2주차',  topic: 'Premiere Pro 편집 기초',         items: ['시퀀스 설정 · 소스 패널 이해','컷편집 · 트랜지션 · 속도 조절','자막 디자인 (Essential Graphics)'] },
-      { week: '3–4주차',  topic: '색보정 · 오디오 믹싱',            items: ['Lumetri Color 전문 색보정','LUT 적용 · 영상 분위기 연출','오디오 레벨 · 노이즈 제거'] },
-      { week: '5–6주차',  topic: 'After Effects 모션그래픽 기초',   items: ['레이어 · 키프레임 개념','텍스트 애니메이션 제작','Shape Layer 로고 애니메이션'] },
-      { week: '7–8주차',  topic: '타이틀 시퀀스 · 고급 트랜지션',  items: ['오프닝 타이틀 시퀀스 제작','마스크·트래킹 활용','PR·AE 다이나믹 링크 워크플로'] },
-      { week: '9–10주차', topic: '숏폼 포트폴리오 완성',            items: ['릴스·쇼츠 최적화 편집','썸네일 디자인 (PS 연계)','최종 포트폴리오 출력 및 발표'] }
+      { week: '드로잉Total 1',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 2',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 3',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 4',        topic: '', items: [], images: [] },
+      { week: 'Photoshop',           topic: '', items: [], images: [] },
+      { week: '일러스트',             topic: '', items: [], images: [] },
+      { week: 'PhotoWorks',          topic: '', items: [], images: [] },
+      { week: '프리미어프로',          topic: '', items: [], images: [] },
+      { week: 'After Effects 1',     topic: '', items: [], images: [] },
+      { week: 'After Effects 2',     topic: '', items: [], images: [] },
+      { week: 'MAYA 1',              topic: '', items: [], images: [] },
+      { week: 'MAYA 2',              topic: '', items: [], images: [] },
+      { week: 'MAYA 3',              topic: '', items: [], images: [] },
+      { week: 'MAYA 4',              topic: '', items: [], images: [] },
+      { week: 'MAYA 5',              topic: '', items: [], images: [] },
+      { week: 'MAYA 6',              topic: '', items: [], images: [] },
+      { week: 'VFX 1',               topic: '', items: [], images: [] },
+      { week: 'VFX 2',               topic: '', items: [], images: [] },
+      { week: 'MAYA 포트폴리오',       topic: '', items: [], images: [] },
+      { week: '블렌더 V1',            topic: '', items: [], images: [] },
+      { week: '블렌더 V2',            topic: '', items: [], images: [] },
+      { week: '블렌더 V3',            topic: '', items: [], images: [] },
+      { week: '블렌더 V4',            topic: '', items: [], images: [] },
+      { week: '블렌더 포트폴리오',     topic: '', items: [], images: [] }
     ],
-    checklist: ['개인 노트북 (RAM 16GB 이상 권장)','Adobe CC 구독 (학원 지원 가능)','외장 저장장치 (SSD 500GB+)','이어폰 또는 헤드폰']
+    checklist: []
   },
-  uiux: {
-    colorKey: 'uiux',
-    label: 'UI/UX·피그마', duration: '10주 과정 · 주 3회',
-    title: '앱·웹 디자인\n전문가 과정',
-    desc: 'UX 리서치부터 Figma 실무 디자인, 프로토타이핑까지 전 과정을 익힙니다. 완성된 앱 디자인 포트폴리오로 취업 경쟁력을 확보합니다.',
-    tags: ['Figma','UX 리서치','와이어프레임','컴포넌트 시스템','프로토타이핑'],
-    roadmap: [
-      { phase: '01', title: 'UX 리서치', weeks: '1–2주차', desc: '사용자 인터뷰, 페르소나, 사용자 여정 맵으로 문제를 정의합니다.' },
-      { phase: '02', title: 'Figma & 컴포넌트', weeks: '3–4주차', desc: 'Auto Layout, 컴포넌트·베리언트 시스템을 구축합니다.' },
-      { phase: '03', title: '와이어프레임 & 비주얼', weeks: '5–8주차', desc: '정보구조 설계부터 고품질 비주얼 디자인·디자인 토큰까지 완성합니다.' },
-      { phase: '04', title: '프로토타입 & 포트폴리오', weeks: '9–10주차', desc: '인터랙티브 프로토타입 제작과 케이스 스터디 포트폴리오를 완성합니다.' }
-    ],
-    images: [],
+  d03: {
+    colorKey: 'web',
+    label: '모션그래픽학과', duration: '정규·단기·주말반',
+    title: '모션그래픽학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '1–2주차',  topic: 'UX 리서치 · 사용자 분석',         items: ['UX와 UI의 차이 완전 이해','사용자 인터뷰 · 페르소나 작성','사용자 여정 맵 · 문제 정의'] },
-      { week: '3–4주차',  topic: 'Figma 기초 · 컴포넌트 시스템',    items: ['Figma 인터페이스 완전 정복','Auto Layout · 제약 조건 활용','컴포넌트 · 베리언트 설계'] },
-      { week: '5–6주차',  topic: '와이어프레임 · 정보구조 설계',     items: ['사이트맵 · 플로우 차트 작성','로우·하이 피델리티 와이어프레임','사용성 테스트 방법론'] },
-      { week: '7–8주차',  topic: '비주얼 디자인 · 디자인 토큰',      items: ['색상·타이포 시스템 구축','디자인 토큰 관리 (Variables)','iOS · Android 가이드라인 적용'] },
-      { week: '9–10주차', topic: '프로토타이핑 · 포트폴리오 완성',   items: ['인터랙티브 프로토타입 제작','개발자 핸드오프 스펙 작성','케이스 스터디 포트폴리오 완성'] }
+      { week: '드로잉Total 1',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 2',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 3',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 4',        topic: '', items: [], images: [] },
+      { week: 'Photoshop',           topic: '', items: [], images: [] },
+      { week: 'Detail Illust',       topic: '', items: [], images: [] },
+      { week: 'PhotoWorks',          topic: '', items: [], images: [] },
+      { week: '일러스트',             topic: '', items: [], images: [] },
+      { week: '프리미어프로',          topic: '', items: [], images: [] },
+      { week: 'After Effects 1',     topic: '', items: [], images: [] },
+      { week: 'After Effects 2',     topic: '', items: [], images: [] },
+      { week: 'Cinema 4D 1',         topic: '', items: [], images: [] },
+      { week: 'Cinema 4D 2',         topic: '', items: [], images: [] },
+      { week: 'Cinema 4D 3',         topic: '', items: [], images: [] },
+      { week: 'Portfolio 1',         topic: '', items: [], images: [] },
+      { week: 'Portfolio 2',         topic: '', items: [], images: [] },
+      { week: 'Portfolio 3',         topic: '', items: [], images: [] }
     ],
-    checklist: ['개인 노트북 (Mac 권장, Windows 가능)','Figma 계정 (무료)','스마트폰 (프로토타입 테스트용)','기본 디자인 감각 (미술 전공 불필요)']
+    checklist: []
+  },
+  d04a: {
+    colorKey: 'uiux',
+    label: '인테리어학과', duration: '정규·단기·주말반',
+    title: '인테리어학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: 'AutoCAD 1',           topic: '', items: [], images: [] },
+      { week: 'AutoCAD 2',           topic: '', items: [], images: [] },
+      { week: 'SketchUp 1',          topic: '', items: [], images: [] },
+      { week: 'SketchUp 2',          topic: '', items: [], images: [] },
+      { week: '3DS Max 1',           topic: '', items: [], images: [] },
+      { week: '3DS Max 2',           topic: '', items: [], images: [] },
+      { week: '실내건축이론',          topic: '', items: [], images: [] },
+      { week: '실내건축자격증 1',      topic: '', items: [], images: [] },
+      { week: '실내건축자격증 2',      topic: '', items: [], images: [] },
+      { week: '실내건축자격증 3',      topic: '', items: [], images: [] },
+      { week: 'Revit 1',             topic: '', items: [], images: [] },
+      { week: 'Revit 2',             topic: '', items: [], images: [] },
+      { week: '전산응용건축제도기능사', topic: '', items: [], images: [] },
+      { week: 'AI인테리어',            topic: '', items: [], images: [] },
+      { week: '인테리어 포트폴리오',    topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d04b: {
+    colorKey: 'ps',
+    label: '기계·제품학과', duration: '정규·단기·주말반',
+    title: '기계·제품학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: 'AutoCAD 1',              topic: '', items: [], images: [] },
+      { week: 'AutoCAD 2',              topic: '', items: [], images: [] },
+      { week: '인벤터',                  topic: '', items: [], images: [] },
+      { week: '전산응용기계제도기능사',    topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d05: {
+    colorKey: 'web',
+    label: '웹디자인학과', duration: '정규·단기·주말반',
+    title: '웹디자인학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: '드로잉Total 1',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 2',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 3',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 4',        topic: '', items: [], images: [] },
+      { week: 'Photoshop',           topic: '', items: [], images: [] },
+      { week: '일러스트',             topic: '', items: [], images: [] },
+      { week: 'PhotoWorks',          topic: '', items: [], images: [] },
+      { week: 'Detail Illust',       topic: '', items: [], images: [] },
+      { week: '웹 1',                topic: '', items: [], images: [] },
+      { week: '웹 2',                topic: '', items: [], images: [] },
+      { week: '웹 3',                topic: '', items: [], images: [] },
+      { week: 'UI/UX 1',             topic: '', items: [], images: [] },
+      { week: 'UI/UX 2',             topic: '', items: [], images: [] },
+      { week: '웹 포트폴리오',         topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d06: {
+    colorKey: 'video',
+    label: '아트웍학과', duration: '정규·단기·주말반',
+    title: '아트웍학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: '드로잉Total 1',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 2',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 3',        topic: '', items: [], images: [] },
+      { week: '드로잉Total 4',        topic: '', items: [], images: [] },
+      { week: '심화드로잉 1',          topic: '', items: [], images: [] },
+      { week: '심화드로잉 2',          topic: '', items: [], images: [] },
+      { week: '심화드로잉 3',          topic: '', items: [], images: [] },
+      { week: '심화드로잉 4',          topic: '', items: [], images: [] },
+      { week: '심화드로잉 5',          topic: '', items: [], images: [] },
+      { week: '심화드로잉 6',          topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d07: {
+    colorKey: 'uiux',
+    label: 'IT프로그래밍학과', duration: '정규·단기·주말반',
+    title: 'IT프로그래밍학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: 'C 언어 1',            topic: '', items: [], images: [] },
+      { week: 'C 언어 2',            topic: '', items: [], images: [] },
+      { week: '자바 1',              topic: '', items: [], images: [] },
+      { week: '자바 2',              topic: '', items: [], images: [] },
+      { week: '파이썬 1',            topic: '', items: [], images: [] },
+      { week: '파이썬 2',            topic: '', items: [], images: [] },
+      { week: '웹 프로젝트',          topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d08: {
+    colorKey: 'ps',
+    label: '자격증OA학과', duration: '정규·단기·주말반',
+    title: '자격증OA학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: 'ITQ',                 topic: '', items: [], images: [] },
+      { week: 'MOS',                 topic: '', items: [], images: [] },
+      { week: '엑셀실무',             topic: '', items: [], images: [] },
+      { week: '컴활1급 실기',          topic: '', items: [], images: [] },
+      { week: '전산회계1급 1',         topic: '', items: [], images: [] },
+      { week: '전산회계1급 2',         topic: '', items: [], images: [] },
+      { week: '전산세무2급 1',         topic: '', items: [], images: [] },
+      { week: '전산세무2급 2',         topic: '', items: [], images: [] },
+      { week: '컴퓨터기초',            topic: '', items: [], images: [] }
+    ],
+    checklist: []
+  },
+  d09: {
+    colorKey: 'web',
+    label: '유튜브학과', duration: '정규·단기·주말반',
+    title: '유튜브학과\n과정 안내',
+    desc: '', tags: [], roadmap: [], images: [],
+    curriculum: [
+      { week: 'Photoshop',           topic: '', items: [], images: [] },
+      { week: '일러스트',             topic: '', items: [], images: [] },
+      { week: 'AI 프롬프트 1',        topic: '', items: [], images: [] },
+      { week: 'AI 프롬프트 2',        topic: '', items: [], images: [] },
+      { week: '1인크리에이터 1',       topic: '', items: [], images: [] },
+      { week: '1인크리에이터 2',       topic: '', items: [], images: [] },
+      { week: 'AI유튜브',             topic: '', items: [], images: [] }
+    ],
+    checklist: []
   }
 };
-
 let INSTRUCTORS_DATA = [
   { name: '강사명', title: '웹디자인 · 퍼블리싱', career: '현 SBS아카데미 강사\n실무 10년 경력\n삼성·LG 등 다수 기업 프로젝트', photo: '' },
   { name: '강사명', title: '그래픽 디자인 · 포토샵·일러스트', career: '현 SBS아카데미 강사\n실무 8년 경력\n브랜드·광고 디자인 전문', photo: '' },
