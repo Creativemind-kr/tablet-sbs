@@ -490,6 +490,14 @@
   }
   .topic-list li::before { content: '—'; color: var(--c-text-3); flex-shrink: 0; }
   .item-detail { font-weight: 300; color: var(--c-text-3); }
+  /* 계층형 커리큘럼 */
+  .topic-list .curr-week-hd { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--c-course); margin: 16px 0 4px; padding-top: 14px; border-top: 1px solid var(--c-border); line-height: 1.4; }
+  .topic-list .curr-week-hd:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+  .topic-list .curr-week-hd::before { display: none; }
+  .topic-list .curr-topic-hd { font-weight: 700; color: var(--c-text); line-height: 1.6; gap: 6px; }
+  .topic-list .curr-topic-hd::before { display: none; }
+  .topic-list .curr-sub-item { padding-left: 14px; line-height: 1.9; }
+  .topic-list .curr-sub-item::before { content: '—'; color: var(--c-text-3); flex-shrink: 0; }
   .diff-stars { font-size: 11px; letter-spacing: 1.5px; flex-shrink: 0; margin-left: 6px; cursor: default; }
   .diff-stars .s-on { color: #F59E0B; }
   .diff-stars .s-off { color: var(--c-border); }
@@ -515,6 +523,21 @@
   .logo-popover-close { width: 100%; margin-top: 8px; padding: 6px; border: 1px solid var(--c-border); border-radius: 6px; background: var(--c-bg-2); font-size: 12px; color: var(--c-text); cursor: pointer; }
   .drag-handle { cursor: grab; color: var(--c-border); padding: 0 8px 0 0; font-size: 16px; flex-shrink: 0; user-select: none; line-height: 1; }
   .drag-handle:active { cursor: grabbing; }
+  /* 커리큘럼 ↔ 포트폴리오 서브탭 */
+  .curr-view-tabs { display: flex; gap: 4px; padding: 0 16px 14px; }
+  .curr-tab-btn { padding: 5px 16px; border-radius: 100px; border: 1px solid var(--c-border); font-size: 12px; font-weight: 600; background: none; color: var(--c-text-2); cursor: pointer; transition: background .15s, color .15s; }
+  .curr-tab-btn.is-active { background: var(--c-course); color: #fff; border-color: var(--c-course); }
+  .curr-tab-panel.is-hidden { display: none; }
+  /* 포트폴리오 그리드 */
+  .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 8px; }
+  .portfolio-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; background: var(--c-bg-2); cursor: pointer; }
+  .portfolio-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+  .portfolio-item:hover img { transform: scale(1.04); }
+  .portfolio-item--video { cursor: default; }
+  .portfolio-item--video iframe { width: 100%; height: 100%; border: 0; }
+  .portfolio-del-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .portfolio-add-btn { display: block; margin: 4px 16px 16px; width: calc(100% - 32px); padding: 12px; border: 1.5px dashed var(--c-border); border-radius: 10px; background: none; font-size: 13px; color: var(--c-text-3); cursor: pointer; text-align: center; }
+  .portfolio-empty { text-align: center; color: var(--c-text-3); font-size: 13px; padding: 48px 0; grid-column: 1/-1; }
   .accordion.drag-over { border-top: 2px solid var(--c-course); }
   .accordion.is-dragging { opacity: 0.35; }
 
@@ -1095,19 +1118,181 @@ let COURSES = {
     colorKey: 'ps', label: '시각편집학과', duration: '정규·단기·주말반',
     title: '시각편집학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'Photoshop', topic: '', items: ['Week 01 · Selection Tool, 레이어 구성', 'Week 02 · 블렌딩모드, Color 보정', 'Week 03 · Pen Tool, Shape Layer', 'Week 04 · 그래픽 디자인 응용'], images: [] },
-      { week: 'PhotoWorks', topic: '', items: ['Week 01 · Select & Mask, Adjustment, Clipping Mode', 'Week 02 · Replace Color, Gradient Map', 'Week 03 · Displace, Brush, Mock up', 'Week 04 · Blend, Warp, Manipulation'], images: [] },
-      { week: 'Detail Illust', topic: '', items: ['Week 01 · Gradient Logo, Line Root Builder', 'Week 02 · Vintage Poster, Character Design', 'Week 03 · Nature Pattern, Stippling', 'Week 04 · Fashion Illust, Mesh Tool'], images: [] },
-      { week: '일러스트', topic: '', items: ['Week 01 · 인터페이스, Selection Tool, Color/Gradient', 'Week 02 · Pen Tool, Pathfinder, Transform', 'Week 03 · Blending Mode, Clipping Mask, Image Trace', 'Week 04 · Mesh Gradient, Blend Tool, 3D Effect'], images: [] },
-      { week: '드로잉Total', topic: '', items: ['Week 01 · 타블렛 기초 설정, 드로잉 포인트', 'Week 02 · 캐릭터 기초 드로잉, 인체비례', 'Week 03 · 픽셀픽션, 동물드로잉', 'Week 04 · 배경, 일본풍 스타일', 'Week 05 · 두상/얼굴 각도, 표정만화', 'Week 06 · 옷 주름, 교복 묘사', 'Week 07 · 그림체, 팔동세 실력 향상', 'Week 08 · 두 명 구도, 백그라운드 캐릭터', 'Week 09 · 얼굴 정면/측면, 인체해부학', 'Week 10 · 다이나믹 포즈, 의상 표현, 채색', 'Week 11 · 등 시점, 팔/손, 다리 드로잉', 'Week 12 · 3D 방향, 단체일러스트', 'Week 13 · 전통의상 콘셉트', 'Week 14 · 루시퍼 콘셉트 이미지', 'Week 15 · 스케치, 채색, 배경 작업', 'Week 16 · 배경, 캐릭터 일러스트'], images: [] },
-      { week: 'InDesign', topic: '', items: ['Week 01 · 인터페이스, 플레이스 소개, Paragraph 설정', 'Week 02 · 도형, 단책, Color Pantone/Swatch', 'Week 03 · 클리핑마스크, 텍스트 효과, 스크립트, 북', 'Week 04 · 매핑, 모아보기, 지면 디자인'], images: [] },
-      { week: '그래픽아트웍', topic: '', items: ['Week 01 · 아이디어 방법론', 'Week 02 · 11페이지 디자인', 'Week 03 · 11페이지 이미지', 'Week 04 · 상업화 편집'], images: [] },
-      { week: 'UI/UX', topic: '', items: ['Week 01 · UI/UX 기초개념, 방법론', 'Week 02 · UX 기초, 와이어프레임', 'Week 03 · Figma UI 설계, FlowChart', 'Week 04 · 프로토타입', 'Week 05 · Figma 인터페이스, 레이아웃', 'Week 06 · Component, Auto Layout, Variants', 'Week 07 · 앱 UI 디자인', 'Week 08 · 포트폴리오 완성, 프로토타입'], images: [] },
-      { week: '컴퓨터그래픽기능사', topic: '', items: ['Day 01 · 인디자인 이론, 최종수업 이론', 'Day 02 · 기출문제 풀이', 'Day 03 · 기출문제 풀이', 'Day 04 · 기출문제 최종 풀기'], images: [] },
-      { week: '브랜딩디자인', topic: '', items: ['Week 01 · OT/로고, 색상 감, 캐릭터 연구, 소셜미디어 리서치', 'Week 02 · 브랜드 분석, 로고 디자인', 'Week 03 · 브랜드 스토리, 이미지 제작', 'Week 04 · 브랜드패턴, 아이덴티티 패턴'], images: [] },
-      { week: '편집 포트폴리오', topic: '', items: ['Week 01 · Design Workflow, Ideation & Concept, Benchmarking', 'Week 02 · Layout Design, Artwork Production, Feedback', 'Week 03 · Mockup Rendering, Typesetting, Detail Rendering', 'Week 04 · Grid System Layout, Portfolio Exporting'], images: [] },
-      { week: '컬러리스트', topic: '', items: ['Week 01 · 색의 3요소, 색채 테스트', 'Week 02 · PCCs, 배색 패턴, 색채계획', 'Week 03 · 색채분석', 'Week 04 · 색채설계'], images: [] },
-      { week: 'GTQ/GTQ-I', topic: '', items: ['Week 01 · GTQ 문제 풀이/해설', 'Week 02 · 선택 출력, 기출문제', 'Week 03 · 시리얼 이미지, MV', 'Week 04 · GTQ-I 문제 풀이'], images: [] }
+      { week: 'Photoshop', topic: '', items: [
+        '## Week 01',
+        '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
+        '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
+        '# 포스터 디자인',
+        '## Week 02',
+        '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정', '블렌딩모드/Color 보정',
+        '## Week 03',
+        '# Pen Tool', '필터갤러리',
+        '# 텍스트 툴', '셀렉트/마스크',
+        '## Week 04',
+        '# 그래픽 디자인 응용', '포트폴리오 완성'
+      ], images: [] },
+      { week: 'PhotoWorks', topic: '', items: [
+        '## Week 01',
+        '# Select and Mask', 'Adjustment/Clipping mask',
+        '# Mock up', 'Vanishing Point/Lean Blur/Shape Blur',
+        '## Week 02',
+        '# Replace Color', 'Gradient Map',
+        '## Week 03',
+        '# Displace', 'Brush/Mock up',
+        '## Week 04',
+        '# Blend', 'Warp/Manipulation'
+      ], images: [] },
+      { week: 'Detail Illust', topic: '', items: [
+        '## Week 01',
+        '# path finder', 'Compound path/Line Root Builder',
+        '# Blend Element', 'Shape builder/scissors tool',
+        '# Type on a path', 'Pucker/Free Transform/Offset path',
+        '## Week 02',
+        '# Pattern Brush', 'Envelope distort',
+        '# Drawing Fluid', 'Vintage Poster/Character Design',
+        '## Week 03',
+        '# Nature Pattern', 'Stippling/Artboard',
+        '# Macarons Design',
+        '## Week 04',
+        '# Futuristic Design', 'Gradient Mesh/Fashion Illust'
+      ], images: [] },
+      { week: '일러스트', topic: '', items: [
+        '## Week 01',
+        '# 인터페이스 이해', 'Selection tool+기본작업',
+        '# 베지어 드로잉', '고급 Selection/점과 선',
+        '## Week 02',
+        '# Pathfinder', 'Pen Tool/Transform',
+        '## Week 03',
+        '# Blending Mode', 'Clipping Mask',
+        '# Image Trace',
+        '## Week 04',
+        '# Mesh Gradient', 'Blend Tool/3D Effect'
+      ], images: [] },
+      { week: '드로잉Total', topic: '', items: [
+        '## Week 01',
+        '# 강사소개', '타블렛 드라이버 설치',
+        '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
+        '## Week 02',
+        '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
+        '## Week 03',
+        '# 픽셀픽션', '동물드로잉',
+        '## Week 04',
+        '# 배경', '일본풍 스타일',
+        '## Week 05',
+        '# 두상/얼굴 각도', '표정만화',
+        '## Week 06',
+        '# 옷 주름', '교복 묘사',
+        '## Week 07',
+        '# 그림체', '팔동세 실력 향상',
+        '## Week 08',
+        '# 두 명 구도', '백그라운드 캐릭터',
+        '## Week 09',
+        '# 얼굴 정면/측면', '인체해부학',
+        '## Week 10',
+        '# 다이나믹 포즈', '의상 표현/채색',
+        '## Week 11',
+        '# 등 시점', '팔/손/다리 드로잉',
+        '## Week 12',
+        '# 3D 방향', '단체일러스트',
+        '## Week 13',
+        '# 전통의상 콘셉트',
+        '## Week 14',
+        '# 루시퍼 콘셉트 이미지',
+        '## Week 15',
+        '# 스케치', '채색/배경 작업',
+        '## Week 16',
+        '# 배경', '캐릭터 일러스트'
+      ], images: [] },
+      { week: 'InDesign', topic: '', items: [
+        '## Week 01',
+        '# InDesign 인터페이스 이해', '플레이스 & 텍스트', '이미지 활용',
+        '## Week 02',
+        '# 도형/단책', 'Color Pantone/Swatch',
+        '## Week 03',
+        '# 클리핑마스크', '텍스트 효과/스크립트/북',
+        '## Week 04',
+        '# 매핑', '모아보기/지면 디자인'
+      ], images: [] },
+      { week: '그래픽아트웍', topic: '', items: [
+        '## Week 01',
+        '# 아이디어 전략', '사진 디자인 서식 및 페이지 레이아웃',
+        '## Week 02',
+        '# 11페이지 디자인',
+        '## Week 03',
+        '# 11페이지 이미지',
+        '## Week 04',
+        '# 상업화 편집', '광고화 분석 제작/인쇄'
+      ], images: [] },
+      { week: 'UI/UX', topic: '', items: [
+        '## Week 01',
+        '# User Interface', 'User experience',
+        '# 와이어프레임', 'UX 기초/베이직 설계',
+        '## Week 02',
+        '# 사이트맵', '와이어프레임/프로토타입',
+        '## Week 03',
+        '# Figma UI 설계', 'FlowChart',
+        '## Week 04',
+        '# 프로토타입 완성',
+        '## Week 05',
+        '# Figma 인터페이스', '레이아웃 설정/자동 사이즈', '보조 레이아웃',
+        '## Week 06',
+        '# Component', 'Auto Layout/Variants',
+        '## Week 07',
+        '# 앱 UI 디자인',
+        '## Week 08',
+        '# 포트폴리오 완성', '프로토타입'
+      ], images: [] },
+      { week: '컴퓨터그래픽기능사', topic: '', items: [
+        '## Day 01',
+        '# 인디자인 이론', '최종수업 이론', '기출문제 풀이',
+        '## Day 02',
+        '# 기출문제 풀이',
+        '## Day 03',
+        '# 기출문제 풀이',
+        '## Day 04',
+        '# 기출문제 최종 풀기'
+      ], images: [] },
+      { week: '브랜딩디자인', topic: '', items: [
+        '## Week 01',
+        '# OT/로고', '색상 감/캐릭터 연구',
+        '# 소셜미디어 리서치', '기업아이덴티티/브랜딩 방법론',
+        '## Week 02',
+        '# 브랜드 분석', '로고 디자인',
+        '## Week 03',
+        '# 브랜드 스토리', '소셜 미디어/이미지 제작',
+        '## Week 04',
+        '# 브랜드패턴', '아이덴티티 확장'
+      ], images: [] },
+      { week: '편집 포트폴리오', topic: '', items: [
+        '## Week 01',
+        '# Design Workflow', 'Ideation & Concept/Benchmarking',
+        '## Week 02',
+        '# Layout Design', 'Artwork Production/Feedback',
+        '## Week 03',
+        '# Mockup Rendering', 'Typesetting/Detail Rendering',
+        '## Week 04',
+        '# Grid System Layout', 'Portfolio Exporting'
+      ], images: [] },
+      { week: '컬러리스트', topic: '', items: [
+        '## Week 01',
+        '# 색의 3요소 이론', '색채 테스트',
+        '## Week 02',
+        '# PCCs', '배색 패턴/색채계획',
+        '## Week 03',
+        '# 색채분석',
+        '## Week 04',
+        '# 색채설계'
+      ], images: [] },
+      { week: 'GTQ/GTQ-I', topic: '', items: [
+        '## Week 01',
+        '# GTQ 공부 방법 소개', '기출 풀기',
+        '## Week 02',
+        '# GTQ 기출 풀기',
+        '## Week 03',
+        '# 시나리오 이론', '기출 문제 풀기',
+        '## Week 04',
+        '# GTQ-I 공부 방법', '기출 문제 풀기'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1115,17 +1300,149 @@ let COURSES = {
     colorKey: 'video', label: 'CG학과', duration: '정규·단기·주말반',
     title: 'CG학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: ['Week 01 · 타블렛 기초 설정, 드로잉 포인트', 'Week 02 · 캐릭터 기초 드로잉, 인체비례', 'Week 03 · 픽셀픽션, 동물드로잉', 'Week 04 · 배경, 일본풍 스타일', 'Week 05 · 두상/얼굴 각도, 표정만화', 'Week 06 · 옷 주름, 교복 묘사', 'Week 07 · 그림체, 팔동세 실력 향상', 'Week 08 · 두 명 구도, 백그라운드 캐릭터', 'Week 09 · 얼굴 정면/측면, 인체해부학', 'Week 10 · 다이나믹 포즈, 의상 표현, 채색', 'Week 11 · 등 시점, 팔/손, 다리 드로잉', 'Week 12 · 3D 방향, 단체일러스트', 'Week 13 · 전통의상 콘셉트', 'Week 14 · 루시퍼 콘셉트 이미지', 'Week 15 · 스케치, 채색, 배경 작업', 'Week 16 · 배경, 캐릭터 일러스트'], images: [] },
-      { week: 'Photoshop', topic: '', items: ['Week 01 · Selection Tool, 레이어 구성', 'Week 02 · 블렌딩모드, Color 보정', 'Week 03 · Pen Tool, Shape Layer', 'Week 04 · 그래픽 디자인 응용'], images: [] },
-      { week: '일러스트', topic: '', items: ['Week 01 · 인터페이스, Selection Tool, Color/Gradient', 'Week 02 · Pen Tool, Pathfinder, Transform', 'Week 03 · Blending Mode, Clipping Mask, Image Trace', 'Week 04 · Mesh Gradient, Blend Tool, 3D Effect'], images: [] },
-      { week: 'PhotoWorks', topic: '', items: ['Week 01 · Select & Mask, Adjustment, Clipping Mode', 'Week 02 · Replace Color, Gradient Map', 'Week 03 · Displace, Brush, Mock up', 'Week 04 · Blend, Warp, Manipulation'], images: [] },
-      { week: '프리미어프로', topic: '', items: ['Week 01 · OT/인터페이스, 카메라 활용, 시퀀스 설정', 'Week 02 · Multi Camera Source Sequence, 색상 보정', 'Week 03 · VHS 비디오, Effects, 전환 효과', 'Week 04 · Audio Transition, Audio Effect, Text Motion'], images: [] },
-      { week: 'After Effects', topic: '', items: ['Week 01 · 인터페이스, Solid, Motion Blur, Keyframe', 'Week 02 · Mask, Text Animate, Type Tool, Media Encoder', 'Week 03 · Puppet, Trackmate, Tracking, Real Object', 'Week 04 · 3D Layer, Camera Walk, Camera Motion', 'Week 05 · Expression, Basic Motion, Shape Layer, Export', 'Week 06 · Character Rig, Face Rig, Hand Rig', 'Week 07 · Custom Null Rigging, Expression Phone', 'Week 08 · Transition, Paper Fake 3D, Factor Noise, Match Closer'], images: [] },
-      { week: 'MAYA', topic: '', items: ['Week 01 · Maya 오리엔테이션, 뷰포트 이해', 'Week 02 · Surface Mesh 툴링, Topology/Retopology', 'Week 03 · Sculpting Tool, Combine, Extract', 'Week 04 · NURBS, Surface Extrude, Smooth', 'Week 05 · Create Polygon, Edit Edge Flow, Multicut', 'Week 06 · Merge, Combine, Extract, Duplicate', 'Week 07 · Pro Tablet, QMSH 심화편집', 'Week 08 · Quad Draw, Live Surface Mode', 'Week 09 · UV 개념, UV Editor, Mapping', 'Week 10 · 유리재질, Hyper Shade, 사람피부', 'Week 11 · Sun Set, 지반, 모델하우스', 'Week 12 · 나무/X Gen, 피부 커스텀 제작', 'Week 13 · X Gen Guide Tool, Groom', 'Week 14 · Vray Bind MtL, Nmap, Normal', 'Week 15 · 풀머티리얼 설정, 모델링', 'Week 16 · Nuke/Fusion 기초', 'Week 17 · 리깅, Squash&Stretch, Motion Path', 'Week 18 · Create Joint, Local Rotate, Constrain', 'Week 19 · 리그 컨트롤러, Skin Weight', 'Week 20 · Paint Skin Weight, Walk Cycle', 'Week 21 · Unreal Engine, Control History', 'Week 22 · Fab Asset, Texture Control, Engine Lighting', 'Week 23 · Land Scape, Maya Plugin', 'Week 24 · Rigging, Live Surface, Solver Ctrl'], images: [] },
-      { week: 'VFX', topic: '', items: ['Week 01 · Z Brush, Orb 스케치', 'Week 02 · Enact, Merge Down, Sculpting', 'Week 03 · Guide Tool, Fbx 내보내기', 'Week 04 · Displacement Map, Adaptive Smooth, UV', 'Week 05 · 파티클, Bullet, Active/Passive Rigid', 'Week 06 · Ocean, Motion Blur, Shader', 'Week 07 · 3D Scene, Project 3D', 'Week 08 · Advanced Coloring, Camera Tracker, Scanline Render'], images: [] },
-      { week: 'MAYA 포트폴리오', topic: '', items: ['Week 01 · 레퍼런스 수집, Fanning&Boning, VBC', 'Week 02 · Cinematic, UV&Material 작업, Detail Modeling', 'Week 03 · 사이클 영상 제작, Cinematic Render, Rigging&Fx', 'Week 04 · 포렌식 영상 제작'], images: [] },
-      { week: '블렌더', topic: '', items: ['Week 01 · 오리엔테이션, 기초 인터페이스, 3D Modeling', 'Week 02 · 로우폴리 모델링, Extrude, Bevel, Inset', 'Week 03 · 로우폴리 디테일, Mirror, UV Unwrap, Rendering', 'Week 04 · UV Unwrap, Normal, HDRI, UDIM, Merge', 'Week 05 · Substance Painter, Hardface', 'Week 06 · 비주얼 디자인, Fogger Normal, UV Unwrap', 'Week 07 · Alpha, Depth of Field, Cycle Render', 'Week 08 · 룸 완성, Level Design, After Effect', 'Week 09 · 지브러시 기초, 올가닉 모델링, Z-Brush', 'Week 10 · 리토폴로지, UV Unwrap, PBR Texturing', 'Week 11 · 의상 제작, 라이팅&렌더링', 'Week 12 · 후편집, 포트폴리오 작업, Unreal Engine', 'Week 13 · 리깅 기초, Skin Weight, Rigging', 'Week 14 · KFV, Rigid Body', 'Week 15 · 키프레임, 캐릭터 Rig 활용, Walk Rig', 'Week 16 · AAA 애니메이션, Camera Move, Take Recorder'], images: [] },
-      { week: '블렌더 포트폴리오', topic: '', items: ['Week 01 · 레퍼런스 수집, VBC, Fluid', 'Week 02 · Cinematic, UV&Material, Detail Modeling', 'Week 03 · 사이클 영상 제작, Rigging&Fx', 'Week 04 · 포렌식 영상 제작, Compositing, Rendering'], images: [] }
+      { week: '드로잉Total', topic: '', items: [
+        '## Week 01',
+        '# 강사소개', '타블렛 드라이버 설치',
+        '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
+        '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
+        '## Week 03', '# 픽셀픽션', '동물드로잉',
+        '## Week 04', '# 배경', '일본풍 스타일',
+        '## Week 05', '# 두상/얼굴 각도', '표정만화',
+        '## Week 06', '# 옷 주름', '교복 묘사',
+        '## Week 07', '# 그림체', '팔동세 실력 향상',
+        '## Week 08', '# 두 명 구도', '백그라운드 캐릭터',
+        '## Week 09', '# 얼굴 정면/측면', '인체해부학',
+        '## Week 10', '# 다이나믹 포즈', '의상 표현/채색',
+        '## Week 11', '# 등 시점', '팔/손/다리 드로잉',
+        '## Week 12', '# 3D 방향', '단체일러스트',
+        '## Week 13', '# 전통의상 콘셉트',
+        '## Week 14', '# 루시퍼 콘셉트 이미지',
+        '## Week 15', '# 스케치', '채색/배경 작업',
+        '## Week 16', '# 배경', '캐릭터 일러스트'
+      ], images: [] },
+      { week: 'Photoshop', topic: '', items: [
+        '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
+        '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성', '# 포스터 디자인',
+        '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
+        '## Week 03', '# Pen Tool', '필터갤러리', '# 텍스트 툴', '셀렉트/마스크',
+        '## Week 04', '# 그래픽 디자인 응용', '포트폴리오 완성'
+      ], images: [] },
+      { week: '일러스트', topic: '', items: [
+        '## Week 01', '# 인터페이스 이해', 'Selection tool+기본작업', '# 베지어 드로잉', '고급 Selection/점과 선',
+        '## Week 02', '# Pathfinder', 'Pen Tool/Transform',
+        '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
+        '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
+      ], images: [] },
+      { week: 'PhotoWorks', topic: '', items: [
+        '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
+        '## Week 02', '# Replace Color', 'Gradient Map',
+        '## Week 03', '# Displace', 'Brush/Mock up',
+        '## Week 04', '# Blend', 'Warp/Manipulation'
+      ], images: [] },
+      { week: '프리미어프로', topic: '', items: [
+        '## Week 01',
+        '# OT 인터페이스 이해', '시퀀스 설정/Layout Bar',
+        '# 카메라 활용', 'Editing Tool/Space 활용',
+        '## Week 02',
+        '# Multi Camera 편집', 'Multi Camera Source Sequence',
+        '# 색보정', '색상 보정 관련',
+        '## Week 03',
+        '# VHS Video 제작', 'Effects/전환 효과',
+        '# Transition Effect', 'Plug-in',
+        '## Week 04',
+        '# Audio 편집', 'Audio Transition/Audio Effect',
+        '# Text Motion', '그래픽 활용'
+      ], images: [] },
+      { week: 'After Effects', topic: '', items: [
+        '## Week 01',
+        '# AE 인터페이스 이해', 'Solid/Keyframe 설정',
+        '# Motion Blur', 'Transform/Mask/Motion blur',
+        '## Week 02',
+        '# Text Animate', 'Type Tool/Subtext/Frame',
+        '# Motion Disk', 'Text Animation',
+        '## Week 03',
+        '# Parents Links', 'Puppet/Trackmate',
+        '# Tracking (3D)', '3D Camera Walk',
+        '## Week 04',
+        '# 3D Layer', 'Camera Walk/Camera Motion',
+        '## Week 05',
+        '# Expression 기초 이론', 'Basic Motion/Shape Layer',
+        '# Text Effect', 'Label Drop-in',
+        '## Week 06',
+        '# Character Rig', 'Gus Angle/Hand Rig',
+        '# Flip Angle',
+        '## Week 07',
+        '# Custom Hand Rigging', 'Expression Phone/선 단위 편집',
+        '## Week 08',
+        '# Transition', 'Paper Fake 3D/Factor Noise',
+        '# Match Closer'
+      ], images: [] },
+      { week: 'MAYA', topic: '', items: [
+        '## Week 01', '# MAYA 오리엔테이션', '인터페이스 기초 세팅/기본 필수 명령어', '오브젝트 편집/Material Lambert/Phong',
+        '## Week 02', '# Surface Mesh', 'Curve Tool/Attach/Detach', 'NURBS/Surface Extrude/Topology',
+        '## Week 03', '# 모델링 조작', 'Sculpting Tool/Combine/Extract',
+        '## Week 04', '# NURBS 기초 필수 모델', 'Merge/Combine/Duplicate/Mirror',
+        '## Week 05', '# 세밀 모델링', 'Create Polygon/Edit Edge Flow/Multicut', 'Append to Polygon/Insert into Plane',
+        '## Week 06', '# 전문도 테크닉', 'Merge to Center/Combine/Extract',
+        '## Week 07', '# 외부마켓 모델 이해', 'Pro Tablet 사용/QMESH',
+        '## Week 08', '# 전문 편집', 'Quad Drive/Live Surface Mode',
+        '## Week 09', '# UV 개념잡기', 'UV Editor/Cut & Sew/Unfold', 'Planar Mapping/Normal Map',
+        '## Week 10', '# 유리재질 표현', 'Glass Material/Node/Blend Mtl', '# 사람 피부', 'Fast SSS2',
+        '## Week 11', '# Sun Set 만들기', 'Sky Sun Light/World Machine/IES Light',
+        '## Week 12', '# 나무 만들기', 'Speed Tree/Vray Proxy', '# X Gen 기초', 'Adobe Substance Painter',
+        '## Week 13', '# 리그 컨트롤러', 'X Gen Guide Tool/Groom', '# Eye Bone',
+        '## Week 14', '# Vray Bind MtL', 'ID Map/Normal/Nmap/Shuffle',
+        '## Week 15', '# 풀머티리얼 설정', 'Divide/Text/Crop/Transform',
+        '## Week 16', '# 나머지 모델 연결', 'Scene/Body Paint/Camera Tracker',
+        '## Week 17', '# Squash & Stretch', 'Action/Passive Rigid Body', '# Motion Path', 'Graph Editor/Expression',
+        '## Week 18', '# 리깅 이해하기', 'Create Joint/Local Rotate Axis', '# Walk Cycle', 'IK FK/Kinematics',
+        '## Week 19', '# 피부 가중치 이해', 'Set Driven Key',
+        '## Week 20', '# Paint Skin Weights', 'Walk Cycle/Flow & Shave',
+        '## Week 21', '# Unreal Engine UI', 'Control History/Apply Virtual Texture',
+        '## Week 22', '# Fab Asset 이해', 'Texture Control/Engine Lighting',
+        '## Week 23', '# 근린생활 시설', 'Land Scape/Mod Material/Water Plugin',
+        '## Week 24', '# 리깅/Live Surface', 'Joint/Rigging/Solver Ctrl'
+      ], images: [] },
+      { week: 'VFX', topic: '', items: [
+        '## Week 01', '# Z Brush 사용', 'Z Brush UI/Orb',
+        '## Week 02', '# Enact', 'Merge Down/Sculpting',
+        '## Week 03', '# 지지드로잉 이해', 'Remesher Guide Tool/Alpha Brush/Unwrap',
+        '## Week 04', '# UV 출력/렌더 이미지', 'Displacement Map/Adaptive Smooth',
+        '## Week 05', '# 파티클 실습', 'Bullet/Active/Passive Rigid',
+        '## Week 06', '# 운동 이해', 'Ocean/Motor Boat/Shader',
+        '## Week 07', '# 3D Scene', 'Project 3D',
+        '## Week 08', '# Advanced Compositing', 'Camera Tracker/Scanline Render'
+      ], images: [] },
+      { week: 'MAYA 포트폴리오', topic: '', items: [
+        '## Week 01', '# 레퍼런스 소개', 'Fanning & Bussing/VBC/Fluid',
+        '## Week 02', '# Detail Modeling', 'Substance Painter/LowCiso',
+        '## Week 03', '# 사이클 영상 제작', 'Cinematic/Rigging & Fx',
+        '## Week 04', '# 포렌식 영상 제작', 'Compositing/After Effect/Rendering'
+      ], images: [] },
+      { week: '블렌더', topic: '', items: [
+        '## Week 01', '# 오리엔테이션', 'Blender UI/3D Modeling',
+        '## Week 02', '# 로우폴리 모델링', 'Extrude/Bevel/Inset',
+        '## Week 03', '# 모델링 디테일', 'Mirror/UV Unwrap/Light',
+        '## Week 04', '# UV Unwrap', 'Normal/HDRI/UDIM/Merge',
+        '## Week 05', '# 비주얼 디자인', 'Substance Painter/Hardface',
+        '## Week 06', '# 히든 모델링', 'Fogger Normal/UV Seam',
+        '## Week 07', '# 텍스처/라이팅&렌더', 'Alpha/Depth of Field/Cycle Render',
+        '## Week 08', '# 룸 완성', 'Level Design/After Effect/Hue',
+        '## Week 09', '# 지브러쉬 기초', 'Z-Brush/Organic Modeling',
+        '## Week 10', '# 리토폴로지', 'Retopology/Multi UV/PBR Texturing',
+        '## Week 11', '# 의상 제작', 'UV Unwrap/Rendering/Light',
+        '## Week 12', '# 후편집', 'Unreal Engine/V-ray Render/After Effects',
+        '## Week 13', '# 키프레임 기초', 'Rigging/Skin Weight',
+        '## Week 14', '# K & FX', 'Rigid Body',
+        '## Week 15', '# 블렌더 리그', 'Key Frame/Dummy Rig/Walk Rig',
+        '## Week 16', '# AAA 애니메이션', 'Camera Move/Take Recorder'
+      ], images: [] },
+      { week: '블렌더 포트폴리오', topic: '', items: [
+        '## Week 01', '# 레퍼런스 소개', 'Fanning & Bussing/VBC/Fluid',
+        '## Week 02', '# Detail Modeling', 'Substance Painter/LowCiso',
+        '## Week 03', '# 사이클 영상 제작', 'Cinematic/Rigging & Fx',
+        '## Week 04', '# 포렌식 영상 제작', 'Compositing/After Effect/Rendering'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1133,15 +1450,107 @@ let COURSES = {
     colorKey: 'web', label: '모션그래픽학과', duration: '정규·단기·주말반',
     title: '모션그래픽학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: ['Week 01 · 타블렛 기초 설정, 드로잉 포인트', 'Week 02 · 캐릭터 기초 드로잉, 인체비례', 'Week 03 · 픽셀픽션, 동물드로잉', 'Week 04 · 배경, 일본풍 스타일', 'Week 05 · 두상/얼굴 각도, 표정만화', 'Week 06 · 옷 주름, 교복 묘사', 'Week 07 · 그림체, 팔동세 실력 향상', 'Week 08 · 두 명 구도, 백그라운드 캐릭터', 'Week 09 · 얼굴 정면/측면, 인체해부학', 'Week 10 · 다이나믹 포즈, 의상 표현, 채색', 'Week 11 · 등 시점, 팔/손, 다리 드로잉', 'Week 12 · 3D 방향, 단체일러스트', 'Week 13 · 전통의상 콘셉트', 'Week 14 · 루시퍼 콘셉트 이미지', 'Week 15 · 스케치, 채색, 배경 작업', 'Week 16 · 배경, 캐릭터 일러스트'], images: [] },
-      { week: 'Photoshop', topic: '', items: ['Week 01 · Selection Tool, 레이어 구성', 'Week 02 · 블렌딩모드, Color 보정', 'Week 03 · Pen Tool, Shape Layer', 'Week 04 · 그래픽 디자인 응용'], images: [] },
-      { week: 'Detail Illust', topic: '', items: ['Week 01 · Gradient Logo, Line Root Builder', 'Week 02 · Vintage Poster, Character Design', 'Week 03 · Nature Pattern, Stippling', 'Week 04 · Fashion Illust, Mesh Tool'], images: [] },
-      { week: 'PhotoWorks', topic: '', items: ['Week 01 · Select & Mask, Adjustment, Clipping Mode', 'Week 02 · Replace Color, Gradient Map', 'Week 03 · Displace, Brush, Mock up', 'Week 04 · Blend, Warp, Manipulation'], images: [] },
-      { week: '일러스트', topic: '', items: ['Week 01 · 인터페이스, Selection Tool, Color/Gradient', 'Week 02 · Pen Tool, Pathfinder, Transform', 'Week 03 · Blending Mode, Clipping Mask, Image Trace', 'Week 04 · Mesh Gradient, Blend Tool, 3D Effect'], images: [] },
-      { week: '프리미어프로', topic: '', items: ['Week 01 · OT/인터페이스, 카메라 활용, 시퀀스 설정', 'Week 02 · Multi Camera Source Sequence, 색상 보정', 'Week 03 · VHS 비디오, Effects, 전환 효과', 'Week 04 · Audio Transition, Audio Effect, Text Motion'], images: [] },
-      { week: 'After Effects', topic: '', items: ['Week 01 · 인터페이스, Solid, Motion Blur, Keyframe', 'Week 02 · Mask, Text Animate, Type Tool, Media Encoder', 'Week 03 · Puppet, Trackmate, Tracking, Real Object', 'Week 04 · 3D Layer, Camera Walk, Camera Motion', 'Week 05 · Expression, Basic Motion, Shape Layer, Export', 'Week 06 · Character Rig, Face Rig, Hand Rig', 'Week 07 · Custom Null Rigging, Expression Phone', 'Week 08 · Transition, Paper Fake 3D, Factor Noise, Match Closer'], images: [] },
-      { week: 'Cinema 4D', topic: '', items: ['Week 01 · OT/Interface, Nurbs 모델링 시작', 'Week 02 · Polygon 모델링', 'Week 03 · Low-poly Character Modeling', 'Week 04 · Character Modeling 심화', 'Week 05 · Octane 머티리얼, Octane Camera, 카메라 설정', 'Week 06 · Special Camera, Octane Light, Volume, Frame Setting', 'Week 07 · PBR Textures, Node Editor, Glow/Light', 'Week 08 · Character Displacement, Render Setting, Retopology', 'Week 09 · Character Rigging, Joint/Link, Weight Manager', 'Week 10 · UV Billboard, Simulation Bullet Tag', 'Week 11 · Mograph 1, 2, Simulation', 'Week 12 · Displacement/Motion, Fur, Silk Sheet'], images: [] },
-      { week: '모션그래픽 포트폴리오', topic: '', items: ['Week 01 · 스프레드시트 작성', 'Week 02 · 콘텐츠 기획, 타임라인', 'Week 03 · 시퀀스 Frame/Man Shot', 'Week 04 · 편집보정, 색보정', 'Week 05 · High-End 3D Intro, C4D/AE 조합', 'Week 06 · UV&Material 작업, Detail Rendering', 'Week 07 · Graph Editor, Wireframe Curve, Render Timing', 'Week 08 · 포트폴리오 제출 준비', 'Week 09 · VFX Effects, Depth, Fire Render, Particle', 'Week 10 · 다이나믹 텍스처 제작', 'Week 11 · 사이버 모션 3D 제작', 'Week 12 · 포트폴리오 완성'], images: [] }
+      { week: '드로잉Total', topic: '', items: [
+        '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
+        '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
+        '## Week 03', '# 픽셀픽션', '동물드로잉',
+        '## Week 04', '# 배경', '일본풍 스타일',
+        '## Week 05', '# 두상/얼굴 각도', '표정만화',
+        '## Week 06', '# 옷 주름', '교복 묘사',
+        '## Week 07', '# 그림체', '팔동세 실력 향상',
+        '## Week 08', '# 두 명 구도', '백그라운드 캐릭터',
+        '## Week 09', '# 얼굴 정면/측면', '인체해부학',
+        '## Week 10', '# 다이나믹 포즈', '의상 표현/채색',
+        '## Week 11', '# 등 시점', '팔/손/다리 드로잉',
+        '## Week 12', '# 3D 방향', '단체일러스트',
+        '## Week 13', '# 전통의상 콘셉트',
+        '## Week 14', '# 루시퍼 콘셉트 이미지',
+        '## Week 15', '# 스케치', '채색/배경 작업',
+        '## Week 16', '# 배경', '캐릭터 일러스트'
+      ], images: [] },
+      { week: 'Photoshop', topic: '', items: [
+        '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
+        '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
+        '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
+        '## Week 03', '# Pen Tool', '필터갤러리', '# 텍스트 툴', '셀렉트/마스크',
+        '## Week 04', '# 그래픽 디자인 응용', '포트폴리오 완성'
+      ], images: [] },
+      { week: 'Detail Illust', topic: '', items: [
+        '## Week 01', '# path finder', 'Compound path/Line Root Builder', '# Blend Element', 'Shape builder/scissors tool',
+        '## Week 02', '# Pattern Brush', 'Envelope distort', '# Drawing Fluid', 'Vintage Poster/Character Design',
+        '## Week 03', '# Nature Pattern', 'Stippling/Artboard', '# Macarons Design',
+        '## Week 04', '# Futuristic Design', 'Gradient Mesh/Fashion Illust'
+      ], images: [] },
+      { week: 'PhotoWorks', topic: '', items: [
+        '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
+        '## Week 02', '# Replace Color', 'Gradient Map',
+        '## Week 03', '# Displace', 'Brush/Mock up',
+        '## Week 04', '# Blend', 'Warp/Manipulation'
+      ], images: [] },
+      { week: '일러스트', topic: '', items: [
+        '## Week 01', '# 인터페이스 이해', 'Selection tool+기본작업', '# 베지어 드로잉', '고급 Selection/점과 선',
+        '## Week 02', '# Pathfinder', 'Pen Tool/Transform',
+        '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
+        '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
+      ], images: [] },
+      { week: '프리미어프로', topic: '', items: [
+        '## Week 01', '# OT 인터페이스 이해', '시퀀스 설정/Layout Bar', '# 카메라 활용', 'Editing Tool/Space 활용',
+        '## Week 02', '# Multi Camera 편집', 'Multi Camera Source Sequence', '# 색보정', '색상 보정 관련',
+        '## Week 03', '# VHS Video 제작', 'Effects/전환 효과', '# Transition Effect', 'Plug-in',
+        '## Week 04', '# Audio 편집', 'Audio Transition/Audio Effect', '# Text Motion', '그래픽 활용'
+      ], images: [] },
+      { week: 'After Effects', topic: '', items: [
+        '## Week 01', '# AE 인터페이스 이해', 'Solid/Keyframe 설정', '# Motion Blur', 'Transform/Mask/Motion blur',
+        '## Week 02', '# Text Animate', 'Type Tool/Subtext/Frame', '# Motion Disk', 'Text Animation',
+        '## Week 03', '# Parents Links', 'Puppet/Trackmate', '# Tracking (3D)', '3D Camera Walk',
+        '## Week 04', '# 3D Layer', 'Camera Walk/Camera Motion',
+        '## Week 05', '# Expression 기초 이론', 'Basic Motion/Shape Layer', '# Text Effect', 'Label Drop-in',
+        '## Week 06', '# Character Rig', 'Gus Angle/Hand Rig', '# Flip Angle',
+        '## Week 07', '# Custom Hand Rigging', 'Expression Phone/선 단위 편집',
+        '## Week 08', '# Transition', 'Paper Fake 3D/Factor Noise', '# Match Closer'
+      ], images: [] },
+      { week: 'Cinema 4D', topic: '', items: [
+        '## Week 01',
+        '# OT/인터페이스', 'Nurbs 모델링/Lathe',
+        '# 기초 모델링', 'View Port/Object Panel',
+        '## Week 02',
+        '# Polygon 모델링', 'Sweep/Edit Polygon/Selection Texture',
+        '## Week 03',
+        '# Low-poly Character 모델링', 'Polygon + Deformer/Volume Modeling',
+        '## Week 04',
+        '# Character Modeling 심화', 'Volume 모델링/기초 심화',
+        '## Week 05',
+        '# Octane Material & Texture', 'Octane Light & Material/Specular',
+        '## Week 06',
+        '# Special Camera', 'Octane Light/Volume Frame Setting', 'Bevel/Volume/Frame count',
+        '## Week 07',
+        '# PBR Textures', 'Node Editor/Glow Light',
+        '# Displacement', 'Blender/Nuke/Triangulate',
+        '## Week 08',
+        '# Character Modeling 심화', 'Volume 모델링/기초 설정',
+        '## Week 09',
+        '# Character Rigging', 'Resampler/Joint/Weight Manager',
+        '## Week 10',
+        '# UV Billboard', 'UV Mapping/Simulation Bullet Tag',
+        '## Week 11',
+        '# Mograph 1 & 2', 'Mograph Effects/Simulation',
+        '## Week 12',
+        '# Displacement/Motion', 'Fur/Silk Sheet'
+      ], images: [] },
+      { week: '모션그래픽 포트폴리오', topic: '', items: [
+        '## Week 01', '# 스프레드시트 작성', '콘텐츠 기획/타임라인 설계',
+        '## Week 02', '# 타임라인 구성',
+        '## Week 03', '# Main Short Frame/Match Shot Style', 'Look Dev/C4D+AE 조합',
+        '## Week 04', '# 편집보정/색보정',
+        '## Week 05', '# High-End 3D Intro', 'C4D 영상 제작',
+        '## Week 06', '# UV&Material 작업', 'Detail Rendering',
+        '## Week 07', '# Graph Editor', 'Wireframe Curve/Render Timing',
+        '## Week 08', '# 포트폴리오 제출 준비',
+        '## Week 09', '# VFX Effects', 'Depth/Fire Render/Particle',
+        '## Week 10', '# 다이나믹 텍스처 제작',
+        '## Week 11', '# 사이버 모션 3D 제작',
+        '## Week 12', '# 포트폴리오 완성'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1149,15 +1558,154 @@ let COURSES = {
     colorKey: 'uiux', label: '인테리어학과', duration: '정규·단기·주말반',
     title: '인테리어학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'AutoCAD', topic: '', items: ['Week 01 · OT/기본설정, 선/도형 그리기, Line/Rectang/Circle', 'Week 02 · 이동/복사/대칭/회전, Move/Copy/Mirror/Rotate', 'Week 03 · 자르기/연장/호/타원, Trim/Extend/Arc/Ellipse', 'Week 04 · 다각형, 배열, Polygon/Array/Stretch/Scale', 'Week 05 · 도면층, 스케일 조절, 치수, Layer/Dimension', 'Week 06 · 그룹, 블록화, 텍스트, 해치, Block/Hatch', 'Week 07 · 건축 평면도 도면 작성', 'Week 08 · 등각투상도, 평면/정면/우측면'], images: [] },
-      { week: 'SketchUp', topic: '', items: ['Week 01 · OT/기본설정, 기본 모델링 툴, Move/Push/Pull', 'Week 02 · 테이블 모델링, 와인잔 모델링, Component', 'Week 03 · 계단 모델링, 박 회전, Flip Along/Rotate', 'Week 04 · Glass 모델링, Tag/Hide, Scene/Animation', 'Week 05 · Style 설정, V-ray Materials, Exposure/Render', 'Week 06 · 거실 도면 활용, Two Point/HDR', 'Week 07 · Frond SketchUp Corner, Joint Push in Pull', 'Week 08 · Scene/White Plane, Dim Lights'], images: [] },
-      { week: '3DS Max', topic: '', items: ['Week 01 · OT/기본설정, 3ds Max 기초, Selection/Move/Rotate', 'Week 02 · 와인잔/테이블 모델링, Edit Poly/Attach/Lathe', 'Week 03 · 스탠드/쿠션 모델링, Edit Spline, Cloth/FFD/TurboSmooth', 'Week 04 · 샹들리에 모델링, Edit Poly/Sweep/Boolean', 'Week 05 · V-ray 설정, Image Sampler, Lighting', 'Week 06 · 인테리어 도면 활용, 가구 모델링', 'Week 07 · 욕실/소파, Edit Spline', 'Week 08 · 가구 마감, V-ray Render'], images: [] },
-      { week: '실내건축이론', topic: '', items: ['Week 01 · 건설 이론, 간략 역사, 인테리어 이론', 'Week 02 · 도면 이해, 인테리어 작도법', 'Week 03 · 설계 평면, 정면 및 소재 확인', 'Week 04 · 공간 개념'], images: [] },
-      { week: '실내건축자격증', topic: '', items: ['Week 01 · 기초이론 설명, 현장도면 작성 1', 'Week 02 · 현장도면 작성 2, 인허가 도면', 'Week 03 · SketchUp 활용, 루시도 기본작성', 'Week 04 · SketchUp 심화, 루시도 심화작성', 'Week 05 · CAD도면 기출문제 실기', 'Week 06 · CAD도면 + SketchUp 기출 실기', 'Week 07 · CAD도면 + SketchUp 기출 실기', 'Week 08 · CAD도면 + SketchUp 심화 실기', 'Week 09~12 · 기출문제 심화, 모의시험, 최종정리'], images: [] },
-      { week: 'Revit', topic: '', items: ['Week 01 · OT/기본설정, 기본조작', 'Week 02 · 기초 건물 모델', 'Week 03 · Vila Savoya 모델링', 'Week 04 · Vila Savoya 디테일', 'Week 05 · 기초 Mass 모델링', 'Week 06 · 근린생활 시설 1', 'Week 07 · 근린생활 시설 2', 'Week 08 · 근린생활 시설 3'], images: [] },
-      { week: '전산응용건축제도기능사', topic: '', items: ['Week 01 · OT/기본설정, 평면도 분석, 단면기호, 배제단면', 'Week 02 · 바닥/테두리/지붕구조, 문/창 단면, 목재/철물', 'Week 03 · 문자, 재료표현, FIGMA 인터페이스, 레이아웃', 'Week 04 · 지붕작성, 주변환경', 'Week 05 · 도면작성, 도면 실습 및 피드백'], images: [] },
-      { week: 'AI인테리어', topic: '', items: ['Week 01 · AI 인테리어 소개', 'Week 02 · 공간 보조도구, 스타일 적용', 'Week 03 · AI 디자인 생성', 'Week 04 · ChatGPT 활용, 인테리어 기획'], images: [] },
-      { week: '인테리어 포트폴리오', topic: '', items: ['Week 01 · 콘셉트 작성, 트렌드 조사, OT', 'Week 02 · Reference, Modeling, 기획화', 'Week 03 · Lighting, Rendering, PO Layout', 'Week 04 · 포트폴리오 완성, Final Rendering'], images: [] }
+      { week: 'AutoCAD', topic: '', items: [
+        '## Week 01',
+        '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting',
+        '# 선 도형 그리기', 'Line/Rectang/Circle',
+        '# 좌표', '정대좌표/상대좌표/상대극좌표',
+        '## Week 02',
+        '# 이동/복사/대칭/회전', 'Move/Copy/Mirror/Rotate',
+        '# 간격복사', 'Offset',
+        '# 합체/복사', 'Join/Explode',
+        '## Week 03',
+        '# 자르기/연장', 'Trim/Extend',
+        '# 호/타원', 'Arc/Ellipse',
+        '## Week 04',
+        '# 다각형/배열', 'Polygon/Array',
+        '# 늘리기/축척', 'Stretch/Scale',
+        '## Week 05',
+        '# 도면층', 'New Layer/Layer Color/Line Type',
+        '# 스케일 조절', 'Line Type Scale',
+        '# 치수', 'Dimension/Dimension Style',
+        '## Week 06',
+        '# 그룹/블록화', 'Group/Block',
+        '# 텍스트/해치', 'Dtext/Mtext/Hatch',
+        '## Week 07',
+        '# 건축 평면도 도면 작성', 'Dimension/Pty/Divide',
+        '## Week 08',
+        '# 등각투상도', '평면/정면/우측면'
+      ], images: [] },
+      { week: 'SketchUp', topic: '', items: [
+        '## Week 01',
+        '# OT 및 기본설정', 'SketchUp 기초 이해/Option',
+        '# 기본 모델링 툴', 'Line/Rectang/Circle',
+        '# 주사위 모델링', 'Move/Push/Pull',
+        '## Week 02',
+        '# 테이블 모델링', 'Component',
+        '# 와인잔 모델링', 'Follow me',
+        '## Week 03',
+        '# 계단 모델링', 'Flip Along/Rotate',
+        '# 키오드 모델링', 'Move Copy',
+        '## Week 04',
+        '# Class 모델링', 'Tag/Hide/Field of view', '# Scene/Animation',
+        '## Week 05',
+        '# Style 설정', 'V-ray Setting/Terminate/Exposure',
+        '## Week 06',
+        '# 거실 도면 활용', 'Two Way/Follow/V-Ray Mode',
+        '## Week 07',
+        '# 기술 설정', 'French Scale/Arckhouse Corner', 'Joint Push in Pull',
+        '## Week 08',
+        '# Cinematic', 'Section White Plane/Dim Lights'
+      ], images: [] },
+      { week: '3DS Max', topic: '', items: [
+        '## Week 01',
+        '# OT 및 기본설정', '3ds Max 기초 이해/Selection/Move/Rotate/Scale',
+        '# Plane/Object Properties',
+        '## Week 02',
+        '# 와인잔/테이블 모델링', 'Angle Snap/Clone Option', 'Edit Poly/Attach/Lathe',
+        '## Week 03',
+        '# 스탠드 조명 모델링', 'Edit Spline',
+        '# 쿠션/레트릭 모델링', 'Cloth/FFD(box)/TurboSmooth',
+        '## Week 04',
+        '# 샹들리에 모델링', 'Edit Spline',
+        '# 마카롱 타원 모델링', 'Edit Poly/Sweep/Boolean',
+        '## Week 05',
+        '# V-ray 설정/Lighting', 'Image Sampler/Pano Light/IES Light',
+        '## Week 06',
+        '# 인테리어 도면 활용', '가구 모델링/Field of view',
+        '## Week 07',
+        '# 욕실/소파', 'Edit Spline/Multiline Object',
+        '## Week 08',
+        '# 가구 마감', 'V-ray Render'
+      ], images: [] },
+      { week: '실내건축이론', topic: '', items: [
+        '## Week 01',
+        '# 인테리어 구분/드로잉 설정', '도면 이해',
+        '## Week 02',
+        '# 공간 기초', '도면 입체구조 이해/도구설명',
+        '## Week 03',
+        '# 공간 편집/설계 분석', '실재 그림 공간/공간 활용 분석',
+        '## Week 04',
+        '# 공간 설계', '인공 설계 사례'
+      ], images: [] },
+      { week: '실내건축자격증', topic: '', items: [
+        '## Week 01',
+        '# 기초이론/평면 도면 작성', '도면/레이아웃 설정/Print Setting', '백체 인식/도면표시',
+        '## Week 02',
+        '# 현장 도면 작성', '조명 기호/살바기호',
+        '# 입면/단면 도면표상', '공간 마감 표현/가구표현',
+        '## Week 03',
+        '# 스케치업 활용 1', '투시도 기본작성', 'Plan Import/백체 생성/기초모델링',
+        '## Week 04',
+        '# 스케치업 활용 2', '투시도 심화작성', '재료 부여/텍스처 설정',
+        '## Week 05', '# CAD 도면 기출 실기',
+        '## Week 06', '# CAD + SketchUp 기출 실기',
+        '## Week 07', '# CAD + SketchUp 기출 심화',
+        '## Week 08', '# CAD + SketchUp 심화 실기',
+        '## Week 09~12', '# 기출문제 심화/모의시험/최종정리'
+      ], images: [] },
+      { week: 'Revit', topic: '', items: [
+        '## Week 01',
+        '# OT 및 기본설정', '프로젝트 탐색기/특성',
+        '# 기본 조작', 'Copy/Array/SA',
+        '## Week 02',
+        '# 기초 건물 모델', '패밀리/그리드 작성/보 작성',
+        '## Week 03',
+        '# Vila Savoya', 'CAD 평면도 기초이기', '치수 작성/경사로/커튼월/계단',
+        '## Week 04',
+        '# Vila Savoya 디테일', '렌더링/시트작성',
+        '## Week 05',
+        '# 기초 Mass 모델링', '메스 배치/양식 작성',
+        '## Week 06',
+        '# 근린생활 시설 1', '메스 바닥/룸/핸디',
+        '## Week 07',
+        '# 근린생활 시설 2', 'E/V 설치/룸 알람표',
+        '## Week 08',
+        '# 근린생활 시설 마감', '조명 패밀리/렌더링/시트 작성'
+      ], images: [] },
+      { week: '전산응용건축제도기능사', topic: '', items: [
+        '## Week 01',
+        '# OT 및 기본설정', '평면도 분석/단면기호', '기초 기능 설치/백체/해치',
+        '## Week 02',
+        '# 바닥 작성', '난방바닥/행수바닥/테라스바닥',
+        '# 테두리보/지붕구조', '반지/지붕/기와/용마리기와',
+        '## Week 03',
+        '# 문자/재료표현', '글목 작성 방법',
+        '## Week 04',
+        '# 지붕 작성', '글목/지붕/수목/백재료',
+        '## Week 05',
+        '# 도면작성', '도면 실습 및 피드백'
+      ], images: [] },
+      { week: 'AI인테리어', topic: '', items: [
+        '## Week 01',
+        '# AI 인테리어 소개', 'AI/시스템 소개', '나만의 AI 사용법',
+        '## Week 02',
+        '# 공간 보조도구 사용', '인테리어 프로젝트/스타일 선택', '공간 레이아웃 설정',
+        '## Week 03',
+        '# AI 디자인 생성', '텍스트 설명 및 입력', '이미지 소갈화/AI 모델 사용법',
+        '## Week 04',
+        '# ChatGPT AI 인테리어', '디자인 선택 기준으로 AI 도구 확인'
+      ], images: [] },
+      { week: '인테리어 포트폴리오', topic: '', items: [
+        '## Week 01',
+        '# 콘셉트 작성', '트렌드 조사/OT',
+        '## Week 02',
+        '# Reference/Modeling', '기획화/Material',
+        '## Week 03',
+        '# Lighting/Rendering', 'PO Layout',
+        '## Week 04',
+        '# 포트폴리오 완성', 'Final Rendering/PO Upload'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1165,9 +1713,46 @@ let COURSES = {
     colorKey: 'ps', label: '기계·제품학과', duration: '정규·단기·주말반',
     title: '기계·제품학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'AutoCAD', topic: '', items: ['Week 01 · OT/기본설정, 선/도형 그리기, Line/Rectang/Circle', 'Week 02 · 이동/복사/대칭/회전, Move/Copy/Mirror/Rotate', 'Week 03 · 자르기/연장/호/타원, Trim/Extend/Arc/Ellipse', 'Week 04 · 다각형, 배열, Polygon/Array/Stretch/Scale', 'Week 05 · 도면층, 스케일 조절, 치수, Layer/Dimension', 'Week 06 · 그룹, 블록화, 텍스트, 해치, Block/Hatch', 'Week 07 · 건축 평면도 도면 작성', 'Week 08 · 등각투상도, 평면/정면/우측면'], images: [] },
-      { week: '인벤터', topic: '', items: ['Week 01 · 인터페이스, 소재치기, 기본모델링, Extrude/Revolve', 'Week 02 · 심화모델링, 파라메트릭, Loft/Sweep/Fillet', 'Week 03 · Assembly, 조립 구조 설계, Mate/Insert, Motion', 'Week 04 · 도면화, 치수공차, 출력설정, Drawing 변환'], images: [] },
-      { week: '전산응용기계제도기능사', topic: '', items: ['Week 01 · 시험이해, 도면규격, KS 규격, 기본 작도법', 'Week 02 · 투상도, 단면도, 치수기입, 공차기초', 'Week 03 · 기계요소, 도면해석, 조립이해', 'Week 04 · 기출문제, 실전도, 시간훈련, 도면완성', 'Week 05 · 모의시험, 개인별 피드백, 합격 기준 점검'], images: [] }
+      { week: 'AutoCAD', topic: '', items: [
+        '## Week 01', '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting', '# 선 도형 그리기', 'Line/Rectang/Circle', '# 좌표', '정대좌표/상대좌표/상대극좌표',
+        '## Week 02', '# 이동/복사/대칭/회전', 'Move/Copy/Mirror/Rotate', '# 간격복사', 'Offset', '# 합체/복사', 'Join/Explode',
+        '## Week 03', '# 자르기/연장', 'Trim/Extend', '# 호/타원', 'Arc/Ellipse',
+        '## Week 04', '# 다각형/배열', 'Polygon/Array', '# 늘리기/축척', 'Stretch/Scale',
+        '## Week 05', '# 도면층', 'New Layer/Layer Color/Line Type', '# 치수', 'Dimension/Dimension Style',
+        '## Week 06', '# 그룹/블록화', 'Group/Block', '# 텍스트/해치', 'Dtext/Mtext/Hatch',
+        '## Week 07', '# 건축 평면도 도면 작성', 'Dimension/Pty/Divide',
+        '## Week 08', '# 등각투상도', '평면/정면/우측면'
+      ], images: [] },
+      { week: '인벤터', topic: '', items: [
+        '## Week 01',
+        '# 인터페이스/기초모델링', '작업환경 및 설정/구속조건/치수', 'Extrude/Revolve',
+        '# 단순 파트 제작',
+        '## Week 02',
+        '# 심화모델링/파라메트릭', '변수 기반 설계/Loft/Sweep/Fillet',
+        '# 복잡 형상 설계', '심화형 부품 제작',
+        '## Week 03',
+        '# Assembly/구속조건', '조립 구조 설계/Mate/Insert',
+        '# Motion 구현', '간섭 및 구조 검토',
+        '## Week 04',
+        '# 도면화/치수공차', 'Drawing 변환/치수/공차 입력', '도면 출력 기준/결과물 제작'
+      ], images: [] },
+      { week: '전산응용기계제도기능사', topic: '', items: [
+        '## Week 01',
+        '# 시험이해/도면규격', '시험 유형 및 기준/KS 규격 이해',
+        '# 작도기초', '기본 작도 방법/기초 형상 연습',
+        '## Week 02',
+        '# 투상도/단면도', '정투상/등각투상', '단면 표현 방법/치수기입 기준',
+        '# 공차기초', '공차 개념 이해',
+        '## Week 03',
+        '# 기계요소', '기어/축/베어링',
+        '# 도면분석/조립이해', '도면 구조/조립 구조 이해',
+        '## Week 04',
+        '# 기출문제/실전도', '기출 유형 분석/실전 도면 작성',
+        '# 시간훈련', '시간 내 완성 훈련',
+        '## Week 05',
+        '# 모의시험/첨삭지도', '실전 모의 테스트/개인별 피드백',
+        '# 핵심보완', '도면 첨삭 지도/합격 기준 점검'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1175,14 +1760,93 @@ let COURSES = {
     colorKey: 'web', label: '웹디자인학과', duration: '정규·단기·주말반',
     title: '웹디자인학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: ['Week 01 · 타블렛 기초 설정, 드로잉 포인트', 'Week 02 · 캐릭터 기초 드로잉, 인체비례', 'Week 03 · 픽셀픽션, 동물드로잉', 'Week 04 · 배경, 일본풍 스타일', 'Week 05 · 두상/얼굴 각도, 표정만화', 'Week 06 · 옷 주름, 교복 묘사', 'Week 07 · 그림체, 팔동세 실력 향상', 'Week 08 · 두 명 구도, 백그라운드 캐릭터', 'Week 09 · 얼굴 정면/측면, 인체해부학', 'Week 10 · 다이나믹 포즈, 의상 표현, 채색', 'Week 11 · 등 시점, 팔/손, 다리 드로잉', 'Week 12 · 3D 방향, 단체일러스트', 'Week 13 · 전통의상 콘셉트', 'Week 14 · 루시퍼 콘셉트 이미지', 'Week 15 · 스케치, 채색, 배경 작업', 'Week 16 · 배경, 캐릭터 일러스트'], images: [] },
-      { week: 'Photoshop', topic: '', items: ['Week 01 · Selection Tool, 레이어 구성', 'Week 02 · 블렌딩모드, Color 보정', 'Week 03 · Pen Tool, Shape Layer', 'Week 04 · 그래픽 디자인 응용'], images: [] },
-      { week: '일러스트', topic: '', items: ['Week 01 · 인터페이스, Selection Tool, Color/Gradient', 'Week 02 · Pen Tool, Pathfinder, Transform', 'Week 03 · Blending Mode, Clipping Mask, Image Trace', 'Week 04 · Mesh Gradient, Blend Tool, 3D Effect'], images: [] },
-      { week: 'PhotoWorks', topic: '', items: ['Week 01 · Select & Mask, Adjustment, Clipping Mode', 'Week 02 · Replace Color, Gradient Map', 'Week 03 · Displace, Brush, Mock up', 'Week 04 · Blend, Warp, Manipulation'], images: [] },
-      { week: 'Detail Illust', topic: '', items: ['Week 01 · Gradient Logo, Line Root Builder', 'Week 02 · Vintage Poster, Character Design', 'Week 03 · Nature Pattern, Stippling', 'Week 04 · Fashion Illust, Mesh Tool'], images: [] },
-      { week: '웹', topic: '', items: ['Week 01 · HTML/CSS 기초, VS Code, 기본 문서 구조', 'Week 02 · Box Model, CSS 선택자', 'Week 03 · 레이아웃 기법', 'Week 04 · 실습 코딩', 'Week 05 · CSS 기본/고급 선택자', 'Week 06 · Text 스타일링, Box Model/Position, Background', 'Week 07 · CSS 애니메이션, Transition/Transform, Responsive', 'Week 08 · Flexbox, CSS Grid, Clone Coding', 'Week 09 · JavaScript 기초, jQuery 소개', 'Week 10 · jQuery Selector, Hide/Show, Method', 'Week 11 · jQuery 함수, slideDown/fadeIn', 'Week 12 · Navigation, Slide Gallery, Accordion'], images: [] },
-      { week: 'UI/UX', topic: '', items: ['Week 01 · UI/UX 기초개념, 방법론', 'Week 02 · UX 기초, 와이어프레임', 'Week 03 · Figma UI 설계, FlowChart', 'Week 04 · 프로토타입', 'Week 05 · Figma 인터페이스, 레이아웃', 'Week 06 · Component, Auto Layout, Variants', 'Week 07 · 앱 UI 디자인', 'Week 08 · 포트폴리오 완성, 프로토타입'], images: [] },
-      { week: '웹 포트폴리오', topic: '', items: ['Week 01 · UI/UX 기초 이해, 피그마 기초, 와이어프레임', 'Week 02 · HTML/CSS 6페이지 완성', 'Week 03 · 포트폴리오 편집 완성', 'Week 04 · 포트폴리오 최종 완성, JS 작업'], images: [] }
+      { week: '드로잉Total', topic: '', items: [
+        '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
+        '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
+        '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
+        '## Week 05', '# 두상/얼굴 각도', '표정만화', '## Week 06', '# 옷 주름', '교복 묘사',
+        '## Week 07', '# 그림체', '팔동세 실력 향상', '## Week 08', '# 두 명 구도', '백그라운드 캐릭터',
+        '## Week 09', '# 얼굴 정면/측면', '인체해부학', '## Week 10', '# 다이나믹 포즈', '의상 표현/채색',
+        '## Week 11', '# 등 시점', '팔/손/다리 드로잉', '## Week 12', '# 3D 방향', '단체일러스트',
+        '## Week 13', '# 전통의상 콘셉트', '## Week 14', '# 루시퍼 콘셉트 이미지',
+        '## Week 15', '# 스케치', '채색/배경 작업', '## Week 16', '# 배경', '캐릭터 일러스트'
+      ], images: [] },
+      { week: 'Photoshop', topic: '', items: [
+        '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
+        '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
+        '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
+        '## Week 03', '# Pen Tool', '필터갤러리', '# 텍스트 툴', '셀렉트/마스크',
+        '## Week 04', '# 그래픽 디자인 응용', '포트폴리오 완성'
+      ], images: [] },
+      { week: '일러스트', topic: '', items: [
+        '## Week 01', '# 인터페이스 이해', 'Selection tool+기본작업', '# 베지어 드로잉', '고급 Selection/점과 선',
+        '## Week 02', '# Pathfinder', 'Pen Tool/Transform',
+        '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
+        '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
+      ], images: [] },
+      { week: 'PhotoWorks', topic: '', items: [
+        '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
+        '## Week 02', '# Replace Color', 'Gradient Map',
+        '## Week 03', '# Displace', 'Brush/Mock up',
+        '## Week 04', '# Blend', 'Warp/Manipulation'
+      ], images: [] },
+      { week: 'Detail Illust', topic: '', items: [
+        '## Week 01', '# path finder', 'Compound path/Line Root Builder', '# Blend Element', 'Shape builder/scissors tool',
+        '## Week 02', '# Pattern Brush', 'Envelope distort', '# Drawing Fluid', 'Vintage Poster/Character Design',
+        '## Week 03', '# Nature Pattern', 'Stippling/Artboard', '# Macarons Design',
+        '## Week 04', '# Futuristic Design', 'Gradient Mesh/Fashion Illust'
+      ], images: [] },
+      { week: '웹', topic: '', items: [
+        '## Week 01',
+        '# 컴퓨터 기초 교육', '퍼블리셔/기어/실무 설명',
+        '# HTML/CSS 기초', 'HTML/CSS 개념/JS 기초/클론코딩',
+        '## Week 02',
+        '# 퍼블리셔 관련 툴 소개', 'JS 선택자/HTML 기초',
+        '## Week 03',
+        '# CSS 애니메이션', 'Transition/Transform/Keyframe',
+        '# 반응형 웹', 'Media Query',
+        '## Week 04',
+        '# CSS 레이아웃', 'Display Flex/Display Grid', '클론 코딩(Clone Coding)',
+        '## Week 05',
+        '# CSS 기본/고급 선택자', 'CSS Level 1,2,3 Selector',
+        '## Week 06',
+        '# CSS 텍스트 스타일링', 'Text 관련 스타일링',
+        '# Box Model/Position', 'Background Images/Color',
+        '## Week 07',
+        '# 전환과 반응', 'Transition/Transform',
+        '# CSS 애니메이션', 'Keyframe Animation/Responsive Web',
+        '## Week 08',
+        '# CSS 플렉서블/그리드 레이아웃', 'Display Flex/Display Grid/Clone Coding',
+        '## Week 09',
+        '# JavaScript 이해', 'jQuery/document.getElementById',
+        '## Week 10',
+        '# 문서 객체 모델', 'jQuery Selector/Method',
+        '## Week 11',
+        '# 슬라이드/모달리티', 'effect(show/fadeIn)/appendTo', 'addClass/clearInterval',
+        '## Week 12',
+        '# 플러그인 적용', 'Navigation/Slide Gallery/F-value'
+      ], images: [] },
+      { week: 'UI/UX', topic: '', items: [
+        '## Week 01', '# User Interface', 'User experience', '# 와이어프레임', 'UX 기초/베이직 설계',
+        '## Week 02', '# 사이트맵', '와이어프레임/프로토타입',
+        '## Week 03', '# Figma UI 설계', 'FlowChart',
+        '## Week 04', '# 프로토타입 완성',
+        '## Week 05', '# Figma 인터페이스', '레이아웃 설정/자동 사이즈', '보조 레이아웃',
+        '## Week 06', '# Component', 'Auto Layout/Variants',
+        '## Week 07', '# 앱 UI 디자인',
+        '## Week 08', '# 포트폴리오 완성', '프로토타입'
+      ], images: [] },
+      { week: '웹 포트폴리오', topic: '', items: [
+        '## Week 01',
+        '# UI/UX 기초 이해', 'Figma 와이어프레임',
+        '# 반응형 활용', 'HTML/CSS 기초 구조',
+        '## Week 02',
+        '# HTML/CSS 6페이지 완성', '포트폴리오/브랜드 뷰 활용',
+        '## Week 03',
+        '# 포트폴리오 편집 완성', 'Figma CSS 적용/자소서',
+        '## Week 04',
+        '# 포트폴리오 최종 완성', 'JS 작업/F-value'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1190,8 +1854,39 @@ let COURSES = {
     colorKey: 'video', label: '아트웍학과', duration: '정규·단기·주말반',
     title: '아트웍학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: ['Week 01 · 타블렛 기초 설정, 드로잉 포인트', 'Week 02 · 캐릭터 기초 드로잉, 인체비례', 'Week 03 · 픽셀픽션, 동물드로잉', 'Week 04 · 배경, 일본풍 스타일', 'Week 05 · 두상/얼굴 각도, 표정만화', 'Week 06 · 옷 주름, 교복 묘사', 'Week 07 · 그림체, 팔동세 실력 향상', 'Week 08 · 두 명 구도, 백그라운드 캐릭터', 'Week 09 · 얼굴 정면/측면, 인체해부학', 'Week 10 · 다이나믹 포즈, 의상 표현, 채색', 'Week 11 · 등 시점, 팔/손, 다리 드로잉', 'Week 12 · 3D 방향, 단체일러스트', 'Week 13 · 전통의상 콘셉트', 'Week 14 · 루시퍼 콘셉트 이미지', 'Week 15 · 스케치, 채색, 배경 작업', 'Week 16 · 배경, 캐릭터 일러스트'], images: [] },
-      { week: '심화드로잉', topic: '', items: ['Week 01 · 드로잉 기법, 연필 점묘화', 'Week 02 · 형태 기초, 기초 도형', 'Week 03 · 기초 도형 그리기', 'Week 04 · 형태 묘사, 사실 드로잉', 'Week 05 · 화이트 오브젝트, 클래스 드로잉', 'Week 06 · 형체 묘사, 재질 표현', 'Week 07 · 색연필/물감 활용', 'Week 08 · 인체 드로잉, 근육 묘사', 'Week 09 · 인체 표현, 박스 그리기', 'Week 10 · 자연물 드로잉 (나무/수목)', 'Week 11 · 현대인 컨셉, 배경 완성', 'Week 12 · 프리핸드, 캐릭터 표현', 'Week 13 · 캐릭터 배경, 장면 연출', 'Week 14 · 다양한 캐릭터 포즈, 실내 배경', 'Week 15 · 인물 드로잉, 수채화', 'Week 16 · 인물 드로잉, 포트폴리오', 'Week 17 · 단색 드로잉, 인체 작업', 'Week 18 · 공업/컨셉 오브젝트', 'Week 19 · 이미지 구성, 고급 이미지', 'Week 20 · 야외 표현, 배경 세계관'], images: [] }
+      { week: '드로잉Total', topic: '', items: [
+        '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
+        '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
+        '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
+        '## Week 05', '# 두상/얼굴 각도', '표정만화', '## Week 06', '# 옷 주름', '교복 묘사',
+        '## Week 07', '# 그림체', '팔동세 실력 향상', '## Week 08', '# 두 명 구도', '백그라운드 캐릭터',
+        '## Week 09', '# 얼굴 정면/측면', '인체해부학', '## Week 10', '# 다이나믹 포즈', '의상 표현/채색',
+        '## Week 11', '# 등 시점', '팔/손/다리 드로잉', '## Week 12', '# 3D 방향', '단체일러스트',
+        '## Week 13', '# 전통의상 콘셉트', '## Week 14', '# 루시퍼 콘셉트 이미지',
+        '## Week 15', '# 스케치', '채색/배경 작업', '## Week 16', '# 배경', '캐릭터 일러스트'
+      ], images: [] },
+      { week: '심화드로잉', topic: '', items: [
+        '## Week 01', '# 연필화 연구/전통', '연필화 기초 드로잉', '개인 목표 수립',
+        '## Week 02', '# 형태 기초/형태 소통', '형태의 구분/규칙에 따른 형태 비례 묘사',
+        '## Week 03', '# 입체 이미지', '기초 도형 입체감 표현',
+        '## Week 04', '# 형태 묘사/컬러 선택', '사실 드로잉/분야 전략',
+        '## Week 05', '# 화이트오브젝트 이해', '클래스 드로잉',
+        '## Week 06', '# 형체 묘사', '재질 표현/세기 설정',
+        '## Week 07', '# 색연필/물감 활용', '인체 드로잉 기초',
+        '## Week 08', '# 인체 드로잉', '수채화/근육 묘사',
+        '## Week 09', '# 인체 표현', '박스 그리기/자연물 드로잉',
+        '## Week 10', '# 자연물 드로잉', '나무/수목 표현',
+        '## Week 11', '# 현대인 컨셉', '배경 완성',
+        '## Week 12', '# 프리핸드', '캐릭터 표현',
+        '## Week 13', '# 캐릭터 배경', '장면 연출',
+        '## Week 14', '# 다양한 캐릭터 포즈', '실내 배경',
+        '## Week 15', '# 인물 드로잉', '수채화',
+        '## Week 16', '# 인물 드로잉/포트폴리오',
+        '## Week 17', '# 단색 드로잉', '인체 작업',
+        '## Week 18', '# 공업/컨셉 오브젝트',
+        '## Week 19', '# 이미지 구성', '고급 이미지',
+        '## Week 20', '# 야외 표현', '배경 세계관'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1199,10 +1894,90 @@ let COURSES = {
     colorKey: 'uiux', label: 'IT프로그래밍학과', duration: '정규·단기·주말반',
     title: 'IT프로그래밍학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'C 언어', topic: '', items: ['Week 01 · 프로그래밍 이해, Visual Studio 환경, 변수/자료형', 'Week 02 · 선택문/반복문, 조건문', 'Week 03 · 배열, 문자열', 'Week 04 · 포인터, 구조체', 'Week 05 · 함수 이해, 사용자 함수 정의', 'Week 06 · 함수 심화, Call-by-value/Reference, 재귀', 'Week 07 · 포인터 심화, 다중 포인터, 동적 메모리', 'Week 08 · 구조체 이해/응용'], images: [] },
-      { week: '자바', topic: '', items: ['Week 01 · 자바 기본, 변수와 자료형, 개발 환경', 'Week 02 · 연산자, 제어문, if/switch/while/for', 'Week 03 · 배열, 클래스, 객체지향/클래스 구성', 'Week 04 · 메서드, 생성자, 상속, 오버로딩/오버라이딩', 'Week 05 · 다형성, 타입변환, 추상클래스', 'Week 06 · 인터페이스, 내부 클래스, 예외 처리', 'Week 07 · 자바 API 클래스, 컬렉션 프레임워크', 'Week 08 · 람다식, 스레드, 파일 입출력'], images: [] },
-      { week: '파이썬', topic: '', items: ['Week 01 · 파이썬 기본, 변수/자료형, 입출력/연산자', 'Week 02 · 조건문, 반복문, if/for/while/Comprehension', 'Week 03 · 자료구조, list/tuple/set/dictionary', 'Week 04 · 함수, def/args/return/scope', 'Week 05 · 클래스, class/__init__, 상속/오버라이딩', 'Week 06 · 예외 처리, try-except/finally/raise', 'Week 07 · 모듈, import/from/표준모듈', 'Week 08 · 라이브러리 활용, GUI/DataBase/Crawling'], images: [] },
-      { week: '웹 프로젝트', topic: '', items: ['Week 01 · 웹 개발 이해, Spring/Spring Boot, SQL, RESTful API', 'Week 02 · User/Controller/Service/Repository, Entity/DTO, JPA', 'Week 03 · Post CRUD, Comment CRUD, Pagination', 'Week 04 · 검색 기능, 개인 프로젝트 설계'], images: [] }
+      { week: 'C 언어', topic: '', items: [
+        '## Week 01',
+        '# 프로그래밍 기초', 'Visual Studio 기본설정',
+        '# 변수/자료형/입출력', '자료형 소개/정변수',
+        '## Week 02',
+        '# 선택/반복/비교', '선택문/if/switch',
+        '# int/연산자', '비교 연산자',
+        '## Week 03',
+        '# 배열/연결', 'while/do while/for', '배열/문자열',
+        '## Week 04',
+        '# 함수/구조체', '포인터 이해/관련 심화',
+        '## Week 05',
+        '# 함수 이해', '함수의 정의와 선언/형태',
+        '# 사용자 함수 정의', 'local/global/static',
+        '## Week 06',
+        '# 함수 심화', 'Call-by-value/Call-by-reference',
+        '# 재귀 함수', '기저 조건/스택 구조',
+        '## Week 07',
+        '# 포인터 심화', '다중 포인터/함수 포인터',
+        '# 동적 메모리 할당', '힙 영역/동적 메모리 함수',
+        '## Week 08',
+        '# 구조체 이해/응용', '구조체/구조체 배열/typedef', '구조체와 포인터/중첩'
+      ], images: [] },
+      { week: '자바', topic: '', items: [
+        '## Week 01',
+        '# 자바 프로그래밍 기본', '자바 개발 환경 준비/주석/실행문',
+        '# 변수와 자료형', '변수/자료형/형변환/Scanner',
+        '## Week 02',
+        '# 연산자', '연산자 종류/우선순위',
+        '# 제어문', 'if/switch/while/for',
+        '## Week 03',
+        '# 배열', 'Arrays/다차원 배열/향상된 for',
+        '# 클래스', '객체지향/클래스 구성',
+        '## Week 04',
+        '# 메서드', '매개변수/return/오버로딩',
+        '# 생성자/상속', '오버라이딩/접근제한/n차 상속',
+        '## Week 05',
+        '# 다형성', 'Upcasting/Downcasting',
+        '# 추상클래스', 'abstract',
+        '## Week 06',
+        '# 인터페이스', '인터페이스 이해/구현',
+        '# 예외 처리', 'try-catch/throw/throws',
+        '## Week 07',
+        '# 자바 API 클래스', 'Object class/lang/util',
+        '# 컬렉션 프레임워크', 'List/Set/Map/Iterator',
+        '## Week 08',
+        '# 람다식', '함수형 인터페이스/람다식 작성',
+        '# 스레드/파일 입출력', '멀티스레드/동기화/스트림'
+      ], images: [] },
+      { week: '파이썬', topic: '', items: [
+        '## Week 01',
+        '# 파이썬 프로그래밍 기본', '파이썬 개발 환경 준비/주석',
+        '# 변수와 자료형', '변수/자료형/형변환/print/input',
+        '## Week 02',
+        '# 조건문', 'if/pass/match-case',
+        '# 반복문', 'for/while/break/continue/Comprehension',
+        '## Week 03',
+        '# 자료구조', 'list/tuple/set/dictionary', '자료구조 메서드/연산',
+        '## Week 04',
+        '# 함수', 'def/args/return/scope', 'local/global',
+        '## Week 05',
+        '# 클래스', 'class/__init__/__del__', 'self/cls/staticmethod', '상속/오버라이딩',
+        '## Week 06',
+        '# 예외 처리', 'try-except/else/finally', 'raise/Error Class',
+        '## Week 07',
+        '# 모듈', 'import/from/as', '표준 모듈/외부 모듈/모듈화',
+        '## Week 08',
+        '# 라이브러리 활용', 'GUI/DataBase', 'Crawling/데이터 시각화'
+      ], images: [] },
+      { week: '웹 프로젝트', topic: '', items: [
+        '## Week 01',
+        '# 웹 개발 이해', 'HTTP/RESTful API/SSR',
+        '# Spring/Spring Boot', 'JPA/Thymeleaf',
+        '# SQL', 'MySQL Workbench',
+        '## Week 02',
+        '# User/Controller', 'Entity/DTO 설계',
+        '# Service/Repository', 'Controller 매핑/비즈니스 로직/JPA 메서드',
+        '## Week 03',
+        '# Post CRUD', '게시글 작성/확인/수정/삭제',
+        '# Comment CRUD/Pagination', '댓글/페이징',
+        '## Week 04',
+        '# 검색 기능', '검색 데이터 조회 메서드',
+        '# 개인 프로젝트', '프로젝트 설계'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1210,13 +1985,78 @@ let COURSES = {
     colorKey: 'ps', label: '자격증OA학과', duration: '정규·단기·주말반',
     title: '자격증OA학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'ITQ', topic: '', items: ['Week 01 · OT, PowerPoint 기초', 'Week 02 · Word', 'Week 03 · Excel 기초', 'Week 04 · Excel 심화'], images: [] },
-      { week: 'MOS', topic: '', items: ['Week 01 · OT, MOS 365 PowerPoint', 'Week 02 · MOS 365 Word', 'Week 03 · MOS 365 Excel', 'Week 04 · MOS 365 Excel 심화'], images: [] },
-      { week: '엑셀실무', topic: '', items: ['Week 01 · OA 공공기관 관련, 서식/기초/간소화', 'Week 02 · 업무 스프레드시트, 데이터 통합', 'Week 03 · 데이터 통합, 피벗 관리', 'Week 04 · 자동화, 엑셀 활용'], images: [] },
-      { week: '컴활1급 실기', topic: '', items: ['Week 01 · 기초 실무, 고급 실기, 데이터 배치', 'Week 02 · 배경 데이터 모양, 고속 데이터 통합', 'Week 03 · 백복 방법 고급, 기능 관련', 'Week 04 · 고급 데이터 통합, 고급 실기 완성'], images: [] },
-      { week: '전산회계1급', topic: '', items: ['Week 01 · 회계원리, 회계기초, KcLep 프로그램', 'Week 02 · 기업자금 관리, 회사결산, 분개 장부', 'Week 03 · 회사원장조직, 실무 매출', 'Week 04 · 재공 회계 통계, 결합', 'Week 05~08 · 기출문제 풀이, 최종 실기'], images: [] },
-      { week: '전산세무2급', topic: '', items: ['Week 01 · 회계원리, 세금계산서, 장부 설정', 'Week 02 · 부가세 신고서 작성, 직접비, 신고서 처리', 'Week 03 · 법인세/소득세, 수익사업 납부', 'Week 04 · 결산, 상속세 신고', 'Week 05~08 · 기출문제 풀이, 최종 실기'], images: [] },
-      { week: '컴퓨터기초', topic: '', items: ['Week 01 · 컴퓨터 기본 구성 이해, 운영체제, 기본 사용법', 'Week 02 · 웹 브라우저, 문서작업 기초, PowerPoint 기초', 'Week 03 · PowerPoint 슬라이드/동영상/차트/도형, 엑셀 기초함수', 'Week 04 · 프리미어 기초, AI 기초'], images: [] }
+      { week: 'ITQ', topic: '', items: [
+        '## Week 01',
+        '# OT/PowerPoint', '프레젠테이션 기획 및 설계', '표와 기본적인 편집 기능',
+        '## Week 02', '# Word',
+        '## Week 03', '# Excel 기초 함수',
+        '## Week 04', '# Excel 심화'
+      ], images: [] },
+      { week: 'MOS', topic: '', items: [
+        '## Week 01',
+        '# OT/MOS 365 PowerPoint', '프레젠테이션 기획 및 설계', '슬라이드/도형/이미지/표 서식', '기출문제 풀이',
+        '## Week 02', '# MOS 365 Word',
+        '## Week 03', '# MOS 365 Excel',
+        '## Week 04', '# MOS 365 Excel 심화'
+      ], images: [] },
+      { week: '엑셀실무', topic: '', items: [
+        '## Week 01',
+        '# OA 공공기관 관련', '서식/기초 보기',
+        '# 기업 요금 처리',
+        '## Week 02',
+        '# 업무 스프레드시트', '데이터 통합',
+        '## Week 03',
+        '# 날짜 통합/통계별 통합보기',
+        '## Week 04',
+        '# 자동화', '빠른 자동화 작업 실습'
+      ], images: [] },
+      { week: '컴활1급 실기', topic: '', items: [
+        '## Week 01',
+        '# 고급 실무/데이터 배치', '고급 설명/전체 아이콘', '시험 제목/IFERROR/PMT/CHOOSE',
+        '## Week 02',
+        '# 배경 데이터 모양', '고속 데이터 통합(SubFold)',
+        '## Week 03',
+        '# 백복 방법 고급', '기능 관련/좋은 결과/중급 기능',
+        '## Week 04',
+        '# 고급 데이터 통합', '고급 실기 완성'
+      ], images: [] },
+      { week: '전산회계1급', topic: '', items: [
+        '## Week 01',
+        '# 회계원리 이해/회계기초', 'KcLep 프로그램 기초 설정', '회계 수작업 장부 설정',
+        '## Week 02',
+        '# 기업자금 관리', '회사 거래 결산/분개 장부',
+        '## Week 03',
+        '# 회사원장 기록', '실무 매출/회계문서작성',
+        '## Week 04',
+        '# 재공 회계 통계', '결합/정리',
+        '## Week 05~08',
+        '# 기출문제 풀이', '최종 실기'
+      ], images: [] },
+      { week: '전산세무2급', topic: '', items: [
+        '## Week 01',
+        '# 회계원리/세금계산서', '부가세 관련 의무/부가세 관련 회계 처리',
+        '## Week 02',
+        '# 부가세 신고서 작성', '직접비/신고서 처리', '공급세율/상습',
+        '## Week 03',
+        '# 법인세/소득세', '수익사업 납부',
+        '## Week 04',
+        '# 결산/상속세 신고',
+        '## Week 05~08',
+        '# 기출문제 풀이', '최종 실기'
+      ], images: [] },
+      { week: '컴퓨터기초', topic: '', items: [
+        '## Week 01',
+        '# How to use computer?', '컴퓨터 기본 구성 이해', '운영체제의 이해',
+        '## Week 02',
+        '# 웹 브라우저 및 보안', '웹 브라우저 사용방법/컴퓨터 보안 상식',
+        '# 문서작업 기초', '파워포인트 기초/슬라이드/목차/차트/도형',
+        '## Week 03',
+        '# 파워포인트 기초', '슬라이드/동영상/차트/도형',
+        '# 엑셀 기초', '기초함수/표/행/열',
+        '## Week 04',
+        '# 프리미어 기초', '프로젝트/시퀀스/클립자르기/자막',
+        '# AI 기초', '프롬프트 작성방법/움직이는 AI 영상 만들기'
+      ], images: [] }
     ],
     checklist: []
   },
@@ -1224,11 +2064,74 @@ let COURSES = {
     colorKey: 'web', label: '유튜브학과', duration: '정규·단기·주말반',
     title: '유튜브학과\n과정 안내', desc: '', tags: [], roadmap: [], images: [],
     curriculum: [
-      { week: 'Photoshop', topic: '', items: ['Week 01 · Selection Tool, 레이어 구성', 'Week 02 · 블렌딩모드, Color 보정', 'Week 03 · Pen Tool, Shape Layer', 'Week 04 · 그래픽 디자인 응용'], images: [] },
-      { week: '일러스트', topic: '', items: ['Week 01 · 인터페이스, Selection Tool, Color/Gradient', 'Week 02 · Pen Tool, Pathfinder, Transform', 'Week 03 · Blending Mode, Clipping Mask, Image Trace', 'Week 04 · Mesh Gradient, Blend Tool, 3D Effect'], images: [] },
-      { week: 'AI 프롬프트', topic: '', items: ['Week 01 · OT/AI 개념, ChatGPT 환경설정', 'Week 02 · LLM 관련, 프롬프트 구성/이론', 'Week 03 · 고급 프롬프트 전략, 이미지 생성', 'Week 04 · 뤼튼 AI, 다양한 AI 체험', 'Week 05 · 비디오 생성, MidJourney 기초', 'Week 06 · AI 이미지 도구, 이미지 기법 활용', 'Week 07 · 비디오 생성 도구, MidJourney Parameter', 'Week 08 · AI 이미지 실습, 프롬프트 수정'], images: [] },
-      { week: '1인크리에이터', topic: '', items: ['Week 01 · 채널 개설, 컨셉 기획', 'Week 02 · 썸네일 기초, 영상 컨셉', 'Week 03 · 편집 방법, 콘텐츠 기획', 'Week 04 · 영상 퀄리티 향상', 'Week 05 · 채널 세팅, 콘텐츠 전략, 아이디어 기획', 'Week 06 · 고급 영상 기법, 썸네일 전략', 'Week 07 · 브이로그, 숏폼 콘텐츠 기획', 'Week 08 · 고급 편집, 수익화 전략'], images: [] },
-      { week: 'AI유튜브', topic: '', items: ['Week 01 · 채널 전략 설정, 트렌드 분석', 'Week 02 · Midjourney, AI 이미지', 'Week 03 · Vrew 영상편집', 'Week 04 · CapCut 동영상'], images: [] }
+      { week: 'Photoshop', topic: '', items: [
+        '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
+        '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
+        '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
+        '## Week 03', '# Pen Tool', '필터갤러리', '# 텍스트 툴', '셀렉트/마스크',
+        '## Week 04', '# 그래픽 디자인 응용', '포트폴리오 완성'
+      ], images: [] },
+      { week: '일러스트', topic: '', items: [
+        '## Week 01', '# 인터페이스 이해', 'Selection tool+기본작업', '# 베지어 드로잉', '고급 Selection/점과 선',
+        '## Week 02', '# Pathfinder', 'Pen Tool/Transform',
+        '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
+        '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
+      ], images: [] },
+      { week: 'AI 프롬프트', topic: '', items: [
+        '## Week 01',
+        '# OT 및 AI 개념', 'ChatGPT 환경 설정', '생성형 AI의 개념 및 역사',
+        '# 프롬프트 유형', 'Hallucination 대응 전략', '제로샷/원샷/퓨샷',
+        '## Week 02',
+        '# LLM 관련', 'LLM 동작 구조/알고리즘 이해',
+        '# 프롬프트 구성/이론', '프롬프트 구조화/튜닝 기법/마크다운',
+        '## Week 03',
+        '# 고급 프롬프트 전략', 'CoT/ToT/Prompt Chaining',
+        '# 이미지 생성 프롬프트', '이미지 프롬프트 전략/작성',
+        '# 창의적 프롬프트 실습', '콘텐츠 소스/목업',
+        '## Week 04',
+        '# 뤼튼 AI 자격증', '자격증-생성AI활용능력',
+        '# 다양한 AI 체험', 'wrtn/DeepL/Gamma',
+        '## Week 05',
+        '# 비디오 생성 AI', 'Midjourney 기초 사용',
+        '## Week 06',
+        '# 고급 이미지 생성기', 'Midjourney 고급/이미지 도구 활용', '비디오 도구 확인',
+        '## Week 07',
+        '# 비디오 최적화', 'Sora/Kling/Runway',
+        '# Midjourney Parameter', 'AI 기본 제품 추천',
+        '## Week 08',
+        '# AI 이미지/비디오 실습', '프롬프트 수정/업로드'
+      ], images: [] },
+      { week: '1인크리에이터', topic: '', items: [
+        '## Week 01',
+        '# 1인미디어 이해하기', '채널개설/컨셉 기획',
+        '# 영상 제작', '스토리보드 제작',
+        '## Week 02',
+        '# 썸네일 기초', '영상 컨셉/콘텐츠 기획', '채널 기획/아이디어',
+        '## Week 03',
+        '# 플랫폼 이해', '유튜브 활용/콘텐츠 업로드',
+        '## Week 04',
+        '# 영상 퀄리티 향상', '프리미어 기초', '고급 편집/수익화 전략',
+        '## Week 05',
+        '# 채널 세팅', '콘텐츠 전략/아이디어 기획',
+        '## Week 06',
+        '# 고급 영상 기법', '썸네일 전략',
+        '## Week 07',
+        '# 브이로그', '숏폼 콘텐츠 기획',
+        '## Week 08',
+        '# 고급 편집', '수익화 전략'
+      ], images: [] },
+      { week: 'AI유튜브', topic: '', items: [
+        '## Week 01',
+        '# 유튜브 채널 관리', '트렌드 분석',
+        '# 채널 전략 설정', 'Midjourney 기초/유튜브 전략 계획',
+        '## Week 02',
+        '# Midjourney 기초', '이미지 도구 활용',
+        '# AI 비디오', 'Veo Video/비디오 도구 확인',
+        '## Week 03',
+        '# Vrew 영상편집', '기본이용방법/AI 영상편집',
+        '## Week 04',
+        '# CapCut 동영상', '이미지/영상 편집', '사용 방법/실제 발표 업로드 적용'
+      ], images: [] }
     ],
     checklist: []
   }
@@ -1829,15 +2732,22 @@ function renderCurriculumView(id) {
   }
 
   const weeks = c.curriculum.map((item, wi) => {
-    // #4 Bold/Light: split at ' · '
+    // #4 Bold/Light: split at ' · ' + 계층형 마커 지원 (## Week, # Topic)
     const items = item.items.map((it, ii) => {
+      if (!em && it.startsWith('## ')) {
+        return `<li class="curr-week-hd">${it.slice(3)}</li>`;
+      }
+      if (!em && it.startsWith('# ')) {
+        return `<li class="curr-topic-hd">▸ ${it.slice(2)}</li>`;
+      }
       const sepIdx = it.indexOf(' · ');
       const label  = sepIdx >= 0 ? it.slice(0, sepIdx) : it;
       const detail = sepIdx >= 0 ? it.slice(sepIdx) : '';
       const textHtml = em
         ? `<span class="admin-inline-row">${E('courses.'+id+'.curriculum.'+wi+'.items.'+ii, it)}<button class="admin-del-btn" onclick="deleteCurrItem('${id}',${wi},${ii})">✕</button></span>`
         : `<strong>${linkify(label)}</strong>${detail ? `<span class="item-detail">${linkify(detail)}</span>` : ''}`;
-      return `<li>${textHtml}</li>`;
+      const cls = (!em && item.items.some(x => x.startsWith('## ') || x.startsWith('# '))) ? ' class="curr-sub-item"' : '';
+      return `<li${cls}>${textHtml}</li>`;
     }).join('');
 
     // #3 Difficulty stars
@@ -1910,13 +2820,46 @@ function renderCurriculumView(id) {
       </div>`;
   }).join('');
 
+  // 재렌더 전에 활성 탭 기억
+  const pfWasActive = document.getElementById('ct-pf-'+id)?.classList.contains('is-hidden') === false;
+
+  if (!c.portfolio) c.portfolio = [];
+  const portfolioItems = c.portfolio.map((entry, idx) => {
+    const ytId = typeof entry === 'string' && entry.startsWith('youtube:') ? entry.slice(8) : null;
+    if (ytId) {
+      const embedSrc = `https://www.youtube.com/embed/${ytId}?loop=1&playlist=${ytId}&rel=0&modestbranding=1`;
+      return `<div class="portfolio-item portfolio-item--video">
+        <iframe src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        ${em ? `<button class="portfolio-del-btn" onclick="event.stopPropagation();deletePortfolioImage('${id}',${idx})">✕</button>` : ''}
+      </div>`;
+    }
+    const url = typeof entry === 'string' ? entry : entry.url;
+    return `<div class="portfolio-item" onclick="openLightbox('${url}')">
+      <img src="${url}" loading="lazy">
+      ${em ? `<button class="portfolio-del-btn" onclick="event.stopPropagation();deletePortfolioImage('${id}',${idx})">✕</button>` : ''}
+    </div>`;
+  }).join('');
+
   el.innerHTML = `
     <div class="curr-header">
       <h2 class="curr-header__title">${c.label}</h2>
       <div class="curr-header__meta">${c.duration}</div>
     </div>
-    ${weeks}
-    ${em ? `<button class="admin-add-block" onclick="addCurrWeek('${id}')">+ 주차 추가</button>` : ''}`;
+    <div class="curr-view-tabs">
+      <button class="curr-tab-btn${pfWasActive ? '' : ' is-active'}" onclick="switchCurrTab('${id}','curriculum')">커리큘럼</button>
+      <button class="curr-tab-btn${pfWasActive ? ' is-active' : ''}" onclick="switchCurrTab('${id}','portfolio')">포트폴리오</button>
+    </div>
+    <div class="curr-tab-panel${pfWasActive ? ' is-hidden' : ''}" id="ct-curr-${id}">
+      ${weeks}
+      ${em ? `<button class="admin-add-block" onclick="addCurrWeek('${id}')">+ 주차 추가</button>` : ''}
+    </div>
+    <div class="curr-tab-panel${pfWasActive ? '' : ' is-hidden'}" id="ct-pf-${id}">
+      <div class="portfolio-grid">${portfolioItems || '<p class="portfolio-empty">포트폴리오 이미지가 없습니다</p>'}</div>
+      ${em ? `<div style="display:flex;gap:8px;margin:4px 16px 16px">
+        <button class="portfolio-add-btn" style="margin:0;flex:1" onclick="uploadPortfolioImage('${id}')">+ 이미지 추가</button>
+        <button class="portfolio-add-btn" style="margin:0;flex:1" onclick="addPortfolioVideo('${id}')">▶ 유튜브 추가</button>
+      </div>` : ''}
+    </div>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -2336,6 +3279,62 @@ function removePrereq(id, wi, pi) {
   COURSES[id].curriculum[wi].prereqs.splice(pi, 1);
   renderCurriculumView(id);
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   포트폴리오 탭
+══════════════════════════════════════════════════ */
+function switchCurrTab(id, tab) {
+  const currPanel = document.getElementById('ct-curr-'+id);
+  const pfPanel   = document.getElementById('ct-pf-'+id);
+  const btns = document.querySelectorAll('#cr-'+id+' .curr-tab-btn');
+  if (!currPanel || !pfPanel) return;
+  const isCurr = tab === 'curriculum';
+  currPanel.classList.toggle('is-hidden', !isCurr);
+  pfPanel.classList.toggle('is-hidden', isCurr);
+  btns.forEach((b, i) => b.classList.toggle('is-active', isCurr ? i === 0 : i === 1));
+}
+function uploadPortfolioImage(id) {
+  if (!storage) { loadStorageSDK(); showToast('Storage 로드 중, 잠시 후 다시 시도해주세요', 'error'); return; }
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
+  input.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    showToast(`${files.length}개 업로드 중...`);
+    if (!COURSES[id].portfolio) COURSES[id].portfolio = [];
+    for (const file of files) {
+      try {
+        const ref = storage.ref(`portfolio/${id}/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+        COURSES[id].portfolio.push(url);
+      } catch(err) { showToast('업로드 실패: ' + err.message, 'error'); return; }
+    }
+    renderCurriculumView(id);
+    switchCurrTab(id, 'portfolio');
+    if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+    showToast('업로드 완료 ✓');
+  };
+  input.click();
+}
+function deletePortfolioImage(id, idx) {
+  COURSES[id].portfolio.splice(idx, 1);
+  renderCurriculumView(id);
+  switchCurrTab(id, 'portfolio');
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function addPortfolioVideo(id) {
+  const input = prompt('YouTube URL을 입력하세요:\n(예: https://youtu.be/abc123 또는 https://www.youtube.com/watch?v=abc123)');
+  if (!input?.trim()) return;
+  const match = input.match(/(?:youtu\.be\/|watch\?v=|embed\/)([A-Za-z0-9_-]{11})/);
+  if (!match) { showToast('유효한 YouTube URL이 아닙니다', 'error'); return; }
+  if (!COURSES[id].portfolio) COURSES[id].portfolio = [];
+  COURSES[id].portfolio.push('youtube:' + match[1]);
+  renderCurriculumView(id);
+  switchCurrTab(id, 'portfolio');
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+  showToast('유튜브 영상 추가 완료 ✓');
 }
 
 /* ══════════════════════════════════════════════════
