@@ -631,8 +631,9 @@
   ══════════════════════════════════════ */
   .instructor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 24px; }
   .instructor-card { background: var(--c-bg-2); border-radius: 16px; padding: 26px 22px; display: flex; gap: 18px; align-items: flex-start; }
-  .instructor-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--c-black); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; overflow: hidden; }
-  .instructor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .instructor-avatar { position: relative; width: 60px; height: 60px; border-radius: 50%; background: var(--c-black); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; overflow: visible; }
+  .instructor-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; overflow: hidden; }
+  .inst-photo-btn { position: absolute; bottom: -2px; right: -2px; width: 22px; height: 22px; border-radius: 50%; background: #3B82F6; color: #fff; border: 2px solid #fff; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; z-index: 1; }
   .instructor-name { font-size: var(--t-lg); font-weight: 700; margin-bottom: 3px; }
   .instructor-specialty { font-size: var(--t-sm); color: var(--c-text-2); font-weight: 600; margin-bottom: 10px; background: var(--c-bg); display: inline-block; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--c-border); }
   .instructor-career { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.7; white-space: pre-line; }
@@ -640,18 +641,11 @@
   /* ══════════════════════════════════════
      16. REVIEWS v2
   ══════════════════════════════════════ */
-  .review-summary {
-    display: flex; align-items: center; gap: 24px;
-    padding: 20px 28px; background: var(--c-bg-2);
-    border-radius: 16px; margin-bottom: 20px; flex-wrap: wrap;
-  }
-  .review-summary__big { display: flex; align-items: baseline; gap: 8px; }
-  .review-summary__big-num { font-size: 2.4rem; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
-  .review-summary__big-stars { color: #FBBF24; font-size: .95rem; letter-spacing: 2px; }
-  .review-summary__sep { width: 1px; height: 36px; background: var(--c-border); flex-shrink: 0; }
-  .review-summary__stat { text-align: center; }
-  .review-summary__stat b { display: block; font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; }
-  .review-summary__stat span { font-size: var(--t-xs); color: var(--c-text-2); }
+  .review-banner { margin-bottom: 20px; }
+  .review-banner__headline { font-size: var(--t-xl); font-weight: 800; letter-spacing: -.03em; line-height: 1.35; margin-bottom: 6px; }
+  .review-banner__sub { font-size: var(--t-sm); color: var(--c-text-2); margin-bottom: 14px; }
+  .review-banner__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .review-banner__chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 100px; background: var(--c-bg-2); border: 1px solid var(--c-border); font-size: var(--t-sm); font-weight: 600; color: var(--c-text); }
 
   .review-grid-v2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .review-card-v2 {
@@ -1172,7 +1166,14 @@ let REVIEWS_DATA = [
   { name: '이주호', course: '전산응용 기계·건축제도', text: '단기간(3개월)에 두 가지 자격증을 동시에 준비하는 것이 쉽지 않았지만 강사님의 세세한 지도 덕분에 동시 합격이라는 결과를 얻을 수 있었습니다. 자격증이 필요한 분들에게 강력 추천드립니다!', star: 5, date: '25.12.24', badge: '2종 동시합격' },
   { name: '김태우', course: '전산응용기계제도기능사', text: '2D·3D 캐드 기초부터 심화까지 완벽히 익히고 자격증도 취득했습니다. 질문이 많았음에도 하나하나 꼼꼼히 알려주셨고 시험 전에도 자신감을 붙여주셨습니다. 연습만 잘하면 누구나 자격증 딸 수 있습니다!', star: 5, date: '25.12.24', badge: '합격' },
   { name: '이윤찬', course: '전산응용기계제도기능사', text: '강사님이 정말 친절하시고 질문 하나하나 놓치지 않고 모두 알려주십니다. 시설과 장비도 정말 깨끗하고 깔끔했습니다. 좋은 환경과 좋은 강사님 덕분에 자격증을 취득할 수 있었습니다. 진심으로 감사드립니다.', star: 5, date: '25.12.24', badge: '합격' },
-  { name: '양예린', course: '실내건축 자격증', text: '매 수업마다 새로운 예제문제를 만들어주셔서 시험 대비에 많은 도움이 됐습니다. 프로그램 사용 기술부터 시험 관련 정보도 상세하게 알려주셔서 개편 이후 첫 시험인데도 좋은 컨디션으로 시험을 볼 수 있었어요.', star: 5, date: '25.05.02', badge: '합격' }
+  { name: '양예린', course: '실내건축 자격증', text: '매 수업마다 새로운 예제문제를 만들어주셔서 시험 대비에 많은 도움이 됐습니다. 프로그램 사용 기술부터 시험 관련 정보도 상세하게 알려주셔서 개편 이후 첫 시험인데도 좋은 컨디션으로 시험을 볼 수 있었어요.', star: 5, date: '25.05.02', badge: '합격' },
+  { name: '윤혜민', course: '브랜딩디자인', text: '한분 한분 피드백 해주시고 더 좋은 결과물이 나올 수 있도록 도와주셔서 감사했습니다! 이론적으로도 많이 알아갈 수 있는 시간이었습니다.', star: 5, date: '25.10.02', badge: '' },
+  { name: '이민주', course: '컴활1급', text: '어렵지만 재미있었습니다.', star: 5, date: '25.10.01', badge: '' },
+  { name: '박종일', course: '인벤터', text: '주말반이고 일하느라 공부에 많은 시간을 투자하지 못했는데 강사님의 핵심강의 정리해놓은거 보면서 복습했더니 어찌 잘 됐네요. 훌륭한 강의 감사했습니다.', star: 5, date: '25.09.30', badge: '합격' },
+  { name: '김다원', course: '인벤터', text: '자격증 준비할 시간이 많이 없어서 붙을 수 있을까 걱정했는데 강사님께서 핵심을 잘 짚어주시고 여러가지 팁을 알려주셔서 합격할 수 있었습니다.', star: 5, date: '25.09.30', badge: '합격' },
+  { name: '장민혁', course: '컴퓨터 활용', text: '너무 친절하시고 하나하나 다 알려주십니다.', star: 5, date: '25.08.05', badge: '' },
+  { name: '홍정민', course: '전산응용건축제도', text: '캐드 기초부터 탄탄히 잡아주셔서 포기하지 않고 열심히 할 수 있었습니다. 늦은 시간까지 질문 받아주시고 꼼꼼히 체크해주셔서 너무 감사합니다. 다음번에 또 수강하게 되면 꼭 또 오겠습니다!', star: 5, date: '25.07.07', badge: '' },
+  { name: '최선', course: '일러스트', text: '일러스트를 제대로 배워야겠다는 마음으로 시작했는데 잘 했다는 생각이 듭니다. 최대한 뒤쳐지지 않게 같이 이끌어주시고, 언제든지 무엇이든 물어보라고 하여 쉽게 알려주시고, 과제에 응원도 해주셔서 개인적으로 너무 좋습니다. 감사합니다 :)', star: 5, date: '25.07.07', badge: '' }
 ];
 
 /* ══════════════════════════════════════════════════
@@ -1473,6 +1474,7 @@ function renderInstructorsPage() {
     <div class="instructor-card">
       <div class="instructor-avatar">
         ${inst.photo ? `<img src="${inst.photo}" alt="${inst.name}">` : inst.name.charAt(0)}
+        ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();uploadInstructorPhoto(${i})">📷</button>` : ''}
       </div>
       <div style="flex:1">
         <p class="instructor-name">${em ? E('instructors.'+i+'.name', inst.name) : inst.name}</p>
@@ -1496,10 +1498,6 @@ function renderInstructorsPage() {
 function renderReviewsPage() {
   const em = isEditMode;
   const ACCENTS = ['#3B82F6','#F97316','#EF4444','#8B5CF6','#10B981','#F59E0B','#EC4899','#06B6D4'];
-  const avgRating = REVIEWS_DATA.length
-    ? (REVIEWS_DATA.reduce((s,r) => s+(r.star||5), 0) / REVIEWS_DATA.length).toFixed(1) : '5.0';
-  const passCount = REVIEWS_DATA.filter(r => r.badge).length;
-
   const cards = REVIEWS_DATA.map((r, i) => {
     const accent = ACCENTS[i % ACCENTS.length];
     return `
@@ -1526,15 +1524,15 @@ function renderReviewsPage() {
 
   document.getElementById('reviews-content').innerHTML = `
     <p class="page-label">수강생 후기</p>
-    <div class="review-summary">
-      <div class="review-summary__big">
-        <span class="review-summary__big-num">${avgRating}</span>
-        <span class="review-summary__big-stars">★★★★★</span>
+    <div class="review-banner">
+      <p class="review-banner__headline">수강생이 직접 남긴,<br>솔직한 후기입니다.</p>
+      <p class="review-banner__sub">허위 작성 없이 실제 수강생들이 남긴 이야기입니다.</p>
+      <div class="review-banner__chips">
+        <span class="review-banner__chip">★★★★★ 전원 만족</span>
+        <span class="review-banner__chip">🏅 자격증 합격 인증</span>
+        <span class="review-banner__chip">💬 1:1 맞춤 피드백</span>
+        <span class="review-banner__chip">✨ 친절·꼼꼼한 강사</span>
       </div>
-      <div class="review-summary__sep"></div>
-      <div class="review-summary__stat"><b>${REVIEWS_DATA.length}</b><span>총 후기</span></div>
-      <div class="review-summary__sep"></div>
-      <div class="review-summary__stat"><b>${passCount}</b><span>합격 인증</span></div>
     </div>
     <div class="review-grid-v2">
       ${cards}
@@ -1980,6 +1978,25 @@ function deleteInstructor(i) {
   if (!confirm('이 강사를 삭제하시겠습니까?')) return;
   INSTRUCTORS_DATA.splice(i, 1);
   renderInstructorsPage();
+}
+function uploadInstructorPhoto(i) {
+  if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    showToast('업로드 중...');
+    try {
+      const ref = storage.ref(`instructors/${i}_${Date.now()}_${file.name}`);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      INSTRUCTORS_DATA[i].photo = url;
+      renderInstructorsPage();
+      showToast('사진 업로드 완료 ✓');
+    } catch(err) { showToast('업로드 실패: ' + err.message, 'error'); }
+  };
+  input.click();
 }
 
 /* ══════════════════════════════════════════════════
