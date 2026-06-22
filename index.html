@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SBS아카데미컴퓨터아트학원 — 강좌 안내</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#F97316">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SBS아카데미">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.gstatic.com">
@@ -501,6 +507,13 @@
   .logo-popover-item { display: flex; align-items: center; gap: 8px; padding: 5px 4px; cursor: pointer; border-radius: 6px; font-size: 12px; color: var(--c-text); }
   .logo-popover-item:hover { background: var(--c-bg-2); }
   .logo-popover-item img { width: 14px; height: 14px; opacity: 0.7; }
+  .prereq-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 0 0 10px calc(28px + 14px + 8px); }
+  .prereq-label { font-size: 10px; color: var(--c-text-3); flex-shrink: 0; }
+  .prereq-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; background: var(--c-bg-2); border: 1px solid var(--c-border); font-size: 10px; color: var(--c-text-2); }
+  .prereq-chip button { background: none; border: none; color: var(--c-text-3); cursor: pointer; padding: 0 0 0 2px; font-size: 10px; line-height: 1; }
+  .logo-popover-item.is-selected { background: var(--c-bg-2); }
+  .logo-popover-item.is-selected::after { content: '✓'; margin-left: auto; color: var(--c-course); font-size: 12px; font-weight: 700; }
+  .logo-popover-close { width: 100%; margin-top: 8px; padding: 6px; border: 1px solid var(--c-border); border-radius: 6px; background: var(--c-bg-2); font-size: 12px; color: var(--c-text); cursor: pointer; }
   .drag-handle { cursor: grab; color: var(--c-border); padding: 0 8px 0 0; font-size: 16px; flex-shrink: 0; user-select: none; line-height: 1; }
   .drag-handle:active { cursor: grabbing; }
   .accordion.drag-over { border-top: 2px solid var(--c-course); }
@@ -1262,11 +1275,17 @@ const LOGO_PRESETS = [
   { name: 'Canva',          slug: 'canva' },
   { name: 'Blender',        slug: 'blender' },
   { name: 'Autodesk',       slug: 'autodesk' },
+  { name: 'AutoCAD',        slug: 'autocad' },
+  { name: 'Maya',           slug: 'autodeskmaya' },
+  { name: 'Revit',          slug: 'autodeskrevit' },
+  { name: '3DS Max',        slug: 'autodesk', label: '3DS Max' },
+  { name: 'Inventor',       slug: 'autodesk', label: 'Inventor' },
   { name: 'Cinema 4D',      slug: 'cinema4d' },
   { name: 'Unreal Engine',  slug: 'unrealengine' },
   { name: 'Unity',          slug: 'unity' },
   { name: 'SketchUp',       slug: 'sketchup' },
   { name: 'Krita',          slug: 'krita' },
+  { name: 'Procreate',      slug: 'iconify:ph:pencil-circle-fill' },
   { name: 'VS Code',        slug: 'visualstudiocode' },
   { name: 'Eclipse',        slug: 'eclipseide' },
   { name: 'PyCharm',        slug: 'pycharm' },
@@ -1307,8 +1326,8 @@ const AUTO_LOGO_MAP = {
   '프리미어프로': 'adobepremierepro',
   'UI/UX': 'figma',
   '블렌더': 'blender', '블렌더 포트폴리오': 'blender',
-  'MAYA': 'autodesk', 'MAYA 포트폴리오': 'autodesk',
-  'AutoCAD': 'autodesk', '3DS Max': 'autodesk', '인벤터': 'autodesk', 'Revit': 'autodesk',
+  'MAYA': 'autodeskmaya', 'MAYA 포트폴리오': 'autodeskmaya',
+  'AutoCAD': 'autocad', '3DS Max': 'autodesk', '인벤터': 'autodesk', 'Revit': 'autodeskrevit',
   'SketchUp': 'sketchup',
   'Cinema 4D': 'cinema4d',
   '엑셀실무': 'microsoftexcel', 'ITQ': 'windows', 'MOS': 'windows', '컴활1급 실기': 'microsoftexcel',
@@ -1320,6 +1339,26 @@ const AUTO_LOGO_MAP = {
 
 let _activeLogoPopover = null;
 let _dragCid = null, _dragWi = null;
+
+function logoUrl(slug) {
+  if (!slug) return '';
+  if (slug.startsWith('iconify:')) {
+    const rest = slug.slice(8); // e.g. "ph:pencil-circle-fill"
+    const col  = rest.split(':')[0];
+    const icon = rest.split(':')[1];
+    return `https://api.iconify.design/${col}/${icon}.svg?color=%23888`;
+  }
+  return `https://cdn.jsdelivr.net/npm/simple-icons@11/icons/${slug}.svg`;
+}
+
+function linkify(text) {
+  if (!text) return text;
+  return text.replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s<]*)?)/g, url => {
+    if (url.includes('@') || !url.includes('.')) return url;
+    const href = /^https?:\/\//.test(url) ? url : `https://${url}`;
+    return `<a href="${href}" target="_blank" rel="noopener" style="color:var(--c-course);text-decoration:underline;word-break:break-all">${url}</a>`;
+  });
+}
 
 let isAdmin    = false;
 let isEditMode = false;
@@ -1750,7 +1789,7 @@ function renderCurriculumView(id) {
       const detail = sepIdx >= 0 ? it.slice(sepIdx) : '';
       const textHtml = em
         ? `<span class="admin-inline-row">${E('courses.'+id+'.curriculum.'+wi+'.items.'+ii, it)}<button class="admin-del-btn" onclick="deleteCurrItem('${id}',${wi},${ii})">✕</button></span>`
-        : `<strong>${label}</strong>${detail ? `<span class="item-detail">${detail}</span>` : ''}`;
+        : `<strong>${linkify(label)}</strong>${detail ? `<span class="item-detail">${linkify(detail)}</span>` : ''}`;
       return `<li>${textHtml}</li>`;
     }).join('');
 
@@ -1768,10 +1807,24 @@ function renderCurriculumView(id) {
       : (AUTO_LOGO_MAP[item.week] ? [AUTO_LOGO_MAP[item.week]] : []);
     const logoImgs = logoSlugs.map((slug, li) => {
       const delBtn = em ? `<button class="logo-del-btn" onclick="event.stopPropagation();removeLogo('${id}',${wi},${li})">✕</button>` : '';
-      return `<span class="logo-badge"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/${slug}.svg" width="15" height="15" onerror="this.parentNode.innerHTML='<span class=logo-badge__text>${slug}</span>'">${delBtn}</span>`;
+      const preset = LOGO_PRESETS.find(p => p.slug === slug);
+      const label  = preset?.label || preset?.name || slug;
+      return `<span class="logo-badge"><img src="${logoUrl(slug)}" width="15" height="15" onerror="this.parentNode.innerHTML='<span class=logo-badge__text>${label}</span>'">${delBtn}</span>`;
     }).join('');
     const addLogoBtn = em ? `<button class="logo-add-btn" onclick="event.stopPropagation();openLogoPopover('${id}',${wi},this)">+ 로고</button>` : '';
     const logoRowEl = (logoImgs || addLogoBtn) ? `<span class="logo-row">${logoImgs}${addLogoBtn}</span>` : '';
+
+    // 선수강과목
+    const prereqs = item.prereqs || [];
+    const prereqChips = prereqs.map((p, pi) =>
+      `<span class="prereq-chip">${p}${em ? `<button onclick="removePrereq('${id}',${wi},${pi})">✕</button>` : ''}</span>`
+    ).join('');
+    const prereqRow = (prereqs.length > 0 || em) ? `
+      <div class="prereq-row">
+        <span class="prereq-label">선수강:</span>
+        ${prereqChips}
+        ${em ? `<button class="logo-add-btn" onclick="addPrereq('${id}',${wi})">+ 선수강 추가</button>` : ''}
+      </div>` : '';
 
     const wImgs = (item.images || []);
     const wGalleryItems = wImgs.map((url, ii) => `
@@ -1799,6 +1852,7 @@ function renderCurriculumView(id) {
           </button>
           ${em ? `<button class="admin-del-btn" onclick="deleteCurrWeek('${id}',${wi})" title="주차 삭제" style="margin-right:8px">✕</button>` : ''}
         </div>
+        ${prereqRow}
         <div class="accordion__body">
           <div class="accordion__inner">
             <ul class="topic-list">${items}</ul>
@@ -1839,7 +1893,7 @@ function renderChecklistCard(id) {
       <span class="check-icon">✓</span>
       ${em
         ? `<span class="admin-inline-row">${E('courses.'+id+'.checklist.'+ci, item)}<button class="admin-del-btn" onclick="deleteChecklistItem('${id}',${ci})">✕</button></span>`
-        : item
+        : linkify(item)
       }
     </li>`).join('');
 
@@ -2165,24 +2219,45 @@ function openLogoPopover(id, wi, btn) {
   pop.style.left = Math.min(rect.left, window.innerWidth - 216) + 'px';
   pop.innerHTML = `
     <input type="text" placeholder="소프트웨어 검색..." oninput="filterLogoPopover(this, '${id}', ${wi})">
-    <div class="logo-popover-list" id="lp-list-${id}-${wi}"></div>`;
+    <div class="logo-popover-list" id="lp-list-${id}-${wi}"></div>
+    <button class="logo-popover-close" onclick="closeLogoPopover()">완료</button>`;
   document.body.appendChild(pop);
   _activeLogoPopover = pop;
   filterLogoPopover(pop.querySelector('input'), id, wi);
   setTimeout(() => document.addEventListener('click', function _close(e) {
-    if (!pop.contains(e.target)) { closeLogoPopover(); document.removeEventListener('click', _close); }
+    if (!pop.contains(e.target) && !e.target.closest('.logo-add-btn')) {
+      closeLogoPopover(); document.removeEventListener('click', _close);
+    }
   }), 50);
 }
 function filterLogoPopover(input, id, wi) {
-  const q = input.value.toLowerCase();
-  const list = document.getElementById(`lp-list-${id}-${wi}`);
+  const q        = input.value.toLowerCase();
+  const list     = document.getElementById(`lp-list-${id}-${wi}`);
   if (!list) return;
+  const selected = COURSES[id]?.curriculum[wi]?.logos || [];
   const filtered = q ? LOGO_PRESETS.filter(p => p.name.toLowerCase().includes(q)) : LOGO_PRESETS;
-  list.innerHTML = filtered.map(p => `
-    <div class="logo-popover-item" onclick="addLogo('${id}',${wi},'${p.slug}');closeLogoPopover()">
-      <img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/${p.slug}.svg" style="filter:grayscale(1)opacity(.6)" onerror="this.style.display='none'">
+  list.innerHTML = filtered.map(p => {
+    const isSel = selected.includes(p.slug);
+    return `<div class="logo-popover-item${isSel ? ' is-selected' : ''}" onclick="toggleLogo('${id}',${wi},'${p.slug}',this)">
+      <img src="${logoUrl(p.slug)}" style="filter:grayscale(1)opacity(.6)" onerror="this.style.display='none'" width="14" height="14">
       ${p.name}
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+function toggleLogo(id, wi, slug, el) {
+  if (!COURSES[id].curriculum[wi].logos) COURSES[id].curriculum[wi].logos = [];
+  const logos = COURSES[id].curriculum[wi].logos;
+  const idx = logos.indexOf(slug);
+  if (idx >= 0) {
+    logos.splice(idx, 1);
+    el.classList.remove('is-selected');
+  } else {
+    logos.push(slug);
+    el.classList.add('is-selected');
+  }
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+  // 팝오버는 닫지 않음 — 다중선택 가능
 }
 function addLogo(id, wi, slug) {
   if (!COURSES[id].curriculum[wi].logos) COURSES[id].curriculum[wi].logos = [];
@@ -2195,6 +2270,23 @@ function addLogo(id, wi, slug) {
 function removeLogo(id, wi, li) {
   if (!COURSES[id].curriculum[wi].logos) return;
   COURSES[id].curriculum[wi].logos.splice(li, 1);
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   CRUD — 선수강과목
+══════════════════════════════════════════════════ */
+function addPrereq(id, wi) {
+  const val = prompt('선수강 과목명 (예: 드로잉Total, Photoshop):');
+  if (!val?.trim()) return;
+  if (!COURSES[id].curriculum[wi].prereqs) COURSES[id].curriculum[wi].prereqs = [];
+  COURSES[id].curriculum[wi].prereqs.push(val.trim());
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+function removePrereq(id, wi, pi) {
+  COURSES[id].curriculum[wi].prereqs.splice(pi, 1);
   renderCurriculumView(id);
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
@@ -2349,6 +2441,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderAll();
   activateCoursePanels(currentCourse);
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
