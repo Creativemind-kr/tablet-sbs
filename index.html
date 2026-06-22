@@ -515,13 +515,13 @@
     margin-bottom: 32px;
     line-height: 1.7;
   }
-  .checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
   .checklist-card {
-    padding: 26px 26px 26px 22px;
+    padding: 28px 28px 28px 24px;
     border: 1px solid var(--c-border);
     border-left: 4px solid var(--c-border);
     border-radius: 16px;
     transition: border-left-color var(--base);
+    max-width: 680px;
   }
   .checklist-card[data-colorkey="web"]   { --cl: #3B82F6; }
   .checklist-card[data-colorkey="ps"]    { --cl: #F97316; }
@@ -577,14 +577,12 @@
     .stat-card:last-child { border-bottom: none; }
     .feature-grid { grid-template-columns: 1fr; }
     .feature-card { padding: 18px; gap: 14px; }
-    .checklist-grid { grid-template-columns: 1fr; }
     .course-card__body { grid-template-columns: 1fr; }
     .header { padding: 0 16px; gap: 14px; }
   }
   @media (min-width: 1100px) {
     :root { --t-hero: 5.5rem; }
     .feature-grid { grid-template-columns: repeat(4, 1fr); }
-    .checklist-grid { grid-template-columns: repeat(4, 1fr); }
   }
 
   /* ══════════════════════════════════════
@@ -1003,11 +1001,8 @@
     <div class="page" id="page-checklist">
       <div class="page__inner">
         <p class="page-label">준비물 및 수강생 안내</p>
-        <p class="checklist-intro">
-          수강 등록 전 아래 준비물을 확인해 주세요.<br>
-          장비 구매 전 반드시 상담을 먼저 받아보시길 권장합니다.
-        </p>
-        <div class="checklist-grid" id="checklist-grid"></div>
+        <nav class="sub-nav" id="checklist-subnav"></nav>
+        <div id="checklist-views"></div>
       </div>
     </div>
 
@@ -1569,8 +1564,9 @@ function renderSubNavs() {
   const ids    = Object.keys(COURSES);
   const addBtn = isEditMode ? `<button class="admin-add-course-btn" onclick="addCourse()">+ 강좌 추가</button>` : '';
   const btns   = ids.map(id => `<button class="sub-nav__btn" data-course="${id}">${COURSES[id].label}</button>`).join('') + addBtn;
-  document.getElementById('roadmap-subnav').innerHTML = btns;
-  document.getElementById('curr-subnav').innerHTML    = btns;
+  document.getElementById('roadmap-subnav').innerHTML    = btns;
+  document.getElementById('curr-subnav').innerHTML       = btns;
+  document.getElementById('checklist-subnav').innerHTML  = btns;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1834,10 +1830,9 @@ function renderChecklistCard(id) {
   if (!el) {
     el = document.createElement('div');
     el.id = 'cl-'+id;
-    el.className = 'checklist-card';
-    document.getElementById('checklist-grid').appendChild(el);
+    el.className = 'course-view';
+    document.getElementById('checklist-views').appendChild(el);
   }
-  el.setAttribute('data-colorkey', ck);
 
   const items = c.checklist.map((item, ci) => `
     <li>
@@ -1849,10 +1844,18 @@ function renderChecklistCard(id) {
     </li>`).join('');
 
   el.innerHTML = `
-    <span class="checklist-card__tag">${c.duration}</span>
-    <h3 class="checklist-card__title">${c.label}</h3>
-    <ul class="checklist-card__list">${items}</ul>
-    ${em ? `<div style="margin-top:12px"><button class="admin-add-btn" onclick="addChecklistItem('${id}')">+ 항목 추가</button></div>` : ''}`;
+    <div class="curr-header">
+      <h2 class="curr-header__title">${c.label}</h2>
+      <div class="curr-header__meta">${c.duration}</div>
+    </div>
+    <p class="checklist-intro" style="margin-bottom:20px">
+      수강 등록 전 아래 준비물을 확인해 주세요.<br>
+      장비 구매 전 반드시 상담을 먼저 받아보시길 권장합니다.
+    </p>
+    <div class="checklist-card" data-colorkey="${ck}">
+      <ul class="checklist-card__list">${items || '<li style="color:var(--c-text-3)">준비물 항목을 추가하세요.</li>'}</ul>
+      ${em ? `<div style="margin-top:12px"><button class="admin-add-btn" onclick="addChecklistItem('${id}')">+ 항목 추가</button></div>` : ''}
+    </div>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1868,7 +1871,7 @@ function renderAll() {
       if (!COURSES[vid]) v.remove();
     });
   });
-  document.querySelectorAll('#checklist-grid > [id^="cl-"]').forEach(v => {
+  document.querySelectorAll('#checklist-views > [id^="cl-"]').forEach(v => {
     const vid = v.id.replace('cl-', '');
     if (!COURSES[vid]) v.remove();
   });
@@ -1908,6 +1911,8 @@ function activateCoursePanels(courseId) {
     v.classList.toggle('is-active', v.id === 'rm-'+courseId));
   document.querySelectorAll('#curr-views > .course-view').forEach(v =>
     v.classList.toggle('is-active', v.id === 'cr-'+courseId));
+  document.querySelectorAll('#checklist-views > .course-view').forEach(v =>
+    v.classList.toggle('is-active', v.id === 'cl-'+courseId));
 
   setCourseColor(courseId);
   currentCourse = courseId;
