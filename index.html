@@ -498,6 +498,9 @@
   .topic-list .curr-topic-hd::before { display: none; }
   .topic-list .curr-sub-item { padding-left: 14px; line-height: 1.9; }
   .topic-list .curr-sub-item::before { content: '—'; color: var(--c-text-3); flex-shrink: 0; }
+  .topic-list .curr-month-hd { font-size: 12px; font-weight: 800; color: var(--c-course); background: color-mix(in srgb, var(--c-course) 10%, transparent); border-radius: 6px; padding: 5px 10px; margin: 20px 0 4px; letter-spacing: .06em; }
+  .topic-list .curr-month-hd:first-child { margin-top: 0; }
+  .topic-list .curr-month-hd::before { display: none; }
   .diff-stars { font-size: 11px; letter-spacing: 1.5px; flex-shrink: 0; margin-left: 6px; cursor: default; }
   .diff-stars .s-on { color: #F59E0B; }
   .diff-stars .s-off { color: var(--c-border); }
@@ -2783,10 +2786,17 @@ function renderCurriculumView(id) {
   }
 
   const weeks = c.curriculum.map((item, wi) => {
-    // #4 Bold/Light: split at ' · ' + 계층형 마커 지원 (## Week, # Topic)
+    // #4 Bold/Light: split at ' · ' + 계층형 마커 지원 (## Week, # Topic) + 월별 그룹
+    const totalWeekCount = item.items.filter(x => x.startsWith('## ')).length;
+    const useMonthGroups = !em && totalWeekCount >= 5;
+    let lastMonthNum = 0;
     const items = item.items.map((it, ii) => {
       if (!em && it.startsWith('## ')) {
-        return `<li class="curr-week-hd">${it.slice(3)}</li>`;
+        const wm = it.match(/\d+/); const wn = wm ? parseInt(wm[0]) : 0;
+        const mn = Math.ceil(wn / 4);
+        let prefix = '';
+        if (useMonthGroups && mn !== lastMonthNum) { lastMonthNum = mn; prefix = `<li class="curr-month-hd">${mn}달차</li>`; }
+        return prefix + `<li class="curr-week-hd">${it.slice(3)}</li>`;
       }
       if (!em && it.startsWith('# ')) {
         return `<li class="curr-topic-hd">▸ ${it.slice(2)}</li>`;
