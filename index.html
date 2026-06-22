@@ -484,6 +484,23 @@
     gap: 10px;
   }
   .topic-list li::before { content: '—'; color: var(--c-text-3); flex-shrink: 0; }
+  .item-detail { font-weight: 300; color: var(--c-text-3); }
+  .diff-stars { font-size: 11px; letter-spacing: 1.5px; flex-shrink: 0; margin-left: 6px; cursor: default; }
+  .diff-stars .s-on { color: #F59E0B; }
+  .diff-stars .s-off { color: var(--c-border); }
+  .diff-stars.editable { cursor: pointer; }
+  .logo-row { display: flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: 4px; }
+  .logo-badge { display: inline-flex; align-items: center; gap: 2px; }
+  .logo-badge img { width: 15px; height: 15px; opacity: 0.55; }
+  .logo-badge__text { font-size: 9px; background: var(--c-bg-2); border: 1px solid var(--c-border); border-radius: 3px; padding: 1px 4px; color: var(--c-text-3); }
+  .logo-del-btn { font-size: 9px; background: none; border: none; color: var(--c-text-3); cursor: pointer; padding: 0 1px; line-height: 1; }
+  .logo-add-btn { font-size: 10px; background: none; border: 1px dashed var(--c-border); border-radius: 4px; padding: 2px 6px; color: var(--c-text-3); cursor: pointer; white-space: nowrap; }
+  .logo-popover { position: fixed; z-index: 300; background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 12px; padding: 12px; width: 200px; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+  .logo-popover input { width: 100%; box-sizing: border-box; border: 1px solid var(--c-border); border-radius: 6px; padding: 6px 8px; font-size: 12px; background: var(--c-bg-2); color: var(--c-text); outline: none; }
+  .logo-popover-list { margin-top: 8px; max-height: 140px; overflow-y: auto; }
+  .logo-popover-item { display: flex; align-items: center; gap: 8px; padding: 5px 4px; cursor: pointer; border-radius: 6px; font-size: 12px; color: var(--c-text); }
+  .logo-popover-item:hover { background: var(--c-bg-2); }
+  .logo-popover-item img { width: 14px; height: 14px; opacity: 0.7; }
 
   /* ══════════════════════════════════════
      10. CHECKLIST
@@ -1234,6 +1251,61 @@ let REVIEWS_DATA = [
 const appEl        = document.getElementById('app');
 const PALETTE_KEYS = ['web','ps','video','uiux'];
 
+const LOGO_PRESETS = [
+  { name: 'Photoshop',      slug: 'adobephotoshop' },
+  { name: 'Illustrator',    slug: 'adobeillustrator' },
+  { name: 'After Effects',  slug: 'adobeaftereffects' },
+  { name: 'Premiere Pro',   slug: 'adobepremierepro' },
+  { name: 'InDesign',       slug: 'adobeindesign' },
+  { name: 'Figma',          slug: 'figma' },
+  { name: 'Blender',        slug: 'blender' },
+  { name: 'Autodesk',       slug: 'autodesk' },
+  { name: 'Unreal Engine',  slug: 'unrealengine' },
+  { name: 'SketchUp',       slug: 'sketchup' },
+  { name: 'Cinema 4D',      slug: 'maxon' },
+  { name: 'VS Code',        slug: 'visualstudiocode' },
+  { name: 'Eclipse',        slug: 'eclipseide' },
+  { name: 'PyCharm',        slug: 'pycharm' },
+  { name: 'Excel',          slug: 'microsoftexcel' },
+  { name: 'Microsoft Office', slug: 'microsoftoffice' },
+  { name: 'Procreate',      slug: 'procreate' },
+  { name: 'Clip Studio',    slug: 'clipstudiopaint' },
+  { name: 'ZBrush',         slug: 'pixologic' },
+  { name: 'Unity',          slug: 'unity' },
+];
+
+const DIFFICULTY_MAP = {
+  '드로잉Total': 2, 'Photoshop': 3, 'PhotoWorks': 3, 'Detail Illust': 4,
+  '일러스트': 3, 'InDesign': 4, '그래픽아트웍': 3, 'UI/UX': 3,
+  '컴퓨터그래픽기능사': 4, '브랜딩디자인': 4, '편집 포트폴리오': 4,
+  '컬러리스트': 3, 'GTQ/GTQ-I': 3, '프리미어프로': 3, 'After Effects': 3,
+  'MAYA': 3, 'VFX': 4, 'MAYA 포트폴리오': 5, '블렌더': 3, '블렌더 포트폴리오': 5,
+  'Cinema 4D': 3, '모션 포트폴리오': 4, 'AutoCAD': 3, 'SketchUp': 3,
+  '3DS Max': 3, '실내건축이론': 1, '실내건축자격증': 4, 'Revit': 4,
+  '전산응용건축제도기능사': 3, 'AI인테리어': 2, '인테리어 포트폴리오': 4,
+  '인벤터': 3, '전산응용기계제도기능사': 3, '웹': 3, '웹 포트폴리오': 4,
+  '심화드로잉': 4, 'C 언어': 3, '자바': 2, '파이썬': 2, '웹 프로젝트': 5,
+  'ITQ': 2, 'MOS': 2, '엑셀실무': 3, '컴활1급 실기': 4, '전산회계1급': 4,
+  '전산세무2급': 5, '컴퓨터기초': 1, 'AI 프롬프트': 2, '1인크리에이터': 2, 'AI유튜브': 2,
+};
+
+const AUTO_LOGO_MAP = {
+  'Photoshop': 'adobephotoshop', 'PhotoWorks': 'adobephotoshop',
+  '일러스트': 'adobeillustrator', 'Detail Illust': 'adobeillustrator',
+  'InDesign': 'adobeindesign', '편집 포트폴리오': 'adobeindesign',
+  'After Effects': 'adobeaftereffects', 'VFX': 'adobeaftereffects', '모션 포트폴리오': 'adobeaftereffects',
+  '프리미어프로': 'adobepremierepro',
+  'UI/UX': 'figma',
+  '블렌더': 'blender', '블렌더 포트폴리오': 'blender',
+  'MAYA': 'autodesk', 'MAYA 포트폴리오': 'autodesk',
+  'AutoCAD': 'autodesk', '3DS Max': 'autodesk', '인벤터': 'autodesk', 'Revit': 'autodesk',
+  'SketchUp': 'sketchup',
+  'Cinema 4D': 'maxon',
+  '엑셀실무': 'microsoftexcel', 'ITQ': 'microsoftoffice', 'MOS': 'microsoftoffice', '컴활1급 실기': 'microsoftexcel',
+};
+
+let _activeLogoPopover = null;
+
 let isAdmin    = false;
 let isEditMode = false;
 let currentPage   = 'intro';
@@ -1655,11 +1727,35 @@ function renderCurriculumView(id) {
   }
 
   const weeks = c.curriculum.map((item, wi) => {
-    const items = item.items.map((it, ii) => `
-      <li>${em
+    // #4 Bold/Light: split at ' · '
+    const items = item.items.map((it, ii) => {
+      const sepIdx = it.indexOf(' · ');
+      const label  = sepIdx >= 0 ? it.slice(0, sepIdx) : it;
+      const detail = sepIdx >= 0 ? it.slice(sepIdx) : '';
+      const textHtml = em
         ? `<span class="admin-inline-row">${E('courses.'+id+'.curriculum.'+wi+'.items.'+ii, it)}<button class="admin-del-btn" onclick="deleteCurrItem('${id}',${wi},${ii})">✕</button></span>`
-        : it
-      }</li>`).join('');
+        : `<strong>${label}</strong>${detail ? `<span class="item-detail">${detail}</span>` : ''}`;
+      return `<li>${textHtml}</li>`;
+    }).join('');
+
+    // #3 Difficulty stars
+    const diff = item.difficulty !== undefined ? item.difficulty : (DIFFICULTY_MAP[item.week] || 3);
+    const starsHtml = Array.from({length: 5}, (_, i) =>
+      `<span class="${i < diff ? 's-on' : 's-off'}">${i < diff ? '★' : '☆'}</span>`
+    ).join('');
+    const diffEl = em
+      ? `<span class="diff-stars editable" title="난이도 ${diff}/5">${starsHtml}</span>`
+      : `<span class="diff-stars" title="난이도 ${diff}/5">${starsHtml}</span>`;
+
+    // #2 Logo row
+    const logoSlugs = (item.logos && item.logos.length > 0) ? item.logos
+      : (AUTO_LOGO_MAP[item.week] ? [AUTO_LOGO_MAP[item.week]] : []);
+    const logoImgs = logoSlugs.map((slug, li) => {
+      const delBtn = em ? `<button class="logo-del-btn" onclick="event.stopPropagation();removeLogo('${id}',${wi},${li})">✕</button>` : '';
+      return `<span class="logo-badge"><img src="https://cdn.simpleicons.org/${slug}/888" width="15" height="15" onerror="this.parentNode.innerHTML='<span class=logo-badge__text>${slug}</span>'">${delBtn}</span>`;
+    }).join('');
+    const addLogoBtn = em ? `<button class="logo-add-btn" onclick="event.stopPropagation();openLogoPopover('${id}',${wi},this)">+ 로고</button>` : '';
+    const logoRowEl = (logoImgs || addLogoBtn) ? `<span class="logo-row">${logoImgs}${addLogoBtn}</span>` : '';
 
     const wImgs = (item.images || []);
     const wGalleryItems = wImgs.map((url, ii) => `
@@ -1679,7 +1775,9 @@ function renderCurriculumView(id) {
           <button class="accordion__trigger" aria-expanded="false">
             <span class="accordion__num">${wi+1}</span>
             <span class="accordion__week">${em ? E('courses.'+id+'.curriculum.'+wi+'.week', item.week) : item.week}</span>
+            ${logoRowEl}
             <span class="accordion__topic">${em ? E('courses.'+id+'.curriculum.'+wi+'.topic', item.topic) : item.topic}</span>
+            ${diffEl}
             <span class="accordion__chevron" aria-hidden="true"></span>
           </button>
           ${em ? `<button class="admin-del-btn" onclick="deleteCurrWeek('${id}',${wi})" title="주차 삭제" style="margin-right:8px">✕</button>` : ''}
@@ -1837,9 +1935,29 @@ document.addEventListener('click', e => {
   const subBtn = e.target.closest('.sub-nav__btn');
   if (subBtn?.dataset.course) { activateCoursePanels(subBtn.dataset.course); return; }
 
-  // Accordion trigger (admin del btn 제외)
+  // Difficulty star click (edit mode)
+  const starEl = e.target.closest('.diff-stars.editable');
+  if (starEl) {
+    const trigger = starEl.closest('.accordion__trigger');
+    const accordion = trigger?.closest('.accordion');
+    const head = accordion?.closest('[data-curr-id]') || document.getElementById('curr-views');
+    const stars = starEl.querySelectorAll('span');
+    const idx = Array.from(stars).findIndex(s => s === e.target);
+    if (idx >= 0) {
+      // find id and wi from data attributes on the parent accordion
+      const acc = starEl.closest('.accordion');
+      const allAccordions = Array.from(acc?.closest('.course-view')?.querySelectorAll('.accordion') || []);
+      const wi = allAccordions.indexOf(acc);
+      const viewEl = acc?.closest('.course-view');
+      const vid = viewEl?.id?.replace('cr-', '');
+      if (vid && wi >= 0) setCurrDifficulty(vid, wi, idx + 1);
+    }
+    return;
+  }
+
+  // Accordion trigger (admin/logo 버튼 제외)
   const trigger = e.target.closest('.accordion__trigger');
-  if (trigger && !e.target.closest('.admin-del-btn')) {
+  if (trigger && !e.target.closest('.admin-del-btn') && !e.target.closest('.logo-add-btn') && !e.target.closest('.logo-del-btn') && !e.target.closest('.logo-row')) {
     const accordion = trigger.closest('.accordion');
     const body = accordion?.querySelector('.accordion__body');
     if (!body) return;
@@ -1947,6 +2065,64 @@ function addCurrItem(id, wi) {
 }
 function deleteCurrItem(id, wi, ii) {
   COURSES[id].curriculum[wi].items.splice(ii, 1);
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   DIFFICULTY — 별점 클릭
+══════════════════════════════════════════════════ */
+function setCurrDifficulty(id, wi, val) {
+  COURSES[id].curriculum[wi].difficulty = val;
+  renderCurriculumView(id);
+  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+}
+
+/* ══════════════════════════════════════════════════
+   LOGO POPOVER — 로고 검색/추가/삭제
+══════════════════════════════════════════════════ */
+function closeLogoPopover() {
+  if (_activeLogoPopover) { _activeLogoPopover.remove(); _activeLogoPopover = null; }
+}
+function openLogoPopover(id, wi, btn) {
+  closeLogoPopover();
+  const rect = btn.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 'logo-popover';
+  pop.style.top  = (rect.bottom + 6) + 'px';
+  pop.style.left = Math.min(rect.left, window.innerWidth - 216) + 'px';
+  pop.innerHTML = `
+    <input type="text" placeholder="소프트웨어 검색..." oninput="filterLogoPopover(this, '${id}', ${wi})">
+    <div class="logo-popover-list" id="lp-list-${id}-${wi}"></div>`;
+  document.body.appendChild(pop);
+  _activeLogoPopover = pop;
+  filterLogoPopover(pop.querySelector('input'), id, wi);
+  setTimeout(() => document.addEventListener('click', function _close(e) {
+    if (!pop.contains(e.target)) { closeLogoPopover(); document.removeEventListener('click', _close); }
+  }), 50);
+}
+function filterLogoPopover(input, id, wi) {
+  const q = input.value.toLowerCase();
+  const list = document.getElementById(`lp-list-${id}-${wi}`);
+  if (!list) return;
+  const filtered = q ? LOGO_PRESETS.filter(p => p.name.toLowerCase().includes(q)) : LOGO_PRESETS;
+  list.innerHTML = filtered.map(p => `
+    <div class="logo-popover-item" onclick="addLogo('${id}',${wi},'${p.slug}');closeLogoPopover()">
+      <img src="https://cdn.simpleicons.org/${p.slug}/555" onerror="this.style.display='none'">
+      ${p.name}
+    </div>`).join('');
+}
+function addLogo(id, wi, slug) {
+  if (!COURSES[id].curriculum[wi].logos) COURSES[id].curriculum[wi].logos = [];
+  if (!COURSES[id].curriculum[wi].logos.includes(slug)) {
+    COURSES[id].curriculum[wi].logos.push(slug);
+    renderCurriculumView(id);
+    if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+  }
+}
+function removeLogo(id, wi, li) {
+  if (!COURSES[id].curriculum[wi].logos) return;
+  COURSES[id].curriculum[wi].logos.splice(li, 1);
   renderCurriculumView(id);
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
