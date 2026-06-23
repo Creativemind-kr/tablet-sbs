@@ -313,6 +313,11 @@
     align-items: center;
   }
   .sub-nav::-webkit-scrollbar { display: none; }
+  .sub-nav-wrap { position:relative; display:flex; align-items:center; gap:4px; margin-bottom:32px; }
+  .sub-nav-wrap .sub-nav { flex:1; margin-bottom:0; }
+  .sub-nav-arr { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:var(--c-bg-2); border:1px solid var(--c-border); font-size:17px; color:var(--c-text-2); cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; transition:opacity .15s,background .15s; }
+  .sub-nav-arr:disabled { opacity:.2; cursor:default; }
+  .sub-nav-arr:not(:disabled):hover { background:var(--c-bg-3,#f0f0f0); }
   .sub-nav__btn {
     padding: 9px 18px;
     border-radius: 99px;
@@ -687,6 +692,36 @@
   .modal-btn-confirm { background: #111; color: #fff; }
   .modal-btn-confirm:hover { background: #333; }
 
+
+  /* ══════════════════════════════════════
+     13b. 범용 편집 모달 필드
+  ══════════════════════════════════════ */
+  .edit-modal { width: min(500px, 93vw); max-height: 88vh; overflow-y: auto; }
+  .edit-modal h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: 18px; }
+  .modal-field { margin-bottom: 13px; }
+  .modal-field > label { display: block; font-size: 10.5px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+  .modal-field input[type="text"],
+  .modal-field textarea,
+  .modal-field select {
+    width: 100%; padding: 9px 11px; border: 1.5px solid var(--c-border);
+    border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none;
+    transition: border-color 150ms; font-family: inherit; color: var(--c-text);
+  }
+  .modal-field input[type="text"]:focus,
+  .modal-field textarea:focus,
+  .modal-field select:focus { border-color: #3B82F6; }
+  .modal-field textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+  .field-hint { font-size: 11px; color: #9CA3AF; margin-top: 4px; }
+  .file-drop-zone {
+    border: 2px dashed #D1D5DB; border-radius: 10px;
+    padding: 16px 12px; text-align: center; cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .file-drop-zone.drag-over { border-color: #3B82F6; background: #EFF6FF; }
+  .file-drop-preview img { max-height: 80px; border-radius: 6px; margin: 0 auto 8px; display: block; object-fit: cover; }
+  .file-drop-zone p { font-size: 12px; color: #6B7280; margin: 0 0 8px; }
+  .file-drop-btn { font-size: 12px; padding: 5px 12px; border: 1px solid var(--c-border); border-radius: 6px; background: #fff; cursor: pointer; color: var(--c-text); }
+  .file-drop-btn:hover { background: var(--c-bg-2); }
   /* ══════════════════════════════════════
      14. ROADMAP
   ══════════════════════════════════════ */
@@ -1033,7 +1068,11 @@
     <div class="page" id="page-roadmap">
       <div class="page__inner">
         <p class="page-label">학과별 로드맵</p>
-        <nav class="sub-nav" id="roadmap-subnav"></nav>
+        <div class="sub-nav-wrap">
+          <button class="sub-nav-arr" id="roadmap-subnav-prev" onclick="shiftSubNav('roadmap-subnav',-1)" disabled>&#8249;</button>
+          <nav class="sub-nav" id="roadmap-subnav"></nav>
+          <button class="sub-nav-arr" id="roadmap-subnav-next" onclick="shiftSubNav('roadmap-subnav',1)">&#8250;</button>
+        </div>
         <div id="roadmap-views"></div>
       </div>
     </div>
@@ -1042,7 +1081,11 @@
     <div class="page" id="page-curriculum">
       <div class="page__inner">
         <p class="page-label">커리큘럼(학과별)</p>
-        <nav class="sub-nav" id="curr-subnav"></nav>
+        <div class="sub-nav-wrap">
+          <button class="sub-nav-arr" id="curr-subnav-prev" onclick="shiftSubNav('curr-subnav',-1)" disabled>&#8249;</button>
+          <nav class="sub-nav" id="curr-subnav"></nav>
+          <button class="sub-nav-arr" id="curr-subnav-next" onclick="shiftSubNav('curr-subnav',1)">&#8250;</button>
+        </div>
         <div id="curr-views"></div>
       </div>
     </div>
@@ -1066,7 +1109,11 @@
           <div><strong>교재 구매 안내</strong><span class="kb-sub">kedustore.com에서 학과별 교재를 구매하실 수 있습니다</span></div>
           <span class="kedustore-banner__arrow">→</span>
         </a>
-        <nav class="sub-nav" id="checklist-subnav"></nav>
+        <div class="sub-nav-wrap">
+          <button class="sub-nav-arr" id="checklist-subnav-prev" onclick="shiftSubNav('checklist-subnav',-1)" disabled>&#8249;</button>
+          <nav class="sub-nav" id="checklist-subnav"></nav>
+          <button class="sub-nav-arr" id="checklist-subnav-next" onclick="shiftSubNav('checklist-subnav',1)">&#8250;</button>
+        </div>
         <div id="checklist-views"></div>
       </div>
     </div>
@@ -1088,6 +1135,17 @@
   </div>
 </div>
 
+<!-- ══ 범용 편집 팝업 ══ -->
+<div id="edit-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal-box edit-modal">
+    <h3 id="em-title"></h3>
+    <div id="em-body"></div>
+    <div class="modal-btns" style="margin-top:18px">
+      <button class="modal-btn modal-btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="modal-btn modal-btn-confirm" id="em-save">저장</button>
+    </div>
+  </div>
+</div>
 <!-- ══ 관리자 툴바 ══ -->
 <div class="admin-toolbar" id="admin-toolbar">
   <button class="admin-tb-btn btn-edit-mode" id="edit-btn" onclick="toggleEditMode()">✏️ 편집 모드</button>
@@ -2808,6 +2866,126 @@ function renderUI() {
 /* ══════════════════════════════════════════════════
    RENDER: SUB-NAVS
 ══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   범용 편집 모달 시스템
+══════════════════════════════════════════════════ */
+let _emCfg = null, _emData = {}, _emPending = {};
+
+function openEditModal(cfg) {
+  _emCfg = cfg; _emData = Object.assign({}, cfg.defaults || {}); _emPending = {};
+  document.getElementById('em-title').textContent = cfg.title;
+  const body = document.getElementById('em-body');
+  body.innerHTML = cfg.fields.map(f => {
+    const val = (_emData[f.key] ?? '');
+    let inp = '';
+    if (f.type === 'textarea') {
+      inp = `<textarea id="emf-${f.key}" rows="${f.rows||4}">${val.replace(/</g,'&lt;')}</textarea>`;
+    } else if (f.type === 'select') {
+      const opts = (f.options||[]).map(o =>
+        `<option value="${o.value}"${o.value===val?' selected':''}>${o.label}</option>`).join('');
+      inp = `<select id="emf-${f.key}">${opts}</select>`;
+    } else if (f.type === 'file-drop') {
+      const prev = val ? `<img src="${val}" onerror="this.style.display='none'">` : '';
+      inp = `<div class="file-drop-zone" id="emf-drop-${f.key}"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="_emHandleDrop(event,'${f.key}')">
+        <div class="file-drop-preview" id="emf-prev-${f.key}">${prev}</div>
+        <p>${val ? '변경: 드래그하거나 파일 선택 · Ctrl+V' : '드래그 또는 Ctrl+V로 붙여넣기'}</p>
+        <button class="file-drop-btn" type="button" onclick="_emClickFile('${f.key}')">파일 선택</button>
+        <input type="file" id="emf-file-${f.key}" accept="image/*" style="display:none"
+               onchange="_emHandleFile(event,'${f.key}')">
+      </div>`;
+    } else {
+      const safe = String(val).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      inp = `<input type="text" id="emf-${f.key}" value="${safe}" placeholder="${f.placeholder||''}">`;
+    }
+    const hint = f.hint ? `<p class="field-hint">${f.hint}</p>` : '';
+    return `<div class="modal-field"><label>${f.label}</label>${inp}${hint}</div>`;
+  }).join('');
+  document.getElementById('em-save').onclick = _emSave;
+  document.getElementById('edit-modal').style.display = 'flex';
+  const first = body.querySelector('input[type="text"],textarea');
+  if (first) setTimeout(() => first.focus(), 60);
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+  _emCfg = null; _emData = {}; _emPending = {};
+}
+
+function _emClickFile(key) { document.getElementById('emf-file-'+key)?.click(); }
+
+function _emHandleFile(e, key) {
+  const file = e.target.files[0];
+  if (file) _emPreview(key, file);
+}
+
+function _emHandleDrop(e, key) {
+  e.preventDefault();
+  document.getElementById('emf-drop-'+key)?.classList.remove('drag-over');
+  const file = Array.from(e.dataTransfer.files).find(f => f.type.startsWith('image/'));
+  if (file) _emPreview(key, file);
+}
+
+function _emPreview(key, file) {
+  _emPending[key] = file;
+  const r = new FileReader();
+  r.onload = ev => {
+    const el = document.getElementById('emf-prev-'+key);
+    if (el) el.innerHTML = `<img src="${ev.target.result}">`;
+  };
+  r.readAsDataURL(file);
+}
+
+async function _emSave() {
+  if (!_emCfg) return;
+  _emCfg.fields.forEach(f => {
+    if (f.type === 'file-drop') return;
+    const el = document.getElementById('emf-'+f.key);
+    if (el) _emData[f.key] = el.value;
+  });
+  for (const [key, file] of Object.entries(_emPending)) {
+    if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
+    showToast('이미지 업로드 중...');
+    try {
+      const ref = storage.ref(`uploads/${Date.now()}_${file.name}`);
+      await ref.put(file); _emData[key] = await ref.getDownloadURL();
+    } catch(err) { showToast('업로드 실패: '+err.message, 'error'); return; }
+  }
+  _emCfg.fields.filter(f => f.type==='file-drop').forEach(f => {
+    if (!_emPending[f.key]) _emData[f.key] = _emCfg.defaults?.[f.key] || '';
+  });
+  const onSave = _emCfg.onSave;
+  closeEditModal();
+  onSave(_emData);
+}
+
+// Ctrl+V 이미지 붙여넣기 (편집 팝업 열려있을 때)
+document.addEventListener('paste', e => {
+  if (document.getElementById('edit-modal')?.style.display === 'none') return;
+  const imgItem = Array.from(e.clipboardData?.items||[]).find(i => i.type.startsWith('image/'));
+  if (!imgItem) return;
+  const ff = _emCfg?.fields?.find(f => f.type === 'file-drop');
+  if (!ff) return;
+  const file = imgItem.getAsFile();
+  if (file) _emPreview(ff.key, file);
+});
+function shiftSubNav(navId, dir) {
+  const nav = document.getElementById(navId);
+  if (!nav) return;
+  nav.scrollBy({ left: dir * 200, behavior: 'smooth' });
+  setTimeout(() => updateSubNavArrows(navId), 320);
+}
+function updateSubNavArrows(navId) {
+  const nav = document.getElementById(navId);
+  if (!nav) return;
+  const prev = document.getElementById(navId + '-prev');
+  const next = document.getElementById(navId + '-next');
+  if (prev) prev.disabled = nav.scrollLeft <= 2;
+  if (next) next.disabled = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2;
+}
+
 function renderSubNavs() {
   const ids    = Object.keys(COURSES);
   const addBtn = isEditMode ? `<button class="admin-add-course-btn" onclick="addCourse()">+ 강좌 추가</button>` : '';
@@ -2815,6 +2993,14 @@ function renderSubNavs() {
   document.getElementById('roadmap-subnav').innerHTML    = btns;
   document.getElementById('curr-subnav').innerHTML       = btns;
   document.getElementById('checklist-subnav').innerHTML  = btns;
+  ['roadmap-subnav','curr-subnav','checklist-subnav'].forEach(id => {
+    const nav = document.getElementById(id);
+    if (!nav) return;
+    nav.removeEventListener('scroll', nav._arrUpd);
+    nav._arrUpd = () => updateSubNavArrows(id);
+    nav.addEventListener('scroll', nav._arrUpd, { passive: true });
+    updateSubNavArrows(id);
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -2864,7 +3050,7 @@ function renderInstructorsPage() {
     <div class="instructor-card">
       <div class="instructor-avatar ${inst.gender === 'f' ? 'is-f' : 'is-m'}">
         ${inst.photo ? `<img src="${inst.photo}" alt="${inst.name}">` : (inst.gender === 'f' ? svgF : svgM)}
-        ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();uploadInstructorPhoto(${i})">📷</button>` : ''}
+        ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();editInstructor(${i})" title="수정">✏️</button>` : ''}
       </div>
       <div style="flex:1">
         <p class="instructor-name">${em ? E('instructors.'+i+'.name', inst.name) : inst.name}</p>
@@ -3310,6 +3496,13 @@ function activateCoursePanels(courseId) {
 
   document.querySelectorAll('.sub-nav__btn').forEach(b =>
     b.classList.toggle('is-active', b.dataset.course === courseId));
+  setTimeout(() => {
+    document.querySelectorAll('.sub-nav__btn.is-active').forEach(btn => {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      const nav = btn.closest('.sub-nav');
+      if (nav) updateSubNavArrows(nav.id);
+    });
+  }, 50);
 
   document.querySelectorAll('#roadmap-views > .course-view').forEach(v =>
     v.classList.toggle('is-active', v.id === 'rm-'+courseId));
@@ -3520,11 +3713,19 @@ function deleteCourseTag(id, idx) {
    CRUD — 커리큘럼
 ══════════════════════════════════════════════════ */
 function addCurrWeek(id) {
-  const week  = prompt('주차 표시 (예: 13–14주차):') || '신규 주차';
-  const topic = prompt('주제:') || '주제 입력';
-  COURSES[id].curriculum.push({ week, topic, items: ['항목 입력'] });
-  renderCurriculumView(id);
-  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+  openEditModal({
+    title: '주차 추가',
+    fields: [
+      { key: 'week',  label: '주차 표시', type: 'text', placeholder: '예: 13–14주차' },
+      { key: 'topic', label: '주제',      type: 'text', placeholder: '예: 포트폴리오 제작' },
+    ],
+    defaults: { week: '', topic: '' },
+    onSave: (d) => {
+      COURSES[id].curriculum.push({ week: d.week||'신규 주차', topic: d.topic||'주제 입력', items: ['항목 입력'] });
+      renderCurriculumView(id);
+      if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+    }
+  });
 }
 function deleteCurrWeek(id, wi) {
   if (!confirm('이 주차를 삭제하시겠습니까?')) return;
@@ -3533,9 +3734,25 @@ function deleteCurrWeek(id, wi) {
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
 function addCurrItem(id, wi) {
-  const item = prompt('새 세부 항목:');
-  if (!item?.trim()) return;
-  COURSES[id].curriculum[wi].items.push(item.trim());
+  openEditModal({
+    title: '세부 항목 추가',
+    fields: [
+      { key: 'items', label: '항목 (한 줄씩 여러 개 입력 가능)', type: 'textarea',
+        hint: '줄바꿈(Enter)으로 여러 항목을 한 번에 추가할 수 있습니다' },
+    ],
+    defaults: { items: '' },
+    onSave: (d) => {
+      const lines = d.items.split('\n').map(s => s.trim()).filter(Boolean);
+      if (!lines.length) return;
+      COURSES[id].curriculum[wi].items.push(...lines);
+      renderCurriculumView(id);
+      if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+    }
+  });
+}
+function deleteCurrItem(id, wi, ii) {function deleteCurrWeek(id, wi) {
+  if (!confirm('이 주차를 삭제하시겠습니까?')) return;
+  COURSES[id].curriculum.splice(wi, 1);
   renderCurriculumView(id);
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
@@ -3701,17 +3918,25 @@ function addPortfolioVideo(id) {
    CRUD — 로드맵
 ══════════════════════════════════════════════════ */
 function addRoadmapStep(id) {
-  const title = prompt('단계 제목:');
-  if (!title?.trim()) return;
-  const weeks = prompt('기간 (예: 1–4주차):') || '';
-  const desc  = prompt('설명:') || '';
-  if (!COURSES[id].roadmap) COURSES[id].roadmap = [];
-  const num = String(COURSES[id].roadmap.length + 1).padStart(2, '0');
-  COURSES[id].roadmap.push({ phase: num, title: title.trim(), weeks, desc });
-  renderRoadmapView(id);
-  document.getElementById('rm-'+id)?.classList.add('is-active');
+  openEditModal({
+    title: '로드맵 단계 추가',
+    fields: [
+      { key: 'title', label: '단계 제목', type: 'text', placeholder: '예: 기초 실습' },
+      { key: 'weeks', label: '기간',      type: 'text', placeholder: '예: 1–4주차' },
+      { key: 'desc',  label: '설명',      type: 'textarea', rows: 3 },
+    ],
+    defaults: { title: '', weeks: '', desc: '' },
+    onSave: (d) => {
+      if (!d.title?.trim()) return;
+      if (!COURSES[id].roadmap) COURSES[id].roadmap = [];
+      const num = String(COURSES[id].roadmap.length + 1).padStart(2, '0');
+      COURSES[id].roadmap.push({ phase: num, title: d.title.trim(), weeks: d.weeks, desc: d.desc });
+      renderRoadmapView(id);
+      document.getElementById('rm-'+id)?.classList.add('is-active');
+    }
+  });
 }
-function deleteRoadmapStep(id, si) {
+function deleteRoadmapStep(id, si) {function deleteRoadmapStep(id, si) {
   if (!confirm('이 단계를 삭제하시겠습니까?')) return;
   COURSES[id].roadmap.splice(si, 1);
   renderRoadmapView(id);
@@ -3771,53 +3996,69 @@ function openLightbox(url) {
 /* ══════════════════════════════════════════════════
    CRUD — 강사 소개
 ══════════════════════════════════════════════════ */
-function addInstructor() {
-  const name  = prompt('강사 이름:');
-  if (!name?.trim()) return;
-  const title  = prompt('전문 분야:') || '';
-  const career = prompt('경력 (줄바꿈은 \\n):') || '';
-  INSTRUCTORS_DATA.push({ name: name.trim(), title, career, photo: '' });
-  renderInstructorsPage();
+function _instModal(title, defaults, onSave) {
+  openEditModal({
+    title,
+    fields: [
+      { key: 'name',   label: '강사명',    type: 'text' },
+      { key: 'title',  label: '전문분야',  type: 'text' },
+      { key: 'gender', label: '성별',      type: 'select',
+        options: [{value:'m',label:'남성'},{value:'f',label:'여성'}] },
+      { key: 'career', label: '경력',      type: 'textarea', rows: 6,
+        hint: '줄바꿈(Enter)으로 항목을 구분합니다' },
+      { key: 'photo',  label: '사진',      type: 'file-drop' },
+    ],
+    defaults,
+    onSave,
+  });
 }
-function deleteInstructor(i) {
-  if (!confirm('이 강사를 삭제하시겠습니까?')) return;
+function addInstructor() {
+  _instModal('강사 추가',
+    { name: '', title: '', gender: 'm', career: '', photo: '' },
+    (d) => {
+      if (!d.name?.trim()) return;
+      INSTRUCTORS_DATA.push({ name: d.name.trim(), title: d.title, gender: d.gender, career: d.career, photo: d.photo });
+      renderInstructorsPage();
+    });
+}
+function editInstructor(i) {
+  const inst = INSTRUCTORS_DATA[i];
+  _instModal('강사 정보 수정',
+    { name: inst.name, title: inst.title, gender: inst.gender||'m', career: inst.career, photo: inst.photo||'' },
+    (d) => {
+      INSTRUCTORS_DATA[i] = { ...inst, name: d.name.trim(), title: d.title, gender: d.gender, career: d.career, photo: d.photo };
+      renderInstructorsPage();
+    });
+}
+function deleteInstructor(i) {  if (!confirm('이 강사를 삭제하시겠습니까?')) return;
   INSTRUCTORS_DATA.splice(i, 1);
   renderInstructorsPage();
-}
-function uploadInstructorPhoto(i) {
-  if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
-  const input = document.createElement('input');
-  input.type = 'file'; input.accept = 'image/*';
-  input.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    showToast('업로드 중...');
-    try {
-      const ref = storage.ref(`instructors/${i}_${Date.now()}_${file.name}`);
-      await ref.put(file);
-      const url = await ref.getDownloadURL();
-      INSTRUCTORS_DATA[i].photo = url;
-      renderInstructorsPage();
-      showToast('사진 업로드 완료 ✓');
-    } catch(err) { showToast('업로드 실패: ' + err.message, 'error'); }
-  };
-  input.click();
 }
 
 /* ══════════════════════════════════════════════════
    CRUD — 수강생 후기
 ══════════════════════════════════════════════════ */
 function addReview() {
-  const name   = prompt('수강생 이름:');
-  if (!name?.trim()) return;
-  const course = prompt('수강 과정:') || '';
-  const text   = prompt('후기 내용:') || '';
-  const badge  = prompt('합격 배지 (없으면 빈칸):') || '';
-  const today  = new Date();
-  const date   = `${String(today.getFullYear()).slice(2)}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
-  REVIEWS_DATA.push({ name: name.trim(), course, text, star: 5, badge, date });
-  renderReviewsPage();
+  const today = new Date();
+  const dateStr = `${String(today.getFullYear()).slice(2)}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+  openEditModal({
+    title: '수강생 후기 추가',
+    fields: [
+      { key: 'name',   label: '수강생 이름',  type: 'text' },
+      { key: 'course', label: '수강 과정',    type: 'text', placeholder: '예: 시각편집학과' },
+      { key: 'text',   label: '후기 내용',    type: 'textarea', rows: 4 },
+      { key: 'badge',  label: '합격 배지',    type: 'text', placeholder: '없으면 빈칸 (예: 포토샵 합격)' },
+      { key: 'date',   label: '날짜',         type: 'text', placeholder: 'YY.MM.DD' },
+    ],
+    defaults: { name: '', course: '', text: '', badge: '', date: dateStr },
+    onSave: (d) => {
+      if (!d.name?.trim()) return;
+      REVIEWS_DATA.push({ name: d.name.trim(), course: d.course, text: d.text, star: 5, badge: d.badge, date: d.date });
+      renderReviewsPage();
+    }
+  });
 }
+function deleteReview(i) {
 function deleteReview(i) {
   if (!confirm('이 후기를 삭제하시겠습니까?')) return;
   REVIEWS_DATA.splice(i, 1);
@@ -3828,26 +4069,46 @@ function deleteReview(i) {
    CRUD — 준비물
 ══════════════════════════════════════════════════ */
 function addChecklistItem(id) {
-  const item = prompt('새 준비물:');
-  if (!item?.trim()) return;
-  COURSES[id].checklist.push(item.trim());
-  renderChecklistCard(id);
+  openEditModal({
+    title: '준비물 항목 추가',
+    fields: [
+      { key: 'items', label: '준비물 (여러 개는 줄바꿈으로 구분)', type: 'textarea', rows: 5,
+        hint: '줄바꿈(Enter)으로 여러 항목을 한 번에 추가할 수 있습니다' },
+    ],
+    defaults: { items: '' },
+    onSave: (d) => {
+      const lines = d.items.split('\n').map(s => s.trim()).filter(Boolean);
+      if (!lines.length) return;
+      COURSES[id].checklist.push(...lines);
+      renderChecklistCard(id);
+    }
+  });
 }
+function deleteChecklistItem(id, ci) {
 function deleteChecklistItem(id, ci) {
   COURSES[id].checklist.splice(ci, 1);
   renderChecklistCard(id);
 }
 
 function addBook(id) {
-  const name = prompt('교재명:');
-  if (!name?.trim()) return;
-  const img  = prompt('이미지 URL (예: /images/books/ps.png):') || '';
-  const link = prompt('구매 링크 URL:') || 'https://www.kedustore.com/books/list.asp#3';
-  if (!BOOKS_DATA[id]) BOOKS_DATA[id] = [];
-  BOOKS_DATA[id].push({ img, name: name.trim(), link });
-  renderChecklistCard(id);
-  document.getElementById('cl-'+id)?.classList.add('is-active');
+  openEditModal({
+    title: '교재 추가',
+    fields: [
+      { key: 'name', label: '교재명',    type: 'text' },
+      { key: 'img',  label: '이미지 URL', type: 'text', placeholder: '/images/books/ps.png' },
+      { key: 'link', label: '구매 링크', type: 'text', placeholder: 'https://www.kedustore.com/...' },
+    ],
+    defaults: { name: '', img: '', link: 'https://www.kedustore.com/books/list.asp#3' },
+    onSave: (d) => {
+      if (!d.name?.trim()) return;
+      if (!BOOKS_DATA[id]) BOOKS_DATA[id] = [];
+      BOOKS_DATA[id].push({ img: d.img, name: d.name.trim(), link: d.link });
+      renderChecklistCard(id);
+      document.getElementById('cl-'+id)?.classList.add('is-active');
+    }
+  });
 }
+function deleteBook(id, bi) {
 function deleteBook(id, bi) {
   if (!confirm('이 교재를 삭제하시겠습니까?')) return;
   BOOKS_DATA[id].splice(bi, 1);
