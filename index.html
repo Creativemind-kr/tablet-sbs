@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SBS아카데미컴퓨터아트학원 — 강좌 안내</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#F97316">
   <meta name="mobile-web-app-capable" content="yes">
@@ -581,6 +582,9 @@
   .book-thumb span { font-size:9px; color:var(--c-text-2); text-align:center; line-height:1.3; word-break:keep-all; }
   .kedustore-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#1E3461; color:#fff; border-radius:8px; text-decoration:none; font-size:var(--t-xs); font-weight:700; }
   .supply-img { width:100%; max-width:480px; border-radius:10px; margin-bottom:20px; border:1px solid var(--c-border); }
+  .book-admin-card { width:80px; display:flex; flex-direction:column; gap:3px; }
+  .book-admin-card > img { width:80px; height:100px; object-fit:cover; border-radius:6px; border:1px solid var(--c-border); }
+  .book-input { width:100%; font-size:9px; padding:2px 4px; border:1px solid #d1d5db; border-radius:3px; box-sizing:border-box; background:#fff; }
   .checklist-card__tag {
     display: inline-block;
     font-size: var(--t-xs);
@@ -2630,6 +2634,7 @@ async function loadFromFirestore() {
       if (data.ui)          UI_DATA          = data.ui;
       if (data.instructors) INSTRUCTORS_DATA = data.instructors;
       if (data.reviews)     REVIEWS_DATA     = data.reviews;
+      if (data.books)       BOOKS_DATA       = data.books;
     }
   } catch(e) {
     console.warn('데이터 로드 실패, 기본값 사용:', e.message);
@@ -2647,6 +2652,7 @@ async function saveData() {
       ui:          UI_DATA,
       instructors: INSTRUCTORS_DATA,
       reviews:     REVIEWS_DATA,
+      books:       BOOKS_DATA,
       updatedAt:   new Date().toISOString()
     });
     showToast('저장되었습니다 ✓');
@@ -3131,16 +3137,54 @@ function renderCurriculumView(id) {
     </div>`;
 }
 
-const DEPT_BOOKS = {
-  d01:  [['ps.png','포토샵'],['ai.png','일러스트'],['id.jpg','인디자인']],
-  d02:  [['ae.jpg','애프터이펙트CC'],['3ds.jpg','3ds MAX'],['pw.png','포토웍스']],
-  d03:  [['ae.jpg','애프터이펙트CC']],
-  d04a: [['su.png','스케치업'],['cad.jpg','오토캐드'],['arch.png','건축제도기능사']],
-  d04b: [['mech.jpg','기계제도기능사']],
-  d05:  [['html.jpg','HTML5+CSS3'],['ps.png','포토샵']],
-  d06:  [['ps.png','포토샵'],['ai.png','일러스트'],['pw.png','포토웍스'],['id.jpg','인디자인']],
-  d07:  [['py.png','파이썬'],['c.jpg','C언어'],['java.jpg','자바'],['html.jpg','HTML5+CSS3'],['prog.png','프로그래밍기능사']],
-  d08:  [['itq.png','ITQ'],['compa.jpg','컴활1급'],['acc.png','전산회계1급'],['tax.png','전산세무2급'],['mos.png','모스365세트'],['excel.jpg','엑셀실무']],
+let BOOKS_DATA = {
+  d01:  [
+    {img:'/images/books/ps.png',    name:'포토샵',       link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/ai.png',    name:'일러스트',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/id.jpg',    name:'인디자인',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/pw.png',    name:'포토웍스',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/dealer.jpg',name:'디일러',        link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d02:  [
+    {img:'/images/books/ae.jpg',    name:'애프터이펙트CC', link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/pw.png',    name:'포토웍스',      link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d03:  [
+    {img:'/images/books/ae.jpg',    name:'애프터이펙트CC', link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d04a: [
+    {img:'/images/books/su.png',    name:'스케치업',       link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/cad.jpg',   name:'오토캐드',       link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/arch.png',  name:'건축제도기능사',  link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d04b: [
+    {img:'/images/books/mech.jpg',  name:'기계제도기능사',  link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d05:  [
+    {img:'/images/books/html.jpg',  name:'HTML5+CSS3',    link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/ps.png',    name:'포토샵',         link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d06:  [
+    {img:'/images/books/ps.png',    name:'포토샵',         link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/ai.png',    name:'일러스트',        link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/pw.png',    name:'포토웍스',        link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/id.jpg',    name:'인디자인',        link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d07:  [
+    {img:'/images/books/py.png',    name:'파이썬',          link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/c.jpg',     name:'C언어',           link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/java.jpg',  name:'자바',            link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/html.jpg',  name:'HTML5+CSS3',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/prog.png',  name:'프로그래밍기능사',  link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
+  d08:  [
+    {img:'/images/books/itq.png',   name:'ITQ',             link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/compa.jpg', name:'컴활1급',          link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/acc.png',   name:'전산회계1급',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/tax.png',   name:'전산세무2급',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/mos.png',   name:'모스365세트',      link:'https://www.kedustore.com/books/list.asp#3'},
+    {img:'/images/books/excel.jpg', name:'엑셀실무',         link:'https://www.kedustore.com/books/list.asp#3'}
+  ],
   d09:  [],
   d10:  [],
 };
@@ -3174,8 +3218,31 @@ function renderChecklistCard(id) {
       }
     </li>`).join('');
 
-  const dBooks = DEPT_BOOKS[id] || [];
-  const booksHtml = dBooks.length ? `<div class="checklist-books"><p class="checklist-books__label">필요 교재</p><div class="checklist-books__grid">${dBooks.map(([img,name])=>`<a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="book-thumb"><img src="/images/books/${img}" alt="${name}" loading="lazy"><span>${name}</span></a>`).join('')}</div><a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="kedustore-btn">🛒 교재 구매 바로가기</a></div>` : '';
+  const dBooks = BOOKS_DATA[id] || [];
+  const booksHtml = (dBooks.length || em) ? `
+    <div class="checklist-books">
+      <p class="checklist-books__label">필요 교재</p>
+      <div class="checklist-books__grid">
+        ${dBooks.map((b, bi) => em
+          ? `<div class="book-admin-card">
+               <img src="${b.img}" onerror="this.style.opacity='.3'" loading="lazy">
+               <input class="book-input" placeholder="교재명" value="${b.name}" onchange="editBook('${id}',${bi},'name',this.value)">
+               <input class="book-input" placeholder="이미지 URL" value="${b.img}" onchange="editBook('${id}',${bi},'img',this.value)">
+               <input class="book-input" placeholder="링크 URL" value="${b.link||''}" onchange="editBook('${id}',${bi},'link',this.value)">
+               <button class="admin-del-btn" onclick="deleteBook('${id}',${bi})">✕</button>
+             </div>`
+          : `<a href="${b.link||'#'}" target="_blank" rel="noopener" class="book-thumb">
+               <img src="${b.img}" alt="${b.name}" loading="lazy">
+               <span>${b.name}</span>
+             </a>`
+        ).join('')}
+      </div>
+      ${em
+        ? `<button class="admin-add-btn" onclick="addBook('${id}')">+ 교재 추가</button>`
+        : dBooks.length ? `<a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="kedustore-btn">🛒 교재 구매 바로가기</a>` : ''
+      }
+    </div>` : '';
+
   const supplyImgHtml = DEPT_SUPPLIES[id] ? `<img src="/images/supplies/${DEPT_SUPPLIES[id]}" class="supply-img" alt="${c.label} 준비물 안내">` : '';
 
   el.innerHTML = `
@@ -3769,6 +3836,27 @@ function addChecklistItem(id) {
 function deleteChecklistItem(id, ci) {
   COURSES[id].checklist.splice(ci, 1);
   renderChecklistCard(id);
+}
+
+function addBook(id) {
+  const name = prompt('교재명:');
+  if (!name?.trim()) return;
+  const img  = prompt('이미지 URL (예: /images/books/ps.png):') || '';
+  const link = prompt('구매 링크 URL:') || 'https://www.kedustore.com/books/list.asp#3';
+  if (!BOOKS_DATA[id]) BOOKS_DATA[id] = [];
+  BOOKS_DATA[id].push({ img, name: name.trim(), link });
+  renderChecklistCard(id);
+  document.getElementById('cl-'+id)?.classList.add('is-active');
+}
+function deleteBook(id, bi) {
+  if (!confirm('이 교재를 삭제하시겠습니까?')) return;
+  BOOKS_DATA[id].splice(bi, 1);
+  renderChecklistCard(id);
+  document.getElementById('cl-'+id)?.classList.add('is-active');
+}
+function editBook(id, bi, field, val) {
+  if (!BOOKS_DATA[id]?.[bi]) return;
+  BOOKS_DATA[id][bi][field] = val;
 }
 
 /* ══════════════════════════════════════════════════
