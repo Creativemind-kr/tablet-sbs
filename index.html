@@ -450,6 +450,8 @@
   .dept-intro__text:empty:not(:focus) { display: none; }
   .admin-edit .dept-intro__text:empty { display: block; min-height: 48px; }
   .admin-edit .dept-intro__text:empty::before { content: '학과 소개 텍스트를 여기에 입력하세요 (클릭해서 편집)'; color: var(--c-text-3); font-style: italic; font-size: var(--t-sm); }
+  .admin-edit .dept-intro__text .admin-editable:empty::before { content: '학과 소개 텍스트를 여기에 입력하세요 (클릭해서 편집)'; color: var(--c-text-3); font-style: italic; font-size: var(--t-sm); }
+  .admin-edit .dept-intro__text:has(.admin-editable:empty) { min-height: 48px; }
   .dept-intro__img {
     width: 100%;
     display: block;
@@ -3454,7 +3456,7 @@ function renderCurriculumView(id) {
   const lastMonthUrl = monthImgsData[trackedMonth];
   const lastMonthHtml = trackedMonth > 0 ? (
     lastMonthUrl
-      ? `<div class="curr-month-img-section"><img src="${lastMonthUrl}" class="curr-month-img" onclick="openLightbox('${lastMonthUrl}')"><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
+      ? `<div class="curr-month-img-section"><img src="${lastMonthUrl}" class="curr-month-img" onclick="openLightbox('${lastMonthUrl}')"><button class="curr-month-img-chg" onclick="addMonthImg('${id}',${trackedMonth})">🖼 변경</button><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
       : (em ? `<div class="curr-month-img-empty"><button class="admin-add-btn" onclick="addMonthImg('${id}',${trackedMonth})">+ ${trackedMonth}달차 이미지 추가</button></div>` : '')
   ) : '';
   const weeks = weekParts.join('') + lastMonthHtml;
