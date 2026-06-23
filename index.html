@@ -233,23 +233,22 @@
   .stat-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    border: 1px solid var(--c-border);
-    border-radius: 16px;
-    overflow: hidden;
+    gap: 12px;
     margin-bottom: 52px;
   }
   .stat-card {
-    padding: 24px 28px;
-    border-right: 1px solid var(--c-border);
+    padding: 22px 20px;
+    border: 1px solid var(--c-border);
+    border-top: 3px solid #1E3461;
+    border-radius: 14px;
+    background: var(--c-bg-2);
   }
-  .stat-card:last-child { border-right: none; }
   .stat-num {
     display: block;
     font-size: var(--t-3xl);
     font-weight: 800;
     letter-spacing: -.045em;
-    color: var(--c-text);
+    color: #1E3461;
     margin-bottom: 3px;
     line-height: 1;
   }
@@ -290,15 +289,31 @@
   .badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   .badge {
     padding: 7px 14px;
-    border: 1px solid var(--c-border);
+    background: #F1F5F9;
     border-radius: 99px;
     font-size: var(--t-sm);
-    color: var(--c-text-2);
+    color: #374151;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 4px;
   }
+  .hero-flow { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:48px; }
+  .flow-step { padding:5px 13px; background:var(--c-bg-2); border:1px solid var(--c-border); border-radius:99px; font-size:var(--t-sm); font-weight:500; color:var(--c-text-2); }
+  .flow-arr  { color:var(--c-text-3); font-size:.85rem; }
+  .feature-card--featured {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #EEF2FF 0%, #F0FDF4 100%);
+    border-color: transparent;
+  }
+  .feature-card--featured .feature-card__icon-wrap {
+    width: 56px; height: 56px;
+    background: #1E3461;
+    color: #fff;
+    font-size: 1.5rem;
+    border-radius: 14px;
+  }
+  .section-mini-label { font-size:var(--t-xs); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--c-text-3); margin-top:32px; margin-bottom:10px; }
 
   /* ══════════════════════════════════════
      7. SUB-NAV
@@ -634,9 +649,8 @@
   @media (max-width: 680px) {
     :root { --t-hero: 3rem; --t-3xl: 1.8rem; --t-2xl: 1.4rem; }
     .page { padding: 28px 18px 48px; }
-    .stat-row { grid-template-columns: 1fr; border-radius: 12px; }
-    .stat-card { border-right: none; border-bottom: 1px solid var(--c-border); }
-    .stat-card:last-child { border-bottom: none; }
+    .stat-row { grid-template-columns: 1fr; }
+    .stat-num { color: #1E3461; }
     .feature-grid { grid-template-columns: 1fr; }
     .feature-card { padding: 18px; gap: 14px; }
     .course-card__body { grid-template-columns: 1fr; }
@@ -2883,23 +2897,34 @@ function renderUI() {
       <span class="stat-lbl">${E('ui.stats.'+i+'.label', s.label)}</span>
     </div>`).join('');
 
-  const features = d.features.map((f, i) => `
-    <article class="feature-card">
+  const features = d.features.map((f, i) => {
+    const isFeatured = i === d.features.length - 1;
+    return `
+    <article class="feature-card${isFeatured ? ' feature-card--featured' : ''}">
       ${em ? `<button class="admin-del-float" onclick="deleteFeature(${i})" title="카드 삭제">✕</button>` : ''}
       <div class="feature-card__icon-wrap">${E('ui.features.'+i+'.icon', f.icon)}</div>
       <div class="feature-card__body">
         <h3 class="feature-card__title">${E('ui.features.'+i+'.title', f.title)}</h3>
         <p  class="feature-card__desc">${E('ui.features.'+i+'.desc',   f.desc)}</p>
       </div>
-    </article>`).join('');
+    </article>`;
+  }).join('');
 
   const badges = d.badges.map((b, i) => `
     <span class="badge">
       ${em
         ? `<span class="admin-inline-row">${E('ui.badges.'+i, b)}<button class="admin-del-btn" onclick="deleteBadge(${i})" title="삭제">✕</button></span>`
-        : b
+        : `✓ ${b}`
       }
     </span>`).join('');
+
+  const heroFlow = em
+    ? `<p class="hero-sub">${E('ui.hero.sub', d.hero.sub)}</p>`
+    : `<div class="hero-flow">${
+        d.hero.sub.split('→').map(s => s.trim())
+          .map(s => `<span class="flow-step">${s}</span>`)
+          .join('<span class="flow-arr">›</span>')
+      }</div>`;
 
   document.getElementById('intro-content').innerHTML = `
     <p class="page-label">학원 소개</p>
@@ -2907,12 +2932,13 @@ function renderUI() {
       ${E('ui.hero.line1', d.hero.line1)}<br>
       <em>${E('ui.hero.emphasis', d.hero.emphasis)}</em>${E('ui.hero.line2', d.hero.line2)}
     </h1>
-    <p class="hero-sub">${E('ui.hero.sub', d.hero.sub)}</p>
+    ${heroFlow}
     <div class="stat-row">${stats}</div>
     <div class="feature-grid">
       ${features}
       ${em ? '<button class="admin-add-block" onclick="addFeature()">+ 특징 카드 추가</button>' : ''}
     </div>
+    <p class="section-mini-label">시설 &amp; 환경</p>
     <div class="badge-row">
       ${badges}
       ${em ? '<button class="admin-add-btn" onclick="addBadge()">+ 배지 추가</button>' : ''}
