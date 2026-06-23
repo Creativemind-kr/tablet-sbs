@@ -435,6 +435,34 @@
   /* ══════════════════════════════════════
      9. CURRICULUM ACCORDION
   ══════════════════════════════════════ */
+  .dept-intro { margin-bottom: 32px; }
+  .dept-intro__text {
+    font-size: var(--t-md);
+    color: var(--c-text-2);
+    line-height: 1.75;
+    white-space: pre-line;
+    margin-bottom: 18px;
+    padding: 20px 22px;
+    background: var(--c-bg-2);
+    border-left: 3px solid var(--c-course);
+    border-radius: 0 12px 12px 0;
+  }
+  .dept-intro__text:empty:not(:focus) { display: none; }
+  .admin-edit .dept-intro__text:empty { display: block; min-height: 48px; }
+  .admin-edit .dept-intro__text:empty::before { content: '학과 소개 텍스트를 여기에 입력하세요 (클릭해서 편집)'; color: var(--c-text-3); font-style: italic; font-size: var(--t-sm); }
+  .dept-intro__img {
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+    object-fit: contain;
+  }
+  .dept-intro__img-wrap { position: relative; }
+  .dept-intro__img-edit {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(0,0,0,.55); color: #fff;
+    border: none; border-radius: 8px; padding: 5px 10px;
+    font-size: .75rem; cursor: pointer;
+  }
   .curr-header {
     display: flex;
     align-items: flex-end;
@@ -3104,6 +3132,23 @@ function renderRoadmapView(id) {
       </div>
     </div>`).join('');
 
+  const introImg  = c.introImg  || DEPT_IMG[id] || '';
+  const introText = c.introText || '';
+  const hasIntro  = introImg || introText || em;
+
+  const introHTML = hasIntro ? `
+    <div class="dept-intro">
+      <div class="dept-intro__text">${em
+        ? E('courses.'+id+'.introText', introText)
+        : introText
+      }</div>
+      ${introImg ? `
+      <div class="dept-intro__img-wrap">
+        <img class="dept-intro__img" src="${introImg}" alt="${c.label} 학과소개" loading="lazy">
+        ${em ? `<button class="dept-intro__img-edit" onclick="editDeptIntroImg('${id}')">🖼 이미지 변경</button>` : ''}
+      </div>` : (em ? `<button class="admin-add-btn" onclick="editDeptIntroImg('${id}')">+ 학과소개 이미지 추가</button>` : '')}
+    </div>` : '';
+
   let el = document.getElementById('rm-'+id);
   if (!el) {
     el = document.createElement('div');
@@ -3112,6 +3157,7 @@ function renderRoadmapView(id) {
     document.getElementById('roadmap-views').appendChild(el);
   }
   el.innerHTML = `
+    ${introHTML}
     <div class="curr-header">
       <h2 class="curr-header__title">${c.label}</h2>
       <div class="curr-header__meta">${c.duration}</div>
@@ -3403,6 +3449,14 @@ function renderCurriculumView(id) {
       </div>` : ''}
     </div>`;
 }
+
+const DEPT_IMG = {
+  d01: 'images/dept/d01.png', d02: 'images/dept/d02.png',
+  d03: 'images/dept/d03.png', d04a: 'images/dept/d04a.png',
+  d04b: 'images/dept/d04b.jpg', d05: 'images/dept/d05.png',
+  d06: 'images/dept/d06.png', d07: 'images/dept/d07.png',
+  d08: 'images/dept/d08.png', d09: 'images/dept/d09.png',
+};
 
 let BOOKS_DATA = {
   d01:  [
@@ -4037,6 +4091,31 @@ function deleteRoadmapStep(id, si) {
     COURSES[id].roadmap.splice(si, 1);
     renderRoadmapView(id);
     document.getElementById('rm-'+id)?.classList.add('is-active');
+  });
+}
+
+function editDeptIntroImg(id) {
+  openEditModal({
+    title: '학과소개 이미지 변경',
+    fields: [
+      { key: 'img', label: '이미지', type: 'file-drop', accept: 'image/*' },
+    ],
+    defaults: { img: '' },
+    onSave: async (d, pending) => {
+      try {
+        let url = '';
+        if (pending.img) {
+          url = await uploadToStorage(pending.img, `dept/${id}`);
+        } else if (d.img) {
+          url = d.img;
+        }
+        if (!url) return;
+        COURSES[id].introImg = url;
+        renderRoadmapView(id);
+        document.getElementById('rm-'+id)?.classList.add('is-active');
+        showToast('이미지 업로드 완료 ✓');
+      } catch(e) { showToast('업로드 실패: ' + e.message, 'error'); }
+    }
   });
 }
 
