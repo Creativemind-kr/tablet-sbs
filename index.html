@@ -2547,6 +2547,7 @@ const LOGO_PRESETS = [
   { name: 'Unity',          slug: 'unity' },
   { name: 'SketchUp',       slug: 'sketchup' },
   { name: 'Krita',          slug: 'krita' },
+  { name: 'Clip Studio',    slug: 'clipstudiopaint' },
   { name: 'Procreate',      slug: 'iconify:ph:pencil-circle-fill' },
   { name: 'VS Code',        slug: 'visualstudiocode' },
   { name: 'Eclipse',        slug: 'eclipseide' },
@@ -2647,9 +2648,9 @@ function logoUrl(slug) {
     const rest = slug.slice(8);
     const col  = rest.split(':')[0];
     const icon = rest.split(':')[1];
-    return `https://api.iconify.design//.svg?color=%23888`;
+    return `https://api.iconify.design/${col}/${icon}.svg?color=%23888`;
   }
-  return `https://cdn.jsdelivr.net/npm/simple-icons@11/icons/.svg`;
+  return `https://cdn.jsdelivr.net/npm/simple-icons@11/icons/${slug}.svg`;
 }
 
 function linkify(text) {
