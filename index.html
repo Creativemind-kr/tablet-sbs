@@ -895,6 +895,8 @@
   .aeb-cancel:hover { background: rgba(255,255,255,0.2); }
   .aeb-save { background: #22c55e; color: #fff; }
   .aeb-save:hover { background: #16a34a; }
+  .aeb-exit { background: rgba(255,255,255,0.07); color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.18) !important; }
+  .aeb-exit:hover { background: rgba(255,255,255,0.15); color: #fff; }
   .admin-fab { position: fixed; bottom: 20px; right: 16px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
   .admin-fab__edit { padding: 9px 18px; background: #1E3461; color: #fff; border: none; border-radius: 24px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.25); white-space: nowrap; }
   .admin-fab__edit:hover { background: #2d4f8f; }
@@ -1180,7 +1182,8 @@
   <span class="aeb-hint">텍스트 클릭 후 직접 수정 · 버튼으로 항목 추가/삭제</span>
   <div class="aeb-actions">
     <button class="aeb-btn aeb-cancel" onclick="adminCancel()">↩ 취소</button>
-    <button class="aeb-btn aeb-save" onclick="adminSaveAndExit()">💾 저장하고 나가기</button>
+    <button class="aeb-btn aeb-save" onclick="adminSave()">💾 저장</button>
+    <button class="aeb-btn aeb-exit" onclick="adminExit()">✕ 편집 종료</button>
   </div>
 </div>
 <!-- ══ 관리자 FAB ══ -->
@@ -2871,9 +2874,20 @@ function adminCancel() {
   }
 }
 
-async function adminSaveAndExit() {
+async function adminSave() {
   await saveData();
-  exitEditMode(false);
+  _editSnap = _takeSnap();
+}
+
+async function adminExit() {
+  if (_editSnap && _takeSnap() !== _editSnap) {
+    openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n저장하고 편집을 종료하시겠습니까?', async () => {
+      await saveData();
+      exitEditMode();
+    }, '저장하고 종료');
+  } else {
+    exitEditMode();
+  }
 }
 
 function adminLogout() {
