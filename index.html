@@ -554,7 +554,8 @@
   .curr-month-img-section { position: relative; margin: 12px 0 20px; border-radius: 12px; overflow: hidden; background: var(--c-bg-2); }
   .curr-month-img-section .curr-month-img { width: 100%; display: block; cursor: zoom-in; }
   .curr-month-img-del { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: .7rem; cursor: pointer; display: none; }
-  .admin-edit .curr-month-img-del { display: block; }
+  .curr-month-img-chg { position: absolute; top: 8px; right: 48px; background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: .7rem; cursor: pointer; display: none; }
+  .admin-edit .curr-month-img-del, .admin-edit .curr-month-img-chg { display: block; }
   .curr-month-img-empty { margin: 8px 0 16px; }
   .diff-stars { font-size: 11px; letter-spacing: 1.5px; flex-shrink: 0; margin-left: 6px; cursor: default; }
   .diff-stars .s-on { color: #F59E0B; }
@@ -3343,7 +3344,7 @@ function renderCurriculumView(id) {
     if (blockMonth > 0 && blockMonth > trackedMonth && trackedMonth > 0) {
       const url = monthImgsData[trackedMonth];
       monthImgPrefix = url
-        ? `<div class="curr-month-img-section"><img src="${url}" class="curr-month-img" onclick="openLightbox('${url}')"><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
+        ? `<div class="curr-month-img-section"><img src="${url}" class="curr-month-img" onclick="openLightbox('${url}')"><button class="curr-month-img-chg" onclick="addMonthImg('${id}',${trackedMonth})">🖼 변경</button><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
         : (em ? `<div class="curr-month-img-empty"><button class="admin-add-btn" onclick="addMonthImg('${id}',${trackedMonth})">+ ${trackedMonth}달차 이미지 추가</button></div>` : '');
     }
     if (blockMonth > 0) trackedMonth = blockMonth;
@@ -4160,7 +4161,7 @@ function deleteRoadmapStep(id, si) {
 function addMonthImg(id, month) {
   const c = COURSES[id];
   openEditModal({
-    title: `${month}달차 이미지 추가`,
+    title: `${month}달차 이미지 ${c.monthImgs?.[month] ? '변경' : '추가'}`,
     fields: [{ key: 'img', label: '이미지', type: 'file-drop', accept: 'image/*' }],
     defaults: { img: c.monthImgs?.[month] || '' },
     onSave: async (d) => {
