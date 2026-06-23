@@ -55,6 +55,7 @@
   .app.c-ps    { --c-course: #F97316; --c-course-tint: #FFF7ED; }
   .app.c-video { --c-course: #EF4444; --c-course-tint: #FEF2F2; }
   .app.c-uiux  { --c-course: #8B5CF6; --c-course-tint: #F5F3FF; }
+  .app.c-ai    { --c-course: #0EA5E9; --c-course-tint: #F0F9FF; }
 
   /* ══════════════════════════════════════
      2. RESET
@@ -534,7 +535,7 @@
   /* 포트폴리오 그리드 */
   .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 8px; }
   .portfolio-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; background: var(--c-bg-2); cursor: pointer; }
-  .portfolio-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+  .portfolio-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; object-position: center center; max-height: 450px; }
   .portfolio-item:hover img { transform: scale(1.04); }
   .portfolio-item--video { cursor: default; }
   .portfolio-item--video iframe { width: 100%; height: 100%; border: 0; }
@@ -765,12 +766,13 @@
   .img-gallery { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 16px; margin-bottom: 8px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
   .img-gallery::-webkit-scrollbar { height: 3px; }
   .img-gallery::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
-  .img-gallery__item { flex-shrink: 0; width: 190px; height: 130px; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; scroll-snap-align: start; border: 1px solid var(--c-border); }
-  .img-gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+  .img-gallery__item { flex-shrink: 0; width: 480px; aspect-ratio: 4/3; max-height: 360px; border-radius: 12px; overflow: hidden; cursor: pointer; position: relative; scroll-snap-align: start; border: 1px solid var(--c-border); }
+  .img-gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; object-position: center center; }
   .img-gallery__item:hover img { transform: scale(1.04); }
   .img-gallery__del { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,.6); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: .7rem; display: flex; align-items: center; justify-content: center; }
-  .img-gallery__add { flex-shrink: 0; width: 120px; height: 130px; border-radius: 12px; border: 2px dashed var(--c-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--c-text-2); font-size: var(--t-sm); background: none; scroll-snap-align: start; }
+  .img-gallery__add { flex-shrink: 0; width: 140px; aspect-ratio: 4/3; border-radius: 12px; border: 2px dashed var(--c-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--c-text-2); font-size: var(--t-sm); background: none; scroll-snap-align: start; }
   .img-gallery__add:hover { border-color: var(--c-text-2); }
+  .img-pos-sel { position: absolute; bottom: 0; left: 0; right: 0; font-size: 10px; padding: 3px 6px; border: none; background: rgba(0,0,0,.55); color: #fff; cursor: pointer; }
   .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.88); z-index: 500; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
   .lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 10px; pointer-events: none; }
   .lightbox__close { position: absolute; top: 18px; right: 22px; color: #fff; font-size: 2rem; background: none; border: none; cursor: pointer; line-height: 1; }
@@ -1099,27 +1101,29 @@ let UI_DATA = {
   hero: {
     line1:    '디자인의 시작,',
     emphasis: '여기서',
-    line2:    ' 완성됩니다.',
-    sub:      '실무 중심 커리큘럼 · 소수 정예 수업 · 취업 연계 지원'
+    line2:    ' AI로 완성됩니다.',
+    sub:      '기초디자인 → AI 활용 → 학과별 전문 과정 → 포트폴리오 완성'
   },
   stats: [
     { num: '20+', label: '년 교육 경력'   },
     { num: '6인',  label: '이하 소수 정예' },
-    { num: '10개', label: '전문 과정 운영' }
+    { num: '11개', label: '전문 과정 운영' }
   ],
   features: [
     { icon: '✦', title: '실무 전문 강사진', desc: '현업에서 직접 활동하는 강사가 최신 실무 트렌드를 그대로 전달합니다.' },
     { icon: '◈', title: '소수 정예 수업',   desc: '소규모 인원으로 운영되어 개인별 집중 피드백과 맞춤 지도가 가능합니다.' },
     { icon: '◉', title: '포트폴리오 완성',  desc: '수료 시 취업에 바로 사용할 수 있는 실전 포트폴리오를 함께 완성합니다.' },
-    { icon: '◎', title: '취업 연계 지원',   desc: '수료 후 취업처 연계 및 이력서·면접 컨설팅을 함께 제공합니다.' }
+    { icon: '◎', title: '취업 연계 지원',   desc: '수료 후 취업처 연계 및 이력서·면접 컨설팅을 함께 제공합니다.' },
+    { icon: '⚡', title: 'AI 활용 통합 교육', desc: '디자인은 여전히 모든 콘텐츠의 중심입니다. 이제 그 중심에 AI 활용 능력이 더해져야 합니다. SBS아카데미는 LLM, Figma, Midjourney, Claude Code 등 실무 AI 도구를 기초디자인과 함께 다룹니다.' }
   ],
-  badges: ['최신 맥·윈도우 장비','Adobe 정품 소프트웨어','쾌적한 강의 환경','개인 작업 공간','복습 영상 제공','6인 이하 소수 정예']
+  badges: ['최신 맥·윈도우 장비','Adobe 정품 소프트웨어','LLM·AI 실무 도구 교육','쾌적한 강의 환경','개인 작업 공간','복습 영상 제공','6인 이하 소수 정예']
 };
 
 let COURSES = {
   d01: {
     colorKey: 'ps', label: '시각편집학과', duration: '정규·단기·주말반',
     title: '시각편집학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'Photoshop + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초 도구 완전 정복' },
       { phase: '02', title: 'InDesign + 그래픽아트웍', weeks: '8주', desc: '편집 디자인 & 레이아웃 실무' },
       { phase: '03', title: '브랜딩디자인 + UI/UX', weeks: '8주', desc: '브랜드 아이덴티티 & UX 기획' },
@@ -1127,7 +1131,14 @@ let COURSES = {
       { phase: '05', title: '편집 포트폴리오', weeks: '4주', desc: '취업 포트폴리오 완성' }
     ], images: [],
     curriculum: [
-      { week: 'Photoshop', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'Photoshop', topic: '', items: [
         '## Week 01',
         '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
@@ -1308,6 +1319,7 @@ let COURSES = {
   d02: {
     colorKey: 'video', label: 'CG학과', duration: '정규·단기·주말반',
     title: 'CG학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: '드로잉Total + Photoshop + 일러스트', weeks: '20주', desc: '2D 기초 드로잉 & 그래픽' },
       { phase: '02', title: '프리미어프로 + After Effects', weeks: '12주', desc: '영상 편집 & 모션 기초' },
       { phase: '03', title: 'MAYA (24주)', weeks: '24주', desc: '3D 모델링·리깅·렌더링 전문화' },
@@ -1315,7 +1327,14 @@ let COURSES = {
       { phase: '05', title: '블렌더 + 블렌더 포트폴리오', weeks: '20주', desc: '블렌더 3D 전문 과정' }
     ], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: '드로잉Total', topic: '', items: [
         '## Week 01',
         '# 강사소개', '타블렛 드라이버 설치',
         '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
@@ -1464,13 +1483,21 @@ let COURSES = {
   d03: {
     colorKey: 'web', label: '모션그래픽학과', duration: '정규·단기·주말반',
     title: '모션그래픽학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'Photoshop + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초' },
       { phase: '02', title: '프리미어프로 + After Effects', weeks: '12주', desc: '영상 편집 & 모션 기초' },
       { phase: '03', title: 'Cinema 4D (12주)', weeks: '12주', desc: '3D 모션 그래픽 전문화' },
       { phase: '04', title: '모션그래픽 포트폴리오', weeks: '12주', desc: '상업용 모션 포트폴리오 완성' }
     ], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: '드로잉Total', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉',
@@ -1577,6 +1604,7 @@ let COURSES = {
   d04a: {
     colorKey: 'uiux', label: '인테리어학과', duration: '정규·단기·주말반',
     title: '인테리어학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'AutoCAD', weeks: '8주', desc: '도면 기초 & 건축 평면도' },
       { phase: '02', title: 'SketchUp + 3DS Max', weeks: '16주', desc: '3D 인테리어 모델링 & 렌더링' },
       { phase: '03', title: 'Revit (BIM)', weeks: '8주', desc: 'BIM 설계 & 건축 모델링' },
@@ -1584,7 +1612,14 @@ let COURSES = {
       { phase: '05', title: 'AI인테리어 + 포트폴리오', weeks: '8주', desc: 'AI 활용 & 취업 포트폴리오 완성' }
     ], images: [],
     curriculum: [
-      { week: 'AutoCAD', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'AutoCAD', topic: '', items: [
         '## Week 01',
         '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting',
         '# 선 도형 그리기', 'Line/Rectang/Circle',
@@ -1738,12 +1773,20 @@ let COURSES = {
   d04b: {
     colorKey: 'ps', label: '기계·제품학과', duration: '정규·단기·주말반',
     title: '기계·제품학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'AutoCAD', weeks: '8주', desc: '기계 도면 기초 & 2D CAD' },
       { phase: '02', title: '인벤터 (Inventor)', weeks: '4주', desc: '3D 파라메트릭 모델링 & 조립' },
       { phase: '03', title: '전산응용기계제도기능사', weeks: '5주', desc: '국가 자격증 취득 실전 대비' }
     ], images: [],
     curriculum: [
-      { week: 'AutoCAD', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'AutoCAD', topic: '', items: [
         '## Week 01', '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting', '# 선 도형 그리기', 'Line/Rectang/Circle', '# 좌표', '정대좌표/상대좌표/상대극좌표',
         '## Week 02', '# 이동/복사/대칭/회전', 'Move/Copy/Mirror/Rotate', '# 간격복사', 'Offset', '# 합체/복사', 'Join/Explode',
         '## Week 03', '# 자르기/연장', 'Trim/Extend', '# 호/타원', 'Arc/Ellipse',
@@ -1789,13 +1832,21 @@ let COURSES = {
   d05: {
     colorKey: 'web', label: '웹디자인학과', duration: '정규·단기·주말반',
     title: '웹디자인학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'Photoshop + 일러스트 + 드로잉', weeks: '20주', desc: '그래픽 기초 & 디지털 드로잉' },
       { phase: '02', title: '웹 (HTML/CSS/JS)', weeks: '12주', desc: '웹 퍼블리싱 기초~심화' },
       { phase: '03', title: 'UI/UX (Figma)', weeks: '8주', desc: 'UX 기획 & Figma 앱 디자인' },
       { phase: '04', title: '웹 포트폴리오', weeks: '4주', desc: '취업 웹 포트폴리오 완성' }
     ], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: '드로잉Total', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
@@ -1888,12 +1939,20 @@ let COURSES = {
   d06: {
     colorKey: 'video', label: '아트웍학과', duration: '정규·단기·주말반',
     title: '아트웍학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: '드로잉Total', weeks: '16주', desc: '타블렛 기초 ~ 캐릭터 일러스트 완성' },
       { phase: '02', title: '심화드로잉', weeks: '20주', desc: '연필화·수채화·인체·배경 전문화' },
       { phase: '03', title: 'AI프롬프트 (선택)', weeks: '8주', desc: 'AI 이미지 생성 & 창작 활용' }
     ], images: [],
     curriculum: [
-      { week: '드로잉Total', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: '드로잉Total', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
@@ -1932,13 +1991,21 @@ let COURSES = {
   d07: {
     colorKey: 'uiux', label: 'IT프로그래밍학과', duration: '정규·단기·주말반',
     title: 'IT프로그래밍학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'C 언어', weeks: '8주', desc: '프로그래밍 기초 & 포인터/구조체' },
       { phase: '02', title: '자바', weeks: '8주', desc: '객체지향 & 컬렉션/람다식' },
       { phase: '03', title: '파이썬', weeks: '8주', desc: '스크립팅 & 라이브러리 활용' },
       { phase: '04', title: '웹 프로젝트', weeks: '4주', desc: 'Spring Boot 풀스택 프로젝트' }
     ], images: [],
     curriculum: [
-      { week: 'C 언어', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'C 언어', topic: '', items: [
         '## Week 01',
         '# 프로그래밍 기초', 'Visual Studio 기본설정',
         '# 변수/자료형/입출력', '자료형 소개/정변수',
@@ -2028,13 +2095,21 @@ let COURSES = {
   d08: {
     colorKey: 'ps', label: '자격증OA학과', duration: '정규·단기·주말반',
     title: '자격증OA학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'ITQ / MOS', weeks: '8주', desc: '오피스 기초 자격증' },
       { phase: '02', title: '엑셀실무 + 컴활1급 실기', weeks: '8주', desc: '엑셀 실무 & 컴퓨터활용능력 1급' },
       { phase: '03', title: '전산회계1급', weeks: '8주', desc: '회계 원리 & KcLep 실무' },
       { phase: '04', title: '전산세무2급', weeks: '8주', desc: '부가세·법인세 신고 실무' }
     ], images: [],
     curriculum: [
-      { week: 'ITQ', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'ITQ', topic: '', items: [
         '## Week 01',
         '# OT/PowerPoint', '프레젠테이션 기획 및 설계', '표와 기본적인 편집 기능',
         '## Week 02', '# Word',
@@ -2112,13 +2187,21 @@ let COURSES = {
   d09: {
     colorKey: 'web', label: '유튜브학과', duration: '정규·단기·주말반',
     title: '유튜브학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
       { phase: '01', title: 'Photoshop + 일러스트', weeks: '8주', desc: '썸네일·그래픽 기초' },
       { phase: '02', title: 'AI 프롬프트', weeks: '8주', desc: 'ChatGPT·Midjourney AI 콘텐츠 제작' },
       { phase: '03', title: '1인크리에이터', weeks: '8주', desc: '채널 기획·편집·수익화' },
       { phase: '04', title: 'AI유튜브', weeks: '4주', desc: 'Vrew·CapCut AI 영상 제작 & 업로드' }
     ], images: [],
     curriculum: [
-      { week: 'Photoshop', topic: '', items: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },      { week: 'Photoshop', topic: '', items: [
         '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
         '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
@@ -2185,6 +2268,85 @@ let COURSES = {
         '# Vrew 영상편집', '기본이용방법/AI 영상편집',
         '## Week 04',
         '# CapCut 동영상', '이미지/영상 편집', '사용 방법/실제 발표 업로드 적용'
+      ], images: [] }
+    ],
+    checklist: []
+  },
+  d10: {
+    colorKey: 'ai', label: 'AI학과', duration: '정규·단기·주말반',
+    title: 'AI학과\n과정 안내', desc: 'AI는 이제 선택이 아니라 기본 역량입니다. SBS아카데미는 디자인 기본기 위에 LLM과 생성형 AI, 에이전트 도구 활용을 연결해 실무 제작 속도와 결과물의 완성도를 함께 높입니다.', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
+      { phase: '01', title: 'AI아키텍쳐 — LLM 기초', weeks: '4주', desc: 'LLM 원리·생성형 AI 이해·프롬프트 설계·워크플로 자동화' },
+      { phase: '02', title: 'AI에이전트 — Claude Code 활용', weeks: '4주', desc: '에이전트 기반 작업 방식·반복 업무 자동화·실무 제작 보조' },
+      { phase: '03', title: 'AI웹/시각 특화', weeks: '8주', desc: 'LLM + Figma + Midjourney → 웹·시각 결과물 제작' },
+      { phase: '04', title: 'AI CG/모션/영상 특화', weeks: '8주', desc: 'Higgsfield + LLM + Midjourney → 영상·모션·CG 제작' }
+    ], images: [],
+    curriculum: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# Photoshop 기본', 'Selection / Layer / 기본 합성',
+        '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },
+      { week: 'AI아키텍쳐', topic: '', items: [
+        '## Week 01',
+        '# AI 개요 & LLM 이해', 'AI의 역사 / 머신러닝 vs 딥러닝 개념',
+        '# 생성형 AI 원리', 'Transformer / 토큰 / 컨텍스트 윈도우',
+        '## Week 02',
+        '# 프롬프트 엔지니어링', 'Zero-shot / Few-shot / Chain-of-Thought',
+        '# 주요 LLM 비교', 'GPT-4 / Claude / Gemini / Llama 특성 비교',
+        '## Week 03',
+        '# RAG & 벡터DB 기초', '임베딩 / 검색 증강 생성 개념',
+        '# API 연동 실습', 'OpenAI API / Claude API 호출 기초',
+        '## Week 04',
+        '# AI 워크플로 설계', '업무 자동화 파이프라인 기획',
+        '# 실습 프로젝트', '나만의 AI 도구 설계 & 발표'
+      ], images: [] },
+      { week: 'AI에이전트', topic: '', items: [
+        '## Week 01',
+        '# AI 에이전트 개념', '에이전트 vs 챗봇 차이 / Tool Use 개념',
+        '# Claude Code 환경 설정', '설치 & 기본 사용법 / MCP 개념',
+        '## Week 02',
+        '# Claude Code 실습', '코드 생성 & 리팩터링 / 파일 자동화',
+        '# 에이전트 패턴', 'ReAct / Plan-and-Execute 패턴',
+        '## Week 03',
+        '# 멀티 에이전트 구성', '서브에이전트 분기 / 병렬 처리',
+        '# MCP 서버 연동', '외부 도구(Figma/Slack/DB) 연결',
+        '## Week 04',
+        '# 에이전트 프로젝트', '업무 자동화 에이전트 직접 구축',
+        '# 발표 & 피드백', '완성 에이전트 시연'
+      ], images: [] },
+      { week: 'AI웹/시각 (특화)', topic: '', items: [
+        '## Week 01',
+        '# LLM 기반 UI 기획', 'AI로 와이어프레임 자동 생성',
+        '# Figma AI 플러그인', 'AI 디자인 어시스턴트 활용',
+        '## Week 02',
+        '# Midjourney 기초', '비주얼 프롬프트 / 스타일 컨트롤',
+        '# 브랜드 에셋 생성', '로고 / 일러스트 / 배너 AI 제작',
+        '## Week 03',
+        '# Figma + AI 워크플로', 'AI 생성 이미지 → Figma 디자인 시스템',
+        '# 웹 UI 시안 제작', 'LLM으로 카피 & 레이아웃 자동화',
+        '## Week 04',
+        '# 반응형 웹 퍼블리싱', 'AI 생성 디자인 → HTML/CSS 변환',
+        '## Week 05~08',
+        '# 심화 & 포트폴리오', 'AI 웹/시각 포트폴리오 완성'
+      ], images: [] },
+      { week: 'AI CG/모션/영상 (특화)', topic: '', items: [
+        '## Week 01',
+        '# Midjourney 고급', '영상용 컨셉아트 & 스토리보드 생성',
+        '# LLM 스크립팅', 'AI로 영상 스크립트 & 나레이션 작성',
+        '## Week 02',
+        '# Higgsfield 기초', '텍스트→영상 / 이미지→영상 생성',
+        '# 모션 컨트롤', 'Camera Move / Character Animation',
+        '## Week 03',
+        '# AI 영상 편집', 'Vrew + Higgsfield 조합 워크플로',
+        '# VFX 합성', 'AI 생성 소스 + 실사 합성',
+        '## Week 04',
+        '# CG 콘셉트 제작', 'Midjourney → 3D 레퍼런스 활용',
+        '## Week 05~08',
+        '# 심화 & 포트폴리오', 'AI 영상/CG 포트폴리오 완성'
       ], images: [] }
     ],
     checklist: []
@@ -2773,6 +2935,8 @@ function renderCourseView(id) {
 /* ══════════════════════════════════════════════════
    RENDER: 커리큘럼 패널 (1개)
 ══════════════════════════════════════════════════ */
+function imgUrl(src) { return typeof src === 'string' ? src : (src && src.url ? src.url : ''); }
+function imgPos(src) { return typeof src === 'string' ? 'center center' : (src && src.position ? src.position : 'center center'); }
 function renderCurriculumView(id) {
   const c  = COURSES[id];
   const em = isEditMode;
@@ -2845,11 +3009,16 @@ function renderCurriculumView(id) {
       </div>` : '';
 
     const wImgs = (item.images || []);
-    const wGalleryItems = wImgs.map((url, ii) => `
-      <div class="img-gallery__item" onclick="openLightbox('${url}')">
-        <img src="${url}" alt="이미지 ${ii+1}" loading="lazy">
+    const wGalleryItems = wImgs.map((imgData, ii) => {
+      const url = imgUrl(imgData), pos = imgPos(imgData);
+      const posOpts = ['center center','center top','center bottom','left center','right center'];
+      const posCtrl = em ? `<select class="img-pos-sel" onchange="event.stopPropagation();setCurrImgPos('${id}',${wi},${ii},this.value)" onclick="event.stopPropagation()">${posOpts.map(p=>`<option value="${p}"${pos===p?' selected':''}>${p}</option>`).join('')}</select>` : '';
+      return `<div class="img-gallery__item" onclick="openLightbox('${url}')">
+        <img src="${url}" alt="이미지 ${ii+1}" loading="lazy" style="object-position:${pos}">
         ${em ? `<button class="img-gallery__del" onclick="event.stopPropagation();deleteImage('${id}',${wi},${ii})">✕</button>` : ''}
-      </div>`).join('');
+        ${posCtrl}
+      </div>`;
+    }).join('');
     const wGallery = (wImgs.length > 0 || em) ? `
       <div class="img-gallery" style="margin-top:14px">
         ${wGalleryItems}
@@ -3448,6 +3617,13 @@ function addImage(id, wi) {
     }
   };
   input.click();
+}
+function setCurrImgPos(id, wi, ii, pos) {
+  const imgs = COURSES[id].curriculum[wi].images;
+  const cur = imgs[ii];
+  imgs[ii] = { url: imgUrl(cur), position: pos };
+  renderCurriculumView(id);
+  document.getElementById('cr-'+id) && document.getElementById('cr-'+id).classList.add('is-active');
 }
 function deleteImage(id, wi, ii) {
   COURSES[id].curriculum[wi].images.splice(ii, 1);
