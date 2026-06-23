@@ -838,40 +838,27 @@
   }
 
   /* ══════════════════════════════════════
-     18. ADMIN — 툴바
+     18. ADMIN — 편집 바 + FAB
   ══════════════════════════════════════ */
-  .admin-toolbar {
-    display: none;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 200;
-    background: #111;
-    color: #fff;
-    padding: 0 20px;
-    height: 52px;
-    gap: 8px;
-    align-items: center;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+  .admin-edit-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: #111; color: #fff; padding: 0 16px; height: 56px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.22);
   }
-  .admin-tb-btn {
-    padding: 7px 14px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    transition: background 150ms;
-    white-space: nowrap;
-    line-height: 1;
-  }
-  .btn-edit-mode { background: rgba(255,255,255,0.1); color: #fff; }
-  .btn-edit-mode:hover { background: rgba(255,255,255,0.18); }
-  .btn-edit-mode.is-on { background: #3B82F6; }
-  .btn-save { background: #22c55e; color: #fff; }
-  .btn-save:hover { background: #16a34a; }
-  .btn-logout { background: transparent; color: rgba(255,255,255,0.4); margin-left: auto; }
-  .btn-logout:hover { color: #fff; }
-  .admin-tb-status { font-size: 0.72rem; color: rgba(255,255,255,0.35); }
+  .aeb-hint { font-size: 0.7rem; color: rgba(255,255,255,0.35); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aeb-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .aeb-btn { padding: 8px 16px; border-radius: 8px; font: inherit; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; transition: background 150ms; }
+  .aeb-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+  .aeb-cancel:hover { background: rgba(255,255,255,0.2); }
+  .aeb-save { background: #22c55e; color: #fff; }
+  .aeb-save:hover { background: #16a34a; }
+  .admin-fab { position: fixed; bottom: 20px; right: 16px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .admin-fab__edit { padding: 9px 18px; background: #1E3461; color: #fff; border: none; border-radius: 24px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.25); white-space: nowrap; }
+  .admin-fab__edit:hover { background: #2d4f8f; }
+  .admin-fab__logout { padding: 5px 10px; background: rgba(0,0,0,0.45); color: rgba(255,255,255,0.55); border: none; border-radius: 12px; font-size: 0.7rem; cursor: pointer; }
+  .admin-fab__logout:hover { color: #fff; }
+  .app.is-admin .page { padding-bottom: 80px; }
 
   /* ══════════════════════════════════════
      15. ADMIN — 편집 모드
@@ -1146,12 +1133,28 @@
     </div>
   </div>
 </div>
-<!-- ══ 관리자 툴바 ══ -->
-<div class="admin-toolbar" id="admin-toolbar">
-  <button class="admin-tb-btn btn-edit-mode" id="edit-btn" onclick="toggleEditMode()">✏️ 편집 모드</button>
-  <span class="admin-tb-status" id="admin-status"></span>
-  <button class="admin-tb-btn btn-save" onclick="saveData()">💾 저장</button>
-  <button class="admin-tb-btn btn-logout" onclick="adminLogout()">로그아웃</button>
+<!-- ══ 관리자 편집 바 ══ -->
+<div class="admin-edit-bar" id="admin-edit-bar" style="display:none">
+  <span class="aeb-hint">텍스트 클릭 후 직접 수정 · 버튼으로 항목 추가/삭제</span>
+  <div class="aeb-actions">
+    <button class="aeb-btn aeb-cancel" onclick="adminCancel()">↩ 취소</button>
+    <button class="aeb-btn aeb-save" onclick="adminSaveAndExit()">💾 저장하고 나가기</button>
+  </div>
+</div>
+<!-- ══ 관리자 FAB ══ -->
+<div class="admin-fab" id="admin-fab" style="display:none">
+  <button class="admin-fab__edit" onclick="enterEditMode()">✏️ 편집 시작</button>
+  <button class="admin-fab__logout" onclick="adminLogout()">로그아웃</button>
+</div>
+<!-- ══ 삭제 확인 팝업 ══ -->
+<div id="delete-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeDeleteConfirm()">
+  <div class="modal-box" style="width:min(320px,90vw)">
+    <p id="dm-msg" style="margin-bottom:20px;font-size:.95rem;line-height:1.55;white-space:pre-line"></p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeDeleteConfirm()">취소</button>
+      <button class="modal-btn" id="dm-ok" style="flex:1;padding:12px;border-radius:10px;font:inherit;font-size:.9rem;font-weight:700;border:none;cursor:pointer;background:#ef4444;color:#fff">삭제</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ 토스트 알림 ══ -->
@@ -2766,8 +2769,8 @@ function submitLogin() {
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('admin-pw').value = '';
     document.getElementById('login-error').style.display = 'none';
-    showAdminUI();
-    showToast('관리자로 로그인됨');
+    showAdminUI(); enterEditMode();
+    showToast('관리자 편집 모드 시작');
   } else {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('admin-pw').value = '';
@@ -2781,37 +2784,90 @@ function cancelLogin() {
   document.getElementById('login-error').style.display = 'none';
 }
 
+/* ══════════════════════════════════════════════════
+   ADMIN UX — 로그인/편집/저장/취소
+══════════════════════════════════════════════════ */
+let _editSnap = null;
+function _takeSnap() {
+  return JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, BOOKS_DATA });
+}
+
 function showAdminUI() {
-  document.getElementById('admin-toolbar').style.display = 'flex';
   appEl.classList.add('is-admin');
+  document.getElementById('admin-fab').style.display = 'flex';
+}
+
+function enterEditMode() {
+  isEditMode = true;
+  _editSnap = _takeSnap();
+  appEl.classList.add('admin-edit');
+  document.getElementById('admin-edit-bar').style.display = 'flex';
+  document.getElementById('admin-fab').style.display = 'none';
+  renderUI(); renderAll(); activateCoursePanels(currentCourse);
+}
+
+function exitEditMode(rerender) {
+  isEditMode = false;
+  appEl.classList.remove('admin-edit');
+  document.getElementById('admin-edit-bar').style.display = 'none';
+  document.getElementById('admin-fab').style.display = 'flex';
+  if (rerender !== false) { renderUI(); renderAll(); activateCoursePanels(currentCourse); }
+}
+
+function adminCancel() {
+  if (_editSnap && _takeSnap() !== _editSnap) {
+    openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n취소하면 변경사항이 사라집니다.', () => {
+      const s = JSON.parse(_editSnap);
+      COURSES = s.COURSES; UI_DATA = s.UI_DATA;
+      INSTRUCTORS_DATA = s.INSTRUCTORS_DATA;
+      REVIEWS_DATA = s.REVIEWS_DATA; BOOKS_DATA = s.BOOKS_DATA;
+      exitEditMode();
+    }, '변경사항 버리기');
+  } else {
+    exitEditMode();
+  }
+}
+
+async function adminSaveAndExit() {
+  await saveData();
+  exitEditMode(false);
 }
 
 function adminLogout() {
-  isAdmin    = false;
-  isEditMode = false;
+  isAdmin = false; isEditMode = false; _editSnap = null;
   sessionStorage.removeItem('admin');
-  document.getElementById('admin-toolbar').style.display = 'none';
-  appEl.classList.remove('is-admin','admin-edit');
-  document.getElementById('edit-btn').classList.remove('is-on');
-  document.getElementById('edit-btn').textContent = '✏️ 편집 모드';
-  document.getElementById('admin-status').textContent = '';
-  renderAll();
-  renderUI();
+  appEl.classList.remove('is-admin', 'admin-edit');
+  document.getElementById('admin-edit-bar').style.display = 'none';
+  document.getElementById('admin-fab').style.display = 'none';
+  renderAll(); renderUI();
 }
 
 /* ══════════════════════════════════════════════════
-   EDIT MODE TOGGLE
+   삭제 확인 모달
 ══════════════════════════════════════════════════ */
-function toggleEditMode() {
-  isEditMode = !isEditMode;
-  appEl.classList.toggle('admin-edit', isEditMode);
-  const btn = document.getElementById('edit-btn');
-  btn.classList.toggle('is-on', isEditMode);
-  btn.textContent = isEditMode ? '👁 미리보기' : '✏️ 편집 모드';
-  document.getElementById('admin-status').textContent = isEditMode ? '— 텍스트 클릭 후 수정' : '';
-  renderUI();
-  renderAll();
-  activateCoursePanels(currentCourse);
+let _dcmCb = null;
+function openDeleteConfirm(msg, cb, btnLabel) {
+  _dcmCb = cb;
+  document.getElementById('dm-msg').textContent = msg;
+  const btn = document.getElementById('dm-ok');
+  btn.textContent = btnLabel || '삭제';
+  btn.style.background = btnLabel ? '#1E3461' : '#ef4444';
+  btn.onclick = () => { closeDeleteConfirm(); cb(); };
+  document.getElementById('delete-modal').style.display = 'flex';
+}
+function closeDeleteConfirm() {
+  document.getElementById('delete-modal').style.display = 'none';
+  _dcmCb = null;
+}
+
+/* ══════════════════════════════════════════════════
+   Firebase Storage 공통 업로드 헬퍼
+══════════════════════════════════════════════════ */
+async function uploadToStorage(file, prefix) {
+  if (!storage) { loadStorageSDK(); throw new Error('Storage 로드 중입니다. 잠시 후 다시 시도하세요.'); }
+  const ref = storage.ref(`${prefix}/${Date.now()}_${file.name}`);
+  await ref.put(file);
+  return await ref.getDownloadURL();
 }
 
 /* ══════════════════════════════════════════════════
@@ -2949,9 +3005,8 @@ async function _emSave() {
     if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
     showToast('이미지 업로드 중...');
     try {
-      const ref = storage.ref(`uploads/${Date.now()}_${file.name}`);
-      await ref.put(file); _emData[key] = await ref.getDownloadURL();
-    } catch(err) { showToast('업로드 실패: '+err.message, 'error'); return; }
+      _emData[key] = await uploadToStorage(file, 'uploads');
+    } catch(err) { showToast(err.message, 'error'); return; }
   }
   _emCfg.fields.filter(f => f.type==='file-drop').forEach(f => {
     if (!_emPending[f.key]) _emData[f.key] = _emCfg.defaults?.[f.key] || '';
@@ -3412,10 +3467,11 @@ function renderChecklistCard(id) {
         ${dBooks.map((b, bi) => em
           ? `<div class="book-admin-card">
                <img src="${b.img}" onerror="this.style.opacity='.3'" loading="lazy">
-               <input class="book-input" placeholder="교재명" value="${b.name}" onchange="editBook('${id}',${bi},'name',this.value)">
-               <input class="book-input" placeholder="이미지 URL" value="${b.img}" onchange="editBook('${id}',${bi},'img',this.value)">
-               <input class="book-input" placeholder="링크 URL" value="${b.link||''}" onchange="editBook('${id}',${bi},'link',this.value)">
-               <button class="admin-del-btn" onclick="deleteBook('${id}',${bi})">✕</button>
+               <span style="font-size:9px;text-align:center;line-height:1.3;word-break:keep-all">${b.name}</span>
+               <div style="display:flex;gap:3px;justify-content:center">
+                 <button class="file-drop-btn" style="padding:2px 6px" onclick="editBook('${id}',${bi})">✏️</button>
+                 <button class="admin-del-btn" onclick="deleteBook('${id}',${bi})">✕</button>
+               </div>
              </div>`
           : `<a href="${b.link||'#'}" target="_blank" rel="noopener" class="book-thumb">
                <img src="${b.img}" alt="${b.name}" loading="lazy">
@@ -3640,26 +3696,38 @@ document.addEventListener('dragend', () => {
    CRUD — 학원 소개
 ══════════════════════════════════════════════════ */
 function addFeature() {
-  const title = prompt('특징 카드 제목:');
-  if (!title?.trim()) return;
-  const desc = prompt('한 줄 설명:') || '';
-  UI_DATA.features.push({ icon: '◆', title: title.trim(), desc: desc.trim() });
-  renderUI();
+  openEditModal({
+    title: '특징 카드 추가',
+    fields: [
+      { key: 'icon',  label: '아이콘 (이모지)', type: 'text', placeholder: '◆' },
+      { key: 'title', label: '카드 제목',   type: 'text' },
+      { key: 'desc',  label: '한 줄 설명',  type: 'textarea', rows: 2 },
+    ],
+    defaults: { icon: '◆', title: '', desc: '' },
+    onSave: (d) => {
+      if (!d.title?.trim()) return;
+      UI_DATA.features.push({ icon: d.icon||'◆', title: d.title.trim(), desc: d.desc.trim() });
+      renderUI();
+    }
+  });
 }
 function deleteFeature(idx) {
-  if (!confirm('이 카드를 삭제하시겠습니까?')) return;
-  UI_DATA.features.splice(idx, 1);
-  renderUI();
+  openDeleteConfirm('이 카드를 삭제하시겠습니까?', () => {
+    UI_DATA.features.splice(idx, 1); renderUI();
+  });
 }
 function addBadge() {
-  const text = prompt('배지 텍스트:');
-  if (!text?.trim()) return;
-  UI_DATA.badges.push(text.trim());
-  renderUI();
+  openEditModal({
+    title: '배지 추가',
+    fields: [{ key: 'text', label: '배지 텍스트', type: 'text', placeholder: '예: 국비지원' }],
+    defaults: { text: '' },
+    onSave: (d) => { if (d.text?.trim()) { UI_DATA.badges.push(d.text.trim()); renderUI(); } }
+  });
 }
 function deleteBadge(idx) {
-  UI_DATA.badges.splice(idx, 1);
-  renderUI();
+  openDeleteConfirm('이 배지를 삭제하시겠습니까?', () => {
+    UI_DATA.badges.splice(idx, 1); renderUI();
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -3688,11 +3756,12 @@ function addCourse() {
   activateCoursePanels(key);
 }
 function deleteCourse(id) {
-  if (!confirm(`'${COURSES[id].label}' 강좌를 삭제하시겠습니까?`)) return;
-  delete COURSES[id];
-  const remaining = Object.keys(COURSES);
-  renderAll();
-  if (remaining.length) activateCoursePanels(remaining[0]);
+  openDeleteConfirm(`'${COURSES[id].label}' 강좌를 삭제하시겠습니까?`, () => {
+    delete COURSES[id];
+    const remaining = Object.keys(COURSES);
+    renderAll();
+    if (remaining.length) activateCoursePanels(remaining[0]);
+  });
 }
 function addCourseTag(id) {
   const tag = prompt('새 기술 태그:');
@@ -3727,12 +3796,6 @@ function addCurrWeek(id) {
     }
   });
 }
-function deleteCurrWeek(id, wi) {
-  if (!confirm('이 주차를 삭제하시겠습니까?')) return;
-  COURSES[id].curriculum.splice(wi, 1);
-  renderCurriculumView(id);
-  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
-}
 function addCurrItem(id, wi) {
   openEditModal({
     title: '세부 항목 추가',
@@ -3750,11 +3813,12 @@ function addCurrItem(id, wi) {
     }
   });
 }
-function deleteCurrItem(id, wi, ii) {function deleteCurrWeek(id, wi) {
-  if (!confirm('이 주차를 삭제하시겠습니까?')) return;
-  COURSES[id].curriculum.splice(wi, 1);
-  renderCurriculumView(id);
-  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+function deleteCurrWeek(id, wi) {
+  openDeleteConfirm('이 주차를 삭제하시겠습니까?', () => {
+    COURSES[id].curriculum.splice(wi, 1);
+    renderCurriculumView(id);
+    if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+  });
 }
 function deleteCurrItem(id, wi, ii) {
   COURSES[id].curriculum[wi].items.splice(ii, 1);
@@ -3882,9 +3946,7 @@ function uploadPortfolioImage(id) {
     if (!COURSES[id].portfolio) COURSES[id].portfolio = [];
     for (const file of files) {
       try {
-        const ref = storage.ref(`portfolio/${id}/${Date.now()}_${file.name}`);
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
+        const url = await uploadToStorage(file, `portfolio/${id}`);
         COURSES[id].portfolio.push(url);
       } catch(err) { showToast('업로드 실패: ' + err.message, 'error'); return; }
     }
@@ -3902,16 +3964,24 @@ function deletePortfolioImage(id, idx) {
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
 function addPortfolioVideo(id) {
-  const input = prompt('YouTube URL을 입력하세요:\n(예: https://youtu.be/abc123 또는 https://www.youtube.com/watch?v=abc123)');
-  if (!input?.trim()) return;
-  const match = input.match(/(?:youtu\.be\/|watch\?v=|embed\/)([A-Za-z0-9_-]{11})/);
-  if (!match) { showToast('유효한 YouTube URL이 아닙니다', 'error'); return; }
-  if (!COURSES[id].portfolio) COURSES[id].portfolio = [];
-  COURSES[id].portfolio.push('youtube:' + match[1]);
-  renderCurriculumView(id);
-  switchCurrTab(id, 'portfolio');
-  if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
-  showToast('유튜브 영상 추가 완료 ✓');
+  openEditModal({
+    title: '유튜브 영상 추가',
+    fields: [
+      { key: 'url', label: 'YouTube URL', type: 'text', placeholder: 'https://youtu.be/...',
+        hint: 'youtu.be/... 또는 youtube.com/watch?v=... 형식 모두 가능' },
+    ],
+    defaults: { url: '' },
+    onSave: (d) => {
+      const match = d.url.match(/(?:youtu\.be\/|watch\?v=|embed\/)([A-Za-z0-9_-]{11})/);
+      if (!match) { showToast('유효한 YouTube URL이 아닙니다', 'error'); return; }
+      if (!COURSES[id].portfolio) COURSES[id].portfolio = [];
+      COURSES[id].portfolio.push('youtube:' + match[1]);
+      renderCurriculumView(id);
+      switchCurrTab(id, 'portfolio');
+      if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
+      showToast('유튜브 영상 추가 완료 ✓');
+    }
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -3936,11 +4006,12 @@ function addRoadmapStep(id) {
     }
   });
 }
-function deleteRoadmapStep(id, si) {function deleteRoadmapStep(id, si) {
-  if (!confirm('이 단계를 삭제하시겠습니까?')) return;
-  COURSES[id].roadmap.splice(si, 1);
-  renderRoadmapView(id);
-  document.getElementById('rm-'+id)?.classList.add('is-active');
+function deleteRoadmapStep(id, si) {
+  openDeleteConfirm('이 단계를 삭제하시겠습니까?', () => {
+    COURSES[id].roadmap.splice(si, 1);
+    renderRoadmapView(id);
+    document.getElementById('rm-'+id)?.classList.add('is-active');
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -3958,9 +4029,7 @@ function addImage(id, wi) {
     showToast('업로드 중...');
     try {
       for (const file of files) {
-        const ref = storage.ref(`curriculum/${id}/w${wi}_${Date.now()}_${file.name}`);
-        await ref.put(file);
-        const url = await ref.getDownloadURL();
+        const url = await uploadToStorage(file, `curriculum/${id}/w${wi}`);
         if (!COURSES[id].curriculum[wi].images) COURSES[id].curriculum[wi].images = [];
         COURSES[id].curriculum[wi].images.push(url);
       }
@@ -4030,9 +4099,10 @@ function editInstructor(i) {
       renderInstructorsPage();
     });
 }
-function deleteInstructor(i) {  if (!confirm('이 강사를 삭제하시겠습니까?')) return;
-  INSTRUCTORS_DATA.splice(i, 1);
-  renderInstructorsPage();
+function deleteInstructor(i) {
+  openDeleteConfirm('이 강사를 삭제하시겠습니까?', () => {
+    INSTRUCTORS_DATA.splice(i, 1); renderInstructorsPage();
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -4059,10 +4129,9 @@ function addReview() {
   });
 }
 function deleteReview(i) {
-function deleteReview(i) {
-  if (!confirm('이 후기를 삭제하시겠습니까?')) return;
-  REVIEWS_DATA.splice(i, 1);
-  renderReviewsPage();
+  openDeleteConfirm('이 후기를 삭제하시겠습니까?', () => {
+    REVIEWS_DATA.splice(i, 1); renderReviewsPage();
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -4085,9 +4154,7 @@ function addChecklistItem(id) {
   });
 }
 function deleteChecklistItem(id, ci) {
-function deleteChecklistItem(id, ci) {
-  COURSES[id].checklist.splice(ci, 1);
-  renderChecklistCard(id);
+  COURSES[id].checklist.splice(ci, 1); renderChecklistCard(id);
 }
 
 function addBook(id) {
@@ -4109,15 +4176,28 @@ function addBook(id) {
   });
 }
 function deleteBook(id, bi) {
-function deleteBook(id, bi) {
-  if (!confirm('이 교재를 삭제하시겠습니까?')) return;
-  BOOKS_DATA[id].splice(bi, 1);
-  renderChecklistCard(id);
-  document.getElementById('cl-'+id)?.classList.add('is-active');
+  openDeleteConfirm('이 교재를 삭제하시겠습니까?', () => {
+    BOOKS_DATA[id].splice(bi, 1); renderChecklistCard(id);
+    document.getElementById('cl-'+id)?.classList.add('is-active');
+  });
 }
-function editBook(id, bi, field, val) {
-  if (!BOOKS_DATA[id]?.[bi]) return;
-  BOOKS_DATA[id][bi][field] = val;
+function editBook(id, bi) {
+  const b = BOOKS_DATA[id]?.[bi];
+  if (!b) return;
+  openEditModal({
+    title: '교재 수정',
+    fields: [
+      { key: 'name', label: '교재명',    type: 'text' },
+      { key: 'img',  label: '이미지 URL', type: 'text', placeholder: '/images/books/ps.png' },
+      { key: 'link', label: '구매 링크', type: 'text' },
+    ],
+    defaults: { name: b.name, img: b.img, link: b.link||'' },
+    onSave: (d) => {
+      BOOKS_DATA[id][bi] = { name: d.name.trim()||b.name, img: d.img||b.img, link: d.link };
+      renderChecklistCard(id);
+      document.getElementById('cl-'+id)?.classList.add('is-active');
+    }
+  });
 }
 
 /* ══════════════════════════════════════════════════
