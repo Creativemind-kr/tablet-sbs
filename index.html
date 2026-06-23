@@ -566,7 +566,21 @@
   .checklist-card[data-colorkey="ps"]    { --cl: #F97316; }
   .checklist-card[data-colorkey="video"] { --cl: #EF4444; }
   .checklist-card[data-colorkey="uiux"]  { --cl: #8B5CF6; }
+  .checklist-card[data-colorkey="ai"]    { --cl: #0EA5E9; }
   .checklist-card { border-left-color: var(--cl, #e8e8e8); }
+  .kedustore-banner { display:flex; align-items:center; gap:14px; padding:14px 18px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; text-decoration:none; margin-bottom:20px; color:inherit; }
+  .kedustore-banner strong { display:block; font-size:var(--t-sm); font-weight:700; color:#1E3461; }
+  .kedustore-banner .kb-sub { font-size:var(--t-xs); color:var(--c-text-2); }
+  .kedustore-banner__icon { font-size:1.5rem; flex-shrink:0; }
+  .kedustore-banner__arrow { margin-left:auto; font-weight:700; color:#1E3461; flex-shrink:0; }
+  .checklist-books { margin-bottom:22px; }
+  .checklist-books__label { font-size:var(--t-xs); font-weight:700; letter-spacing:.05em; color:var(--c-text-3); margin-bottom:10px; }
+  .checklist-books__grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  .book-thumb { display:flex; flex-direction:column; align-items:center; gap:5px; text-decoration:none; width:68px; }
+  .book-thumb img { width:68px; height:88px; object-fit:cover; border-radius:6px; border:1px solid var(--c-border); box-shadow:0 1px 3px rgba(0,0,0,.1); }
+  .book-thumb span { font-size:9px; color:var(--c-text-2); text-align:center; line-height:1.3; word-break:keep-all; }
+  .kedustore-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#1E3461; color:#fff; border-radius:8px; text-decoration:none; font-size:var(--t-xs); font-weight:700; }
+  .supply-img { width:100%; max-width:480px; border-radius:10px; margin-bottom:20px; border:1px solid var(--c-border); }
   .checklist-card__tag {
     display: inline-block;
     font-size: var(--t-xs);
@@ -1043,6 +1057,11 @@
     <div class="page" id="page-checklist">
       <div class="page__inner">
         <p class="page-label">준비물 및 수강생 안내</p>
+        <a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="kedustore-banner">
+          <span class="kedustore-banner__icon">📚</span>
+          <div><strong>교재 구매 안내</strong><span class="kb-sub">kedustore.com에서 학과별 교재를 구매하실 수 있습니다</span></div>
+          <span class="kedustore-banner__arrow">→</span>
+        </a>
         <nav class="sub-nav" id="checklist-subnav"></nav>
         <div id="checklist-views"></div>
       </div>
@@ -1770,7 +1789,7 @@ let COURSES = {
         '# 포트폴리오 완성', 'Final Rendering/PO Upload'
       ], images: [] }
     ],
-    checklist: []
+    checklist: ['스케치북 A4 60매용','2B 연필 · 지우개','모나미프러스펜 S','마카펜 24색 세트','소형 삼각자','스케일자']
   },
   d04b: {
     colorKey: 'ps', label: '기계·제품학과', duration: '정규·단기·주말반',
@@ -3112,6 +3131,24 @@ function renderCurriculumView(id) {
     </div>`;
 }
 
+const DEPT_BOOKS = {
+  d01:  [['ps.png','포토샵'],['ai.png','일러스트'],['id.jpg','인디자인']],
+  d02:  [['ae.jpg','애프터이펙트CC'],['3ds.jpg','3ds MAX'],['pw.png','포토웍스']],
+  d03:  [['ae.jpg','애프터이펙트CC']],
+  d04a: [['su.png','스케치업'],['cad.jpg','오토캐드'],['arch.png','건축제도기능사']],
+  d04b: [['mech.jpg','기계제도기능사']],
+  d05:  [['html.jpg','HTML5+CSS3'],['ps.png','포토샵']],
+  d06:  [['ps.png','포토샵'],['ai.png','일러스트'],['pw.png','포토웍스'],['id.jpg','인디자인']],
+  d07:  [['py.png','파이썬'],['c.jpg','C언어'],['java.jpg','자바'],['html.jpg','HTML5+CSS3'],['prog.png','프로그래밍기능사']],
+  d08:  [['itq.png','ITQ'],['compa.jpg','컴활1급'],['acc.png','전산회계1급'],['tax.png','전산세무2급'],['mos.png','모스365세트'],['excel.jpg','엑셀실무']],
+  d09:  [],
+  d10:  [],
+};
+const DEPT_SUPPLIES = {
+  d04a: 'interior.jpg',
+  d06:  'colorist.jpg',
+};
+
 /* ══════════════════════════════════════════════════
    RENDER: 준비물 카드 (1개)
 ══════════════════════════════════════════════════ */
@@ -3137,11 +3174,17 @@ function renderChecklistCard(id) {
       }
     </li>`).join('');
 
+  const dBooks = DEPT_BOOKS[id] || [];
+  const booksHtml = dBooks.length ? `<div class="checklist-books"><p class="checklist-books__label">필요 교재</p><div class="checklist-books__grid">${dBooks.map(([img,name])=>`<a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="book-thumb"><img src="/images/books/${img}" alt="${name}" loading="lazy"><span>${name}</span></a>`).join('')}</div><a href="https://www.kedustore.com/books/list.asp#3" target="_blank" rel="noopener" class="kedustore-btn">🛒 교재 구매 바로가기</a></div>` : '';
+  const supplyImgHtml = DEPT_SUPPLIES[id] ? `<img src="/images/supplies/${DEPT_SUPPLIES[id]}" class="supply-img" alt="${c.label} 준비물 안내">` : '';
+
   el.innerHTML = `
     <div class="curr-header">
       <h2 class="curr-header__title">${c.label}</h2>
       <div class="curr-header__meta">${c.duration}</div>
     </div>
+    ${booksHtml}
+    ${supplyImgHtml}
     <p class="checklist-intro" style="margin-bottom:20px">
       수강 등록 전 아래 준비물을 확인해 주세요.<br>
       장비 구매 전 반드시 상담을 먼저 받아보시길 권장합니다.
