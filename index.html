@@ -551,6 +551,11 @@
   .topic-list .curr-month-hd { font-size: 12px; font-weight: 800; color: var(--c-course); background: color-mix(in srgb, var(--c-course) 10%, transparent); border-radius: 6px; padding: 5px 10px; margin: 20px 0 4px; letter-spacing: .06em; }
   .topic-list .curr-month-hd:first-child { margin-top: 0; }
   .topic-list .curr-month-hd::before { display: none; }
+  .curr-month-img-section { position: relative; margin: 12px 0 20px; border-radius: 12px; overflow: hidden; background: var(--c-bg-2); }
+  .curr-month-img-section .curr-month-img { width: 100%; display: block; cursor: zoom-in; }
+  .curr-month-img-del { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: .7rem; cursor: pointer; display: none; }
+  .admin-edit .curr-month-img-del { display: block; }
+  .curr-month-img-empty { margin: 8px 0 16px; }
   .diff-stars { font-size: 11px; letter-spacing: 1.5px; flex-shrink: 0; margin-left: 6px; cursor: default; }
   .diff-stars .s-on { color: #F59E0B; }
   .diff-stars .s-off { color: var(--c-border); }
@@ -3081,8 +3086,9 @@ async function _emSave() {
     if (!_emPending[f.key]) _emData[f.key] = _emCfg.defaults?.[f.key] || '';
   });
   const onSave = _emCfg.onSave;
+  const data = Object.assign({}, _emData);
   closeEditModal();
-  onSave(_emData);
+  onSave(data);
 }
 
 // Ctrl+V 이미지 붙여넣기 (편집 팝업 열려있을 때)
@@ -3147,8 +3153,8 @@ function renderRoadmapView(id) {
       </div>
     </div>`).join('');
 
-  const introImg  = c.introImg  || DEPT_IMG[id] || '';
-  const introText = c.introText || '';
+  const introImg  = c.introImg  || '';
+  const introText = c.introText || DEPT_INTRO_TEXT[id] || '';
   const hasIntro  = introImg || introText || em;
 
   const introHTML = hasIntro ? `
@@ -3322,7 +3328,26 @@ function renderCurriculumView(id) {
     document.getElementById('curr-views').appendChild(el);
   }
 
-  const weeks = c.curriculum.map((item, wi) => {
+  let trackedMonth = 0;
+  const monthImgsData = c.monthImgs || {};
+  const weekParts = c.curriculum.map((item, wi) => {
+    // 이 블록의 첫 번째 주차 번호로 달 계산
+    const firstWeekNo = item.items
+      .filter(x => x.startsWith('## '))
+      .map(x => parseInt(x.match(/\d+/)?.[0] || 0))
+      .find(n => n > 0) || 0;
+    const blockMonth = firstWeekNo > 0 ? Math.ceil(firstWeekNo / 4) : 0;
+
+    // 달이 바뀔 때 이전 달 이미지 섹션 주입
+    let monthImgPrefix = '';
+    if (blockMonth > 0 && blockMonth > trackedMonth && trackedMonth > 0) {
+      const url = monthImgsData[trackedMonth];
+      monthImgPrefix = url
+        ? `<div class="curr-month-img-section"><img src="${url}" class="curr-month-img" onclick="openLightbox('${url}')"><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
+        : (em ? `<div class="curr-month-img-empty"><button class="admin-add-btn" onclick="addMonthImg('${id}',${trackedMonth})">+ ${trackedMonth}달차 이미지 추가</button></div>` : '');
+    }
+    if (blockMonth > 0) trackedMonth = blockMonth;
+
     // #4 Bold/Light: split at ' · ' + 계층형 마커 지원 (## Week, # Topic) + 월별 그룹
     const totalWeekCount = item.items.filter(x => x.startsWith('## ')).length;
     const useMonthGroups = !em && totalWeekCount >= 5;
@@ -3398,7 +3423,7 @@ function renderCurriculumView(id) {
         ${em ? `<button class="img-gallery__add" onclick="addImage('${id}',${wi})">+ 이미지<br>추가</button>` : ''}
       </div>` : '';
 
-    return `
+    const accordionHtml = `
       <div class="accordion" ${em ? `draggable="true" data-cid="${id}" data-wi="${wi}"` : ''}>
         <div class="accordion__head">
           ${em ? `<span class="drag-handle" title="드래그로 순서 변경">⠿</span>` : ''}
@@ -3421,7 +3446,17 @@ function renderCurriculumView(id) {
           </div>
         </div>
       </div>`;
-  }).join('');
+    return monthImgPrefix + accordionHtml;
+  });
+
+  // 마지막 달 이미지
+  const lastMonthUrl = monthImgsData[trackedMonth];
+  const lastMonthHtml = trackedMonth > 0 ? (
+    lastMonthUrl
+      ? `<div class="curr-month-img-section"><img src="${lastMonthUrl}" class="curr-month-img" onclick="openLightbox('${lastMonthUrl}')"><button class="curr-month-img-del" onclick="deleteMonthImg('${id}',${trackedMonth})">✕</button></div>`
+      : (em ? `<div class="curr-month-img-empty"><button class="admin-add-btn" onclick="addMonthImg('${id}',${trackedMonth})">+ ${trackedMonth}달차 이미지 추가</button></div>` : '')
+  ) : '';
+  const weeks = weekParts.join('') + lastMonthHtml;
 
   // 재렌더 전에 활성 탭 기억
   const pfWasActive = document.getElementById('ct-pf-'+id)?.classList.contains('is-hidden') === false;
@@ -3471,6 +3506,19 @@ const DEPT_IMG = {
   d04b: 'images/dept/d04b.jpg', d05: 'images/dept/d05.png',
   d06: 'images/dept/d06.png', d07: 'images/dept/d07.png',
   d08: 'images/dept/d08.png', d09: 'images/dept/d09.png',
+};
+
+const DEPT_INTRO_TEXT = {
+  d01: 'SBS아카데미 시각편집학과는 텍스트, 이미지, 일러스트레이션을 조화롭게 배치하는 레이아웃 설계부터 인쇄물·포스터·웹까지 다양한 매체의 디자인을 다룹니다.\n학생들은 시각적 방향성을 정립하고 DTP, 브랜딩, UI/UX, 마케팅 디자인 등 폭넓은 분야의 실무 역량을 키워 포트폴리오 완성과 취업까지 준비합니다.',
+  d02: 'SBS아카데미 CG학과는 2D부터 3D, AI 공간 이해까지 모션과 그래픽을 체계적으로 학습합니다.\n단순한 도구 습득을 넘어 창작 언어를 익히고 3D 모델링, 텍스처·라이팅, VFX 합성, 애니메이션까지 실무 중심으로 배우며 취업 포트폴리오 제작까지 이어집니다.',
+  d03: 'SBS아카데미 모션그래픽학과는 텍스트, 이미지, 모션효과를 결합하여 시선을 사로잡는 시각적 작품을 만드는 과정입니다.\nAdobe After Effects와 Cinema 4D를 핵심으로 키네틱 타이포그래피, 인포그래픽, SNS 콘텐츠, MVKPOP 등 다양한 분야의 모션 작업을 기초부터 심화까지 배웁니다.',
+  d04a: 'SBS아카데미 건축·인테리어학과는 크리에이티브한 디자인 아이디어를 클라이언트에게 전달하기 위한 포트폴리오·도면 작성 프로세스를 다룹니다.\n실무 도면 작성, 건물 아이디어 구현, 공간 시각화부터 Simulation·VMD·VR/AR 공간 구현까지 전문화된 커리큘럼으로 구성합니다.',
+  d04b: 'SBS아카데미 기계·제품학과는 설계 아이디어를 산업 현장과 클라이언트에게 명확히 전달하기 위해 필수적인 도면 설계, 3D 모델링, 해석 및 시뮬레이션까지 포함합니다.\n설계 능력뿐만 아니라 공학적 사고와 실무 중심의 설계 프로세스를 함께 학습하여, 경쟁력 있는 기계 엔지니어로 성장할 수 있도록 준비시킵니다.',
+  d05: 'SBS아카데미 웹디자인학과는 디자인 감각과 사용성(UX)을 결합하여 인터랙티브한 웹을 구현합니다.\nHTML, CSS, JavaScript 등의 기술과 Figma 같은 디자인 툴을 활용하여 UI/UX 디자인부터 코딩까지 완전하게 스킬을 갖춘 웹 디자이너를 양성합니다.',
+  d06: 'SBS아카데미 아트웍학과는 드로잉을 바탕으로 한 창의적 발상과 시각적 완성도를 높이는 과정입니다.\n인체 해부학과 구성 감각을 익히고 일러스트레이션을 통한 표현을 확장하며, 심화 드로잉 작업까지 체계적으로 학습 능력을 넓혀나갑니다.',
+  d07: 'SBS아카데미 프로그래밍학과는 C언어, Java, Python 등 다양한 언어와 알고리즘을 기반으로 실무 중심의 코딩 역량을 기릅니다.\n프로젝트형 학습을 통해 실제로 작동하는 기능을 직접 구현하며 소프트웨어 개발 전문가로 성장합니다.',
+  d08: 'SBS아카데미 자격증학과는 컴퓨터 활용능력(컴활), MOS, ITQ 등 사무관리에 필요한 자격증을 체계적으로 취득하여 업무 역량을 다집니다.\n엑셀·파워포인트·워드·액세스부터 전산회계·전산세무까지 기업에서 필요한 실무 인재를 양성합니다.',
+  d09: 'SBS아카데미 유튜브학과는 ChatGPT, VIEW, CAPCUT, VEO, Midjourney 등 AI 도구를 직접 체험하고 콘텐츠 기획부터 촬영·편집까지 배웁니다.\n유튜브, 릴스, 틱톡 등 다양한 채널에 맞는 영상 콘텐츠 제작 능력을 키워 멀티미디어 크리에이터로 성장합니다.',
 };
 
 let BOOKS_DATA = {
@@ -4109,6 +4157,33 @@ function deleteRoadmapStep(id, si) {
   });
 }
 
+function addMonthImg(id, month) {
+  const c = COURSES[id];
+  openEditModal({
+    title: `${month}달차 이미지 추가`,
+    fields: [{ key: 'img', label: '이미지', type: 'file-drop', accept: 'image/*' }],
+    defaults: { img: c.monthImgs?.[month] || '' },
+    onSave: async (d) => {
+      try {
+        if (!d.img) return;
+        if (!COURSES[id].monthImgs) COURSES[id].monthImgs = {};
+        COURSES[id].monthImgs[month] = d.img;
+        renderCurriculumView(id);
+        document.getElementById('cr-'+id)?.classList.add('is-active');
+        showToast(`${month}달차 이미지 등록 완료 ✓`);
+      } catch(e) { showToast('업로드 실패: ' + e.message, 'error'); }
+    }
+  });
+}
+
+function deleteMonthImg(id, month) {
+  openDeleteConfirm(`${month}달차 이미지를 삭제하시겠습니까?`, () => {
+    if (COURSES[id].monthImgs) delete COURSES[id].monthImgs[month];
+    renderCurriculumView(id);
+    document.getElementById('cr-'+id)?.classList.add('is-active');
+  });
+}
+
 function editDeptIntroImg(id) {
   openEditModal({
     title: '학과소개 이미지 변경',
@@ -4116,20 +4191,12 @@ function editDeptIntroImg(id) {
       { key: 'img', label: '이미지', type: 'file-drop', accept: 'image/*' },
     ],
     defaults: { img: '' },
-    onSave: async (d, pending) => {
-      try {
-        let url = '';
-        if (pending.img) {
-          url = await uploadToStorage(pending.img, `dept/${id}`);
-        } else if (d.img) {
-          url = d.img;
-        }
-        if (!url) return;
-        COURSES[id].introImg = url;
-        renderRoadmapView(id);
-        document.getElementById('rm-'+id)?.classList.add('is-active');
-        showToast('이미지 업로드 완료 ✓');
-      } catch(e) { showToast('업로드 실패: ' + e.message, 'error'); }
+    onSave: async (d) => {
+      if (!d.img) return;
+      COURSES[id].introImg = d.img;
+      renderRoadmapView(id);
+      document.getElementById('rm-'+id)?.classList.add('is-active');
+      showToast('이미지 업로드 완료 ✓');
     }
   });
 }
