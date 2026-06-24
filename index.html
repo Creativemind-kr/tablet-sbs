@@ -2875,7 +2875,10 @@ function exitEditMode(rerender) {
   appEl.classList.remove('admin-edit');
   document.getElementById('admin-edit-bar').style.display = 'none';
   document.getElementById('admin-fab').style.display = 'flex';
-  if (rerender !== false) { renderUI(); renderAll(); activateCoursePanels(currentCourse); }
+  if (rerender !== false) {
+    try { renderUI(); renderAll(); activateCoursePanels(currentCourse); }
+    catch(e) { console.error('[exitEditMode] render error:', e); showToast('렌더링 오류: ' + e.message, 'error'); }
+  }
 }
 
 function adminCancel() {
@@ -2893,17 +2896,24 @@ function adminCancel() {
 }
 
 async function adminSave() {
-  document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
-    if (el.offsetParent !== null) setByPath(el.dataset.path, el.innerText.trim());
-  });
-  await saveData();
-  _editSnap = _takeSnap();
+  try {
+    document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
+      if (el.offsetParent !== null) setByPath(el.dataset.path, el.innerText.trim());
+    });
+    await saveData();
+    _editSnap = _takeSnap();
+  } catch(e) {
+    console.error('[adminSave] error:', e);
+    showToast('저장 오류: ' + e.message, 'error');
+  }
 }
 
 async function adminExit() {
-  document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
-    if (el.offsetParent !== null) setByPath(el.dataset.path, el.innerText.trim());
-  });
+  try {
+    document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
+      if (el.offsetParent !== null) setByPath(el.dataset.path, el.innerText.trim());
+    });
+  } catch(e) { console.error('[adminExit] flush error:', e); showToast('편집 오류: ' + e.message, 'error'); }
   if (_editSnap && _takeSnap() !== _editSnap) {
     openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n저장하고 편집을 종료하시겠습니까?', async () => {
       try { await saveData(); } finally { exitEditMode(); }
@@ -2932,7 +2942,7 @@ function openDeleteConfirm(msg, cb, btnLabel) {
   const btn = document.getElementById('dm-ok');
   btn.textContent = btnLabel || '삭제';
   btn.style.background = btnLabel ? '#1E3461' : '#ef4444';
-  btn.onclick = async () => { closeDeleteConfirm(); if (cb) { try { await cb(); } catch(e) { console.error('confirm cb error:', e); } } };
+  btn.onclick = async () => { closeDeleteConfirm(); if (cb) { try { await cb(); } catch(e) { console.error('confirm cb error:', e); showToast('오류: ' + e.message, 'error'); } } };
   document.getElementById('delete-modal').style.display = 'flex';
 }
 function closeDeleteConfirm() {
@@ -3351,7 +3361,7 @@ function renderCurriculumView(id) {
 
   let trackedMonth = 0;
   const monthImgsData = c.monthImgs || {};
-  const weekParts = c.curriculum.map((item, wi) => {
+  const weekParts = (c.curriculum || []).map((item, wi) => {
     // 이 블록의 첫 번째 주차 번호로 달 계산
     const firstWeekNo = (item.items || [])
       .filter(x => x.startsWith('## '))
