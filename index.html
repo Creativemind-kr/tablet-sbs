@@ -2769,22 +2769,17 @@ async function loadFromFirestore() {
 async function saveData() {
   if (!db) {
     showToast('Firebase 미연결 — FIREBASE_CONFIG 설정 필요', 'error');
-    return;
+    throw new Error('Firebase 미연결');
   }
-  try {
-    await db.collection('curriculum').doc('main').set({
-      courses:     COURSES,
-      ui:          UI_DATA,
-      instructors: INSTRUCTORS_DATA,
-      reviews:     REVIEWS_DATA,
-      books:       BOOKS_DATA,
-      updatedAt:   new Date().toISOString()
-    });
-    showToast('저장되었습니다 ✓');
-  } catch(e) {
-    showToast('저장 실패: ' + e.message, 'error');
-    console.error(e);
-  }
+  await db.collection('curriculum').doc('main').set({
+    courses:     COURSES,
+    ui:          UI_DATA,
+    instructors: INSTRUCTORS_DATA,
+    reviews:     REVIEWS_DATA,
+    books:       BOOKS_DATA,
+    updatedAt:   new Date().toISOString()
+  });
+  showToast('저장되었습니다 ✓');
 }
 
 /* ══════════════════════════════════════════════════
@@ -2901,10 +2896,10 @@ async function adminSave() {
       if (el.offsetParent !== null) setByPath(el.dataset.path, el.innerText.trim());
     });
     await saveData();
-    _editSnap = _takeSnap();
+    _editSnap = _takeSnap(); // 저장 성공 시에만 업데이트
   } catch(e) {
     console.error('[adminSave] error:', e);
-    showToast('저장 오류: ' + e.message, 'error');
+    showToast('저장 실패: ' + e.message, 'error');
   }
 }
 
@@ -2916,7 +2911,8 @@ async function adminExit() {
   } catch(e) { console.error('[adminExit] flush error:', e); showToast('편집 오류: ' + e.message, 'error'); }
   if (_editSnap && _takeSnap() !== _editSnap) {
     openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n저장하고 편집을 종료하시겠습니까?', async () => {
-      try { await saveData(); } finally { exitEditMode(); }
+      await saveData();
+      exitEditMode();
     }, '저장하고 종료');
   } else {
     exitEditMode();
