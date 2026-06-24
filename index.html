@@ -2911,8 +2911,7 @@ async function adminExit() {
   }
   if (_editSnap && _takeSnap() !== _editSnap) {
     openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n저장하고 편집을 종료하시겠습니까?', async () => {
-      await saveData();
-      exitEditMode();
+      try { await saveData(); } finally { exitEditMode(); }
     }, '저장하고 종료');
   } else {
     exitEditMode();
@@ -2938,7 +2937,7 @@ function openDeleteConfirm(msg, cb, btnLabel) {
   const btn = document.getElementById('dm-ok');
   btn.textContent = btnLabel || '삭제';
   btn.style.background = btnLabel ? '#1E3461' : '#ef4444';
-  btn.onclick = () => { closeDeleteConfirm(); cb(); };
+  btn.onclick = async () => { closeDeleteConfirm(); if (cb) { try { await cb(); } catch(e) { console.error('confirm cb error:', e); } } };
   document.getElementById('delete-modal').style.display = 'flex';
 }
 function closeDeleteConfirm() {
