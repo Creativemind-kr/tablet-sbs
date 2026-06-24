@@ -2893,22 +2893,17 @@ function adminCancel() {
 }
 
 async function adminSave() {
-  // 터치 환경에서 blur보다 click이 먼저 올 수 있으므로 포커스된 편집 필드 수동 반영
-  const active = document.activeElement;
-  if (active?.dataset?.path) {
-    setByPath(active.dataset.path, active.innerText.trim());
-    active.blur();
-  }
+  document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
+    setByPath(el.dataset.path, el.innerText.trim());
+  });
   await saveData();
   _editSnap = _takeSnap();
 }
 
 async function adminExit() {
-  const active = document.activeElement;
-  if (active?.dataset?.path) {
-    setByPath(active.dataset.path, active.innerText.trim());
-    active.blur();
-  }
+  document.querySelectorAll('[data-path][contenteditable]').forEach(el => {
+    setByPath(el.dataset.path, el.innerText.trim());
+  });
   if (_editSnap && _takeSnap() !== _editSnap) {
     openDeleteConfirm('저장하지 않은 변경사항이 있습니다.\n저장하고 편집을 종료하시겠습니까?', async () => {
       try { await saveData(); } finally { exitEditMode(); }
