@@ -1263,7 +1263,7 @@ let UI_DATA = {
     { icon: '◈', title: '소수 정예 수업',   desc: '소규모 인원으로 운영되어 개인별 집중 피드백과 맞춤 지도가 가능합니다.' },
     { icon: '◉', title: '포트폴리오 완성',  desc: '수료 시 취업에 바로 사용할 수 있는 실전 포트폴리오를 함께 완성합니다.' },
     { icon: '◎', title: '취업 연계 지원',   desc: '수료 후 취업처 연계 및 이력서·면접 컨설팅을 함께 제공합니다.' },
-    { icon: '⚡', title: 'AI 활용 통합 교육', desc: '디자인은 여전히 모든 콘텐츠의 중심입니다. 이제 그 중심에 AI 활용 능력이 더해져야 합니다. SBS아카데미는 LLM, Figma, Midjourney, Claude Code 등 실무 AI 도구를 기초디자인과 함께 다룹니다.' }
+    { icon: '⚡', title: 'AI 활용 통합 교육', desc: '디자인은 여전히 모든 콘텐츠의 중심입니다. 이제 그 중심에 AI 활용 능력이 더해져야 합니다. SBS아카데미는 LLM, Figma, Midjourney, Claude Code 등 실무 AI 도구를 기초디자인과 함께 다룹니다.', featured: true }
   ],
   badges: ['최신 맥·윈도우 장비','Adobe 정품 소프트웨어','LLM·AI 실무 도구 교육','쾌적한 강의 환경','개인 작업 공간','복습 영상 제공','6인 이하 소수 정예']
 };
@@ -2970,7 +2970,8 @@ function renderUI() {
     </div>`).join('');
 
   const features = d.features.map((f, i) => {
-    const isFeatured = i === d.features.length - 1;
+    const hasAnyFeatured = d.features.some(x => x.featured === true);
+    const isFeatured = f.featured === true || (!hasAnyFeatured && i === d.features.length - 1);
     return `
     <article class="feature-card${isFeatured ? ' feature-card--featured' : ''}">
       ${em ? `<button class="admin-del-float" onclick="deleteFeature(${i})" title="카드 삭제">✕</button>` : ''}
@@ -3872,12 +3873,16 @@ function addFeature() {
     fields: [
       { key: 'icon',  label: '아이콘 (이모지)', type: 'text', placeholder: '◆' },
       { key: 'title', label: '카드 제목',   type: 'text' },
-      { key: 'desc',  label: '한 줄 설명',  type: 'textarea', rows: 2 },
+      { key: 'desc',  label: '설명',  type: 'textarea', rows: 3 },
+      { key: 'featured', label: '카드 유형', type: 'select', options: [
+        { value: 'false', label: '일반 카드' },
+        { value: 'true',  label: '전체 너비 카드 (강조)' },
+      ]},
     ],
-    defaults: { icon: '◆', title: '', desc: '' },
+    defaults: { icon: '◆', title: '', desc: '', featured: 'false' },
     onSave: (d) => {
       if (!d.title?.trim()) return;
-      UI_DATA.features.push({ icon: d.icon||'◆', title: d.title.trim(), desc: d.desc.trim() });
+      UI_DATA.features.push({ icon: d.icon||'◆', title: d.title.trim(), desc: d.desc.trim(), featured: d.featured === 'true' });
       renderUI();
     }
   });
