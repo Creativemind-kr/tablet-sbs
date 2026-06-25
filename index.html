@@ -3882,6 +3882,9 @@ function addFeature() {
     defaults: { icon: '◆', title: '', desc: '', featured: 'false' },
     onSave: (d) => {
       if (!d.title?.trim()) return;
+      if (!UI_DATA.features.some(f => f.featured === true) && UI_DATA.features.length > 0) {
+        UI_DATA.features[UI_DATA.features.length - 1] = { ...UI_DATA.features[UI_DATA.features.length - 1], featured: true };
+      }
       UI_DATA.features.push({ icon: d.icon||'◆', title: d.title.trim(), desc: d.desc.trim(), featured: d.featured === 'true' });
       renderUI();
     }
