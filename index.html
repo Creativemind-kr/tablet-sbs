@@ -818,7 +818,8 @@
   .curr-inline-img { list-style: none !important; padding: 0 !important; margin: 10px 0; }
   .curr-inline-img img { width: 100%; border-radius: 10px; cursor: zoom-in; display: block; }
   .curr-inline-img-btns { display: flex; gap: 5px; margin-top: 5px; }
-  .curr-inline-img-btns button { padding: 3px 10px; border-radius: 6px; background: var(--c-bg-2); border: 1px solid var(--c-border); font-size: var(--t-xs); cursor: pointer; color: var(--c-text-2); }
+  .curr-inline-img-btns button { padding: 3px 10px; border-radius: 6px; background: var(--c-bg-2); border: 1px solid var(--c-border); font-size: var(--t-xs); cursor: pointer; color: var(--c-text-2); transition: background .15s, color .15s; }
+  .curr-inline-img-btns button:hover { background: var(--c-bg-3); color: var(--c-text); }
 
   /* ══════════════════════════════════════
      15. INSTRUCTORS
@@ -3244,19 +3245,19 @@ function renderRoadmapView(id) {
     </div>
     <div class="roadmap-steps">${steps || '<p style="color:var(--c-text-2)">로드맵 단계를 추가하세요.</p>'}</div>
     ${em ? `<button class="admin-add-block" onclick="addRoadmapStep('${id}')">+ 단계 추가</button>` : ''}
-    ${((() => { const jobs = c.jobs?.length ? c.jobs : (DEFAULT_JOBS[id]||[]); return (jobs.length || em) ? `
+    ${((() => { const usingDJ = !c.jobs?.length; const jobs = usingDJ ? (DEFAULT_JOBS[id]||[]) : c.jobs; return (jobs.length || em) ? `
     <div class="jobs-section">
-      <p class="jobs-section__label">🎯 취업 가능 직종</p>
+      <p class="jobs-section__label">🎯 취업 가능 직종${em && usingDJ ? ' <span style="font-size:var(--t-xs);font-weight:400;color:var(--c-text-3)">(기본값 — 추가 시 커스텀으로 전환)</span>' : ''}</p>
       <div class="job-chips">
-        ${jobs.map((j,ji) => `<span class="job-chip">${em ? E('courses.'+id+'.jobs.'+ji, j) : j}${em ? `<button class="job-chip__del" onclick="deleteJob('${id}',${ji})">✕</button>` : ''}</span>`).join('')}
+        ${jobs.map((j,ji) => `<span class="job-chip">${em && !usingDJ ? E('courses.'+id+'.jobs.'+ji, j) : j}${em && !usingDJ ? `<button class="job-chip__del" onclick="deleteJob('${id}',${ji})">✕</button>` : ''}</span>`).join('')}
         ${em ? `<button class="admin-add-btn" onclick="addJob('${id}')">+ 직종 추가</button>` : ''}
       </div>
     </div>` : ''; })())}
-    ${((() => { const outs = c.outcomes?.length ? c.outcomes : (DEFAULT_OUTCOMES[id]||[]); return (outs.length || em) ? `
+    ${((() => { const usingDO = !c.outcomes?.length; const outs = usingDO ? (DEFAULT_OUTCOMES[id]||[]) : c.outcomes; return (outs.length || em) ? `
     <div class="outcomes-section">
-      <p class="outcomes-section__label">이 과정을 마치면</p>
+      <p class="outcomes-section__label">이 과정을 마치면${em && usingDO ? ' <span style="font-size:var(--t-xs);font-weight:400;color:var(--c-text-3)">(기본값)</span>' : ''}</p>
       <ul class="outcomes-list">
-        ${outs.map((o,oi) => `<li><span class="out-check">✓</span>${em
+        ${outs.map((o,oi) => `<li><span class="out-check">✓</span>${em && !usingDO
           ? `<span class="admin-inline-row">${E('courses.'+id+'.outcomes.'+oi, o)}<button class="admin-del-btn" onclick="deleteOutcome('${id}',${oi})">✕</button></span>`
           : o}</li>`).join('')}
       </ul>
@@ -3582,11 +3583,11 @@ function renderCurriculumView(id) {
         <button class="portfolio-add-btn" style="margin:0;flex:1" onclick="addPortfolioVideo('${id}')">▶ 유튜브 추가</button>
       </div>` : ''}
     </div>
-    ${((() => { const outs = c.outcomes?.length ? c.outcomes : (DEFAULT_OUTCOMES[id]||[]); return (outs.length || em) ? `
+    ${((() => { const usingDO = !c.outcomes?.length; const outs = usingDO ? (DEFAULT_OUTCOMES[id]||[]) : c.outcomes; return (outs.length || em) ? `
     <div class="outcomes-section">
-      <p class="outcomes-section__label">이 과정을 마치면</p>
+      <p class="outcomes-section__label">이 과정을 마치면${em && usingDO ? ' <span style="font-size:var(--t-xs);font-weight:400;color:var(--c-text-3)">(기본값)</span>' : ''}</p>
       <ul class="outcomes-list">
-        ${outs.map((o,oi) => `<li><span class="out-check">✓</span>${em
+        ${outs.map((o,oi) => `<li><span class="out-check">✓</span>${em && !usingDO
           ? `<span class="admin-inline-row">${E('courses.'+id+'.outcomes.'+oi, o)}<button class="admin-del-btn" onclick="deleteOutcome('${id}',${oi})">✕</button></span>`
           : o}</li>`).join('')}
       </ul>
@@ -4323,6 +4324,7 @@ function addJob(id) {
   });
 }
 function deleteJob(id, ji) {
+  if (!COURSES[id].jobs) return;
   COURSES[id].jobs.splice(ji, 1);
   renderRoadmapView(id);
   document.getElementById('rm-'+id)?.classList.add('is-active');
@@ -4344,6 +4346,7 @@ function addOutcome(id) {
   });
 }
 function deleteOutcome(id, oi) {
+  if (!COURSES[id].outcomes) return;
   COURSES[id].outcomes.splice(oi, 1);
   renderRoadmapView(id);
   renderCurriculumView(id);
@@ -4483,17 +4486,18 @@ function editInstructor(i) {
     });
 }
 function addInstSubject(i) {
-  const courseLabels = Object.values(COURSES).map(c => c.label).filter(Boolean);
+  const courseOptions = Object.values(COURSES).map(c => c.label).filter(Boolean).map(l => ({ value: l, label: l }));
   openEditModal({
     title: '담당 강좌 추가',
-    fields: [{ key: 'sub', label: '강좌명', type: 'text', placeholder: '예: 시각편집학과', hint: courseLabels.join(' · ') }],
-    defaults: { sub: '' },
+    fields: [{ key: 'sub', label: '강좌명', type: 'select', options: courseOptions }],
+    defaults: { sub: courseOptions[0]?.value || '' },
     onSave: (d) => {
       if (!d.sub?.trim()) return;
       if (!Array.isArray(INSTRUCTORS_DATA[i].subjects)) {
         INSTRUCTORS_DATA[i].subjects = INSTRUCTORS_DATA[i].subject ? INSTRUCTORS_DATA[i].subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [];
         delete INSTRUCTORS_DATA[i].subject;
       }
+      if (INSTRUCTORS_DATA[i].subjects.includes(d.sub.trim())) return;
       INSTRUCTORS_DATA[i].subjects.push(d.sub.trim());
       renderInstructorsPage();
     }
