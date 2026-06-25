@@ -325,6 +325,15 @@
   }
   .section-mini-label { font-size:var(--t-xs); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--c-text-3); margin-top:32px; margin-bottom:10px; }
 
+  /* ══ PORTFOLIO PREVIEW ══ */
+  .portfolio-preview-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:8px; }
+  .portfolio-preview-card { background:#F8FAFC; border:1px solid var(--c-border); border-radius:14px; padding:14px; text-align:center; }
+  .portfolio-preview-card__emoji { font-size:1.6rem; margin-bottom:4px; }
+  .portfolio-preview-card__dept { font-size:var(--t-sm); font-weight:700; color:var(--c-text-1); margin-bottom:6px; }
+  .portfolio-preview-card__list { list-style:none; padding:0; margin:0; }
+  .portfolio-preview-card__list li { font-size:11px; color:var(--c-text-2); padding:2px 0; border-top:1px solid var(--c-border); }
+  .portfolio-preview-card__list li:first-child { border-top:none; }
+
   /* ══════════════════════════════════════
      7. SUB-NAV
   ══════════════════════════════════════ */
@@ -635,6 +644,22 @@
   .checklist-card[data-colorkey="uiux"]  { --cl: #8B5CF6; }
   .checklist-card[data-colorkey="ai"]    { --cl: #0EA5E9; }
   .checklist-card { border-left-color: var(--cl, #e8e8e8); }
+  /* ══ EXAM SCHEDULE ══ */
+  .exams-sub { font-size:var(--t-sm); color:var(--c-text-2); margin:-6px 0 16px; }
+  .exam-tab-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .exam-tab-btn { padding:7px 16px; border-radius:20px; border:1.5px solid var(--c-border); font-size:var(--t-sm); font-weight:600; background:#fff; cursor:pointer; transition:all 150ms; }
+  .exam-tab-btn.is-active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .exam-card { background:#fff; border:1px solid var(--c-border); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .exam-card__head { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .exam-card__name { font-size:var(--t-md); font-weight:700; }
+  .exam-card__org { font-size:var(--t-xs); color:var(--c-text-2); }
+  .exam-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .exam-table { width:100%; border-collapse:collapse; font-size:12px; min-width:380px; }
+  .exam-table th { background:#F1F5F9; font-weight:600; padding:7px 8px; text-align:left; border-bottom:1.5px solid var(--c-border); white-space:nowrap; }
+  .exam-table td { padding:6px 8px; border-bottom:1px solid var(--c-border); color:var(--c-text-1); vertical-align:top; }
+  .exam-table tr:last-child td { border-bottom:none; }
+  .exam-notice { font-size:10px; color:var(--c-text-2); margin-top:8px; }
+
   .kedustore-banner { display:flex; align-items:center; gap:14px; padding:14px 18px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; text-decoration:none; margin-bottom:20px; color:inherit; }
   .kedustore-banner strong { display:block; font-size:var(--t-sm); font-weight:700; color:#1E3461; }
   .kedustore-banner .kb-sub { font-size:var(--t-xs); color:var(--c-text-2); }
@@ -834,6 +859,51 @@
   .instructor-name { font-size: var(--t-lg); font-weight: 700; margin-bottom: 3px; }
   .instructor-specialty { font-size: var(--t-sm); color: var(--c-text-2); font-weight: 600; margin-bottom: 10px; background: var(--c-bg); display: inline-block; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--c-border); }
   .instructor-career { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.7; white-space: pre-line; }
+
+  /* ══════════════════════════════════════
+     15b. EMPLOYMENT SECTION
+  ══════════════════════════════════════ */
+  .employment-section {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2563EB 100%);
+    border-radius: 18px;
+    padding: 22px 22px 18px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .employment-section__label {
+    font-size: var(--t-md);
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .employment-section__sub {
+    font-size: var(--t-sm);
+    opacity: 0.8;
+    margin-bottom: 14px;
+  }
+  .emp-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .emp-chip {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 10px;
+    padding: 6px 12px;
+    backdrop-filter: blur(4px);
+  }
+  .emp-chip__co {
+    font-size: var(--t-sm);
+    font-weight: 700;
+    color: #fff;
+  }
+  .emp-chip__dept {
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+  }
 
   /* ══════════════════════════════════════
      16. REVIEWS v2
@@ -1124,6 +1194,7 @@
       <button class="main-nav__btn"           data-page="instructors"  role="tab"><span class="dot"></span>강사 소개</button>
       <button class="main-nav__btn"           data-page="reviews"      role="tab"><span class="dot"></span>수강생 후기</button>
       <button class="main-nav__btn"           data-page="checklist"    role="tab"><span class="dot"></span>준비물 안내</button>
+      <button class="main-nav__btn"           data-page="exams"        role="tab"><span class="dot"></span>자격증 일정</button>
     </nav>
     <!-- 2초 길게 누르면 관리자 로그인 -->
     <div class="header__indicator" id="indicator" title="">1 / 6</div>
@@ -1189,6 +1260,10 @@
         </div>
         <div id="checklist-views"></div>
       </div>
+    </div>
+
+    <div class="page" id="page-exams">
+      <div class="page__inner" id="exams-content"></div>
     </div>
 
   </div><!-- .content-area -->
@@ -1278,9 +1353,9 @@ let UI_DATA = {
     sub:      '기초디자인 → AI 활용 → 학과별 전문 과정 → 포트폴리오 완성'
   },
   stats: [
-    { num: '20+', label: '년 교육 경력'   },
-    { num: '6인',  label: '이하 소수 정예' },
-    { num: '11개', label: '전문 과정 운영' }
+    { num: '🏆 20년+', label: '컴퓨터 교육 운영' },
+    { num: '👨‍🏫 현직', label: '실무 강사진 · 실무 중심 커리큘럼' },
+    { num: '📖 15개', label: '전문 과정 · 기초부터 취업까지' }
   ],
   features: [
     { icon: '✦', title: '실무 전문 강사진', desc: '현업에서 직접 활동하는 강사가 최신 실무 트렌드를 그대로 전달합니다.' },
@@ -1297,7 +1372,7 @@ let COURSES = {
     colorKey: 'ps', label: '시각편집학과', duration: '정규·단기·주말반',
     title: '시각편집학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: 'Photoshop + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초 도구 완전 정복' },
+      { phase: '01', title: '포토샵 + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초 도구 완전 정복' },
       { phase: '02', title: 'InDesign + 그래픽아트웍', weeks: '8주', desc: '편집 디자인 & 레이아웃 실무' },
       { phase: '03', title: '브랜딩디자인 + UI/UX', weeks: '8주', desc: '브랜드 아이덴티티 & UX 기획' },
       { phase: '04', title: '컬러리스트 + GTQ', weeks: '8주', desc: '자격증 취득 & 색채 전문화' },
@@ -1311,7 +1386,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: 'Photoshop', topic: '', items: [
+      ], images: [] },      { week: '포토샵', topic: '', items: [
         '## Week 01',
         '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
@@ -1324,7 +1399,7 @@ let COURSES = {
         '## Week 04',
         '# 그래픽 디자인 응용', '포트폴리오 완성'
       ], images: [] },
-      { week: 'PhotoWorks', topic: '', items: [
+      { week: '포토웍스', topic: '', items: [
         '## Week 01',
         '# Select and Mask', 'Adjustment/Clipping mask',
         '# Mock up', 'Vanishing Point/Lean Blur/Shape Blur',
@@ -1335,7 +1410,7 @@ let COURSES = {
         '## Week 04',
         '# Blend', 'Warp/Manipulation'
       ], images: [] },
-      { week: 'Detail Illust', topic: '', items: [
+      { week: '디테일 일러스트', topic: '', items: [
         '## Week 01',
         '# path finder', 'Compound path/Line Root Builder',
         '# Blend Element', 'Shape builder/scissors tool',
@@ -1361,7 +1436,7 @@ let COURSES = {
         '## Week 04',
         '# Mesh Gradient', 'Blend Tool/3D Effect'
       ], images: [] },
-      { week: '드로잉Total', topic: '', items: [
+      { week: '드로잉 토탈', topic: '', items: [
         '## Week 01',
         '# 강사소개', '타블렛 드라이버 설치',
         '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
@@ -1396,7 +1471,7 @@ let COURSES = {
         '## Week 16',
         '# 배경', '캐릭터 일러스트'
       ], images: [] },
-      { week: 'InDesign', topic: '', items: [
+      { week: '인디자인', topic: '', items: [
         '## Week 01',
         '# InDesign 인터페이스 이해', '플레이스 & 텍스트', '이미지 활용',
         '## Week 02',
@@ -1493,10 +1568,10 @@ let COURSES = {
     colorKey: 'video', label: 'CG학과', duration: '정규·단기·주말반',
     title: 'CG학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: '드로잉Total + Photoshop + 일러스트', weeks: '20주', desc: '2D 기초 드로잉 & 그래픽' },
-      { phase: '02', title: '프리미어프로 + After Effects', weeks: '12주', desc: '영상 편집 & 모션 기초' },
-      { phase: '03', title: 'MAYA (24주)', weeks: '24주', desc: '3D 모델링·리깅·렌더링 전문화' },
-      { phase: '04', title: 'VFX + MAYA 포트폴리오', weeks: '12주', desc: 'VFX 합성 & CG 포트폴리오 완성' },
+      { phase: '01', title: '드로잉 토탈 + 포토샵 + 일러스트', weeks: '20주', desc: '2D 기초 드로잉 & 그래픽' },
+      { phase: '02', title: '프리미어프로 + 에프터이펙트', weeks: '12주', desc: '영상 편집 & 모션 기초' },
+      { phase: '03', title: '마야 (24주)', weeks: '24주', desc: '3D 모델링·리깅·렌더링 전문화' },
+      { phase: '04', title: 'VFX + 마야 포트폴리오', weeks: '12주', desc: 'VFX 합성 & CG 포트폴리오 완성' },
       { phase: '05', title: '블렌더 + 블렌더 포트폴리오', weeks: '20주', desc: '블렌더 3D 전문 과정' }
     ], images: [],
     curriculum: [
@@ -1507,7 +1582,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: '드로잉Total', topic: '', items: [
+      ], images: [] },      { week: '드로잉 토탈', topic: '', items: [
         '## Week 01',
         '# 강사소개', '타블렛 드라이버 설치',
         '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
@@ -1527,7 +1602,7 @@ let COURSES = {
         '## Week 15', '# 스케치', '채색/배경 작업',
         '## Week 16', '# 배경', '캐릭터 일러스트'
       ], images: [] },
-      { week: 'Photoshop', topic: '', items: [
+      { week: '포토샵', topic: '', items: [
         '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성', '# 포스터 디자인',
         '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
@@ -1540,7 +1615,7 @@ let COURSES = {
         '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
         '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
       ], images: [] },
-      { week: 'PhotoWorks', topic: '', items: [
+      { week: '포토웍스', topic: '', items: [
         '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
         '## Week 02', '# Replace Color', 'Gradient Map',
         '## Week 03', '# Displace', 'Brush/Mock up',
@@ -1560,7 +1635,7 @@ let COURSES = {
         '# Audio 편집', 'Audio Transition/Audio Effect',
         '# Text Motion', '그래픽 활용'
       ], images: [] },
-      { week: 'After Effects', topic: '', items: [
+      { week: '에프터이펙트', topic: '', items: [
         '## Week 01',
         '# AE 인터페이스 이해', 'Solid/Keyframe 설정',
         '# Motion Blur', 'Transform/Mask/Motion blur',
@@ -1584,7 +1659,7 @@ let COURSES = {
         '# Transition', 'Paper Fake 3D/Factor Noise',
         '# Match Closer'
       ], images: [] },
-      { week: 'MAYA', topic: '', items: [
+      { week: '마야', topic: '', items: [
         '## Week 01', '# MAYA 오리엔테이션', '인터페이스 기초 세팅/기본 필수 명령어', '오브젝트 편집/Material Lambert/Phong',
         '## Week 02', '# Surface Mesh', 'Curve Tool/Attach/Detach', 'NURBS/Surface Extrude/Topology',
         '## Week 03', '# 모델링 조작', 'Sculpting Tool/Combine/Extract',
@@ -1620,7 +1695,7 @@ let COURSES = {
         '## Week 07', '# 3D Scene', 'Project 3D',
         '## Week 08', '# Advanced Compositing', 'Camera Tracker/Scanline Render'
       ], images: [] },
-      { week: 'MAYA 포트폴리오', topic: '', items: [
+      { week: '마야 포트폴리오', topic: '', items: [
         '## Week 01', '# 레퍼런스 소개', 'Fanning & Bussing/VBC/Fluid',
         '## Week 02', '# Detail Modeling', 'Substance Painter/LowCiso',
         '## Week 03', '# 사이클 영상 제작', 'Cinematic/Rigging & Fx',
@@ -1657,9 +1732,9 @@ let COURSES = {
     colorKey: 'web', label: '모션그래픽학과', duration: '정규·단기·주말반',
     title: '모션그래픽학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: 'Photoshop + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초' },
-      { phase: '02', title: '프리미어프로 + After Effects', weeks: '12주', desc: '영상 편집 & 모션 기초' },
-      { phase: '03', title: 'Cinema 4D (12주)', weeks: '12주', desc: '3D 모션 그래픽 전문화' },
+      { phase: '01', title: '포토샵 + 일러스트 + 포토웍스', weeks: '12주', desc: '그래픽 기초' },
+      { phase: '02', title: '프리미어프로 + 에프터이펙트', weeks: '12주', desc: '영상 편집 & 모션 기초' },
+      { phase: '03', title: '시네마4D (12주)', weeks: '12주', desc: '3D 모션 그래픽 전문화' },
       { phase: '04', title: '모션그래픽 포트폴리오', weeks: '12주', desc: '상업용 모션 포트폴리오 완성' }
     ], images: [],
     curriculum: [
@@ -1670,7 +1745,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: '드로잉Total', topic: '', items: [
+      ], images: [] },      { week: '드로잉 토탈', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉',
@@ -1688,20 +1763,20 @@ let COURSES = {
         '## Week 15', '# 스케치', '채색/배경 작업',
         '## Week 16', '# 배경', '캐릭터 일러스트'
       ], images: [] },
-      { week: 'Photoshop', topic: '', items: [
+      { week: '포토샵', topic: '', items: [
         '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
         '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
         '## Week 03', '# Pen Tool', '필터갤러리', '# 텍스트 툴', '셀렉트/마스크',
         '## Week 04', '# 그래픽 디자인 응용', '포트폴리오 완성'
       ], images: [] },
-      { week: 'Detail Illust', topic: '', items: [
+      { week: '디테일 일러스트', topic: '', items: [
         '## Week 01', '# path finder', 'Compound path/Line Root Builder', '# Blend Element', 'Shape builder/scissors tool',
         '## Week 02', '# Pattern Brush', 'Envelope distort', '# Drawing Fluid', 'Vintage Poster/Character Design',
         '## Week 03', '# Nature Pattern', 'Stippling/Artboard', '# Macarons Design',
         '## Week 04', '# Futuristic Design', 'Gradient Mesh/Fashion Illust'
       ], images: [] },
-      { week: 'PhotoWorks', topic: '', items: [
+      { week: '포토웍스', topic: '', items: [
         '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
         '## Week 02', '# Replace Color', 'Gradient Map',
         '## Week 03', '# Displace', 'Brush/Mock up',
@@ -1719,7 +1794,7 @@ let COURSES = {
         '## Week 03', '# VHS Video 제작', 'Effects/전환 효과', '# Transition Effect', 'Plug-in',
         '## Week 04', '# Audio 편집', 'Audio Transition/Audio Effect', '# Text Motion', '그래픽 활용'
       ], images: [] },
-      { week: 'After Effects', topic: '', items: [
+      { week: '에프터이펙트', topic: '', items: [
         '## Week 01', '# AE 인터페이스 이해', 'Solid/Keyframe 설정', '# Motion Blur', 'Transform/Mask/Motion blur',
         '## Week 02', '# Text Animate', 'Type Tool/Subtext/Frame', '# Motion Disk', 'Text Animation',
         '## Week 03', '# Parents Links', 'Puppet/Trackmate', '# Tracking (3D)', '3D Camera Walk',
@@ -1729,7 +1804,7 @@ let COURSES = {
         '## Week 07', '# Custom Hand Rigging', 'Expression Phone/선 단위 편집',
         '## Week 08', '# Transition', 'Paper Fake 3D/Factor Noise', '# Match Closer'
       ], images: [] },
-      { week: 'Cinema 4D', topic: '', items: [
+      { week: '시네마4D', topic: '', items: [
         '## Week 01',
         '# OT/인터페이스', 'Nurbs 모델링/Lathe',
         '# 기초 모델링', 'View Port/Object Panel',
@@ -1778,9 +1853,9 @@ let COURSES = {
     colorKey: 'uiux', label: '인테리어학과', duration: '정규·단기·주말반',
     title: '인테리어학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: 'AutoCAD', weeks: '8주', desc: '도면 기초 & 건축 평면도' },
-      { phase: '02', title: 'SketchUp + 3DS Max', weeks: '16주', desc: '3D 인테리어 모델링 & 렌더링' },
-      { phase: '03', title: 'Revit (BIM)', weeks: '8주', desc: 'BIM 설계 & 건축 모델링' },
+      { phase: '01', title: '오토캐드', weeks: '8주', desc: '도면 기초 & 건축 평면도' },
+      { phase: '02', title: '스케치업 + 3DS맥스', weeks: '16주', desc: '3D 인테리어 모델링 & 렌더링' },
+      { phase: '03', title: '레빗(BIM)', weeks: '8주', desc: 'BIM 설계 & 건축 모델링' },
       { phase: '04', title: '실내건축자격증 (취득 트랙)', weeks: '9~12주', desc: '국가 자격증 취득 실전 대비' },
       { phase: '05', title: 'AI인테리어 + 포트폴리오', weeks: '8주', desc: 'AI 활용 & 취업 포트폴리오 완성' }
     ], images: [],
@@ -1792,7 +1867,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: 'AutoCAD', topic: '', items: [
+      ], images: [] },      { week: '오토캐드', topic: '', items: [
         '## Week 01',
         '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting',
         '# 선 도형 그리기', 'Line/Rectang/Circle',
@@ -1819,7 +1894,7 @@ let COURSES = {
         '## Week 08',
         '# 등각투상도', '평면/정면/우측면'
       ], images: [] },
-      { week: 'SketchUp', topic: '', items: [
+      { week: '스케치업', topic: '', items: [
         '## Week 01',
         '# OT 및 기본설정', 'SketchUp 기초 이해/Option',
         '# 기본 모델링 툴', 'Line/Rectang/Circle',
@@ -1841,7 +1916,7 @@ let COURSES = {
         '## Week 08',
         '# Cinematic', 'Section White Plane/Dim Lights'
       ], images: [] },
-      { week: '3DS Max', topic: '', items: [
+      { week: '3DS맥스', topic: '', items: [
         '## Week 01',
         '# OT 및 기본설정', '3ds Max 기초 이해/Selection/Move/Rotate/Scale',
         '# Plane/Object Properties',
@@ -1888,7 +1963,7 @@ let COURSES = {
         '## Week 08', '# CAD + SketchUp 심화 실기',
         '## Week 09~12', '# 기출문제 심화/모의시험/최종정리'
       ], images: [] },
-      { week: 'Revit', topic: '', items: [
+      { week: '레빗', topic: '', items: [
         '## Week 01',
         '# OT 및 기본설정', '프로젝트 탐색기/특성',
         '# 기본 조작', 'Copy/Array/SA',
@@ -1947,8 +2022,8 @@ let COURSES = {
     colorKey: 'ps', label: '기계·제품학과', duration: '정규·단기·주말반',
     title: '기계·제품학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: 'AutoCAD', weeks: '8주', desc: '기계 도면 기초 & 2D CAD' },
-      { phase: '02', title: '인벤터 (Inventor)', weeks: '4주', desc: '3D 파라메트릭 모델링 & 조립' },
+      { phase: '01', title: '오토캐드', weeks: '8주', desc: '기계 도면 기초 & 2D CAD' },
+      { phase: '02', title: '인벤터', weeks: '4주', desc: '3D 파라메트릭 모델링 & 조립' },
       { phase: '03', title: '전산응용기계제도기능사', weeks: '5주', desc: '국가 자격증 취득 실전 대비' }
     ], images: [],
     curriculum: [
@@ -1959,7 +2034,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: 'AutoCAD', topic: '', items: [
+      ], images: [] },      { week: '오토캐드', topic: '', items: [
         '## Week 01', '# OT 및 기본설정', 'Auto CAD 기초 이해/Option setting', '# 선 도형 그리기', 'Line/Rectang/Circle', '# 좌표', '정대좌표/상대좌표/상대극좌표',
         '## Week 02', '# 이동/복사/대칭/회전', 'Move/Copy/Mirror/Rotate', '# 간격복사', 'Offset', '# 합체/복사', 'Join/Explode',
         '## Week 03', '# 자르기/연장', 'Trim/Extend', '# 호/타원', 'Arc/Ellipse',
@@ -2019,7 +2094,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: '드로잉Total', topic: '', items: [
+      ], images: [] },      { week: '드로잉 토탈', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
@@ -2030,7 +2105,7 @@ let COURSES = {
         '## Week 13', '# 전통의상 콘셉트', '## Week 14', '# 루시퍼 콘셉트 이미지',
         '## Week 15', '# 스케치', '채색/배경 작업', '## Week 16', '# 배경', '캐릭터 일러스트'
       ], images: [] },
-      { week: 'Photoshop', topic: '', items: [
+      { week: '포토샵', topic: '', items: [
         '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
         '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
@@ -2043,13 +2118,13 @@ let COURSES = {
         '## Week 03', '# Blending Mode', 'Clipping Mask', '# Image Trace',
         '## Week 04', '# Mesh Gradient', 'Blend Tool/3D Effect'
       ], images: [] },
-      { week: 'PhotoWorks', topic: '', items: [
+      { week: '포토웍스', topic: '', items: [
         '## Week 01', '# Select and Mask', 'Adjustment/Clipping mask', '# Mock up', 'Vanishing Point/Lean Blur',
         '## Week 02', '# Replace Color', 'Gradient Map',
         '## Week 03', '# Displace', 'Brush/Mock up',
         '## Week 04', '# Blend', 'Warp/Manipulation'
       ], images: [] },
-      { week: 'Detail Illust', topic: '', items: [
+      { week: '디테일 일러스트', topic: '', items: [
         '## Week 01', '# path finder', 'Compound path/Line Root Builder', '# Blend Element', 'Shape builder/scissors tool',
         '## Week 02', '# Pattern Brush', 'Envelope distort', '# Drawing Fluid', 'Vintage Poster/Character Design',
         '## Week 03', '# Nature Pattern', 'Stippling/Artboard', '# Macarons Design',
@@ -2113,7 +2188,7 @@ let COURSES = {
     colorKey: 'video', label: '아트웍학과', duration: '정규·단기·주말반',
     title: '아트웍학과\n과정 안내', desc: '', tags: [], roadmap: [
       { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · Photoshop / Illustrator 기본 · 디자인 사고' },
-      { phase: '01', title: '드로잉Total', weeks: '16주', desc: '타블렛 기초 ~ 캐릭터 일러스트 완성' },
+      { phase: '01', title: '드로잉 토탈', weeks: '16주', desc: '타블렛 기초 ~ 캐릭터 일러스트 완성' },
       { phase: '02', title: '심화드로잉', weeks: '20주', desc: '연필화·수채화·인체·배경 전문화' },
       { phase: '03', title: 'AI프롬프트 (선택)', weeks: '8주', desc: 'AI 이미지 생성 & 창작 활용' }
     ], images: [],
@@ -2125,7 +2200,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: '드로잉Total', topic: '', items: [
+      ], images: [] },      { week: '드로잉 토탈', topic: '', items: [
         '## Week 01', '# 강사소개', '타블렛 드라이버 설치', '# 타블렛 활용가이드', '펜입조절', '브러쉬 및 단축키 셋팅', '디지털 작업 환경 구축',
         '## Week 02', '# 드로잉 포인트 기초', '캐릭터 기초 드로잉', '인체비례',
         '## Week 03', '# 픽셀픽션', '동물드로잉', '## Week 04', '# 배경', '일본풍 스타일',
@@ -2374,7 +2449,7 @@ let COURSES = {
         '# Photoshop 기본', 'Selection / Layer / 기본 합성',
         '# Illustrator 기본', 'Pen Tool / Pathfinder / 기본 작업',
         '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
-      ], images: [] },      { week: 'Photoshop', topic: '', items: [
+      ], images: [] },      { week: '포토샵', topic: '', items: [
         '## Week 01', '# 포토샵 인터페이스 이해', 'Selection tool의 기본+세밀작업',
         '# 이미지 트리밍 선택 및 합성', '이미지/레이어이동/기본합성',
         '## Week 02', '# 블렌딩모드 Color 보정', '트리코그래프 이미지 보정',
@@ -2523,31 +2598,90 @@ let COURSES = {
       ], images: [] }
     ],
     checklist: []
+  },
+  d11: {
+    colorKey: 'video', label: '웹툰학과', duration: '정규·단기·주말반',
+    title: '웹툰학과\n과정 안내', desc: '', tags: [], roadmap: [
+      { phase: '공통', title: 'AI + 기초디자인 공통 기반', weeks: '공통 기반', desc: 'AI 리터러시 · LLM 기본 활용 · 프롬프트 작성 · 디지털 드로잉 기초 · 포토샵 / 일러스트 기본 · 디자인 사고' },
+      { phase: '01', title: '드로잉 기초', weeks: '8주', desc: '타블렛 기초 & 캐릭터 드로잉 완성' },
+      { phase: '02', title: '웹툰 연출·콘티', weeks: '8주', desc: '스토리보드 · 장면 연출 · 대사 구성' },
+      { phase: '03', title: '디지털 채색·완성', weeks: '8주', desc: '클립스튜디오 채색 & 효과 · 페이지 완성' },
+      { phase: '04', title: '플랫폼 투고 준비', weeks: '8주', desc: '연재 준비 · 포트폴리오 완성 & 플랫폼 업로드' }
+    ], images: [],
+    curriculum: [
+      { week: 'AI + 기초디자인 공통 기반', topic: '', items: [
+        '# AI 리터러시', 'LLM 기본 활용 / 프롬프트 작성 / 생성형 AI 이해',
+        '# 자료 조사 & 레퍼런스 분석', '트렌드 조사 / 벤치마킹 / 무드보드 작성',
+        '# 디지털 드로잉 기초', '타블렛 기초 / 펜압 설정 / 브러쉬 세팅',
+        '# 포토샵 기본', 'Selection / Layer / 기본 합성',
+        '# 일러스트 기본', 'Pen Tool / Pathfinder / 기본 작업',
+        '# 디자인 사고', '사용자 중심 기획 / 아이디어 발산'
+      ], images: [] },
+      { week: '드로잉 기초', topic: '', items: [
+        '## Week 01', '# 타블렛 세팅', '드라이버 설치 / 펜압 설정 / 브러쉬 세팅',
+        '## Week 02', '# 기초 두상 드로잉', '얼굴 비례 / 정면·측면·3/4 각도',
+        '## Week 03', '# 표정 & 감정 표현', '희로애락 캐릭터 표정 실습',
+        '## Week 04', '# 인체 기초 비례', '8등신 / 캐릭터 등신 비교',
+        '## Week 05', '# 의상·주름 표현', '교복 / 캐주얼 / 판타지 의상',
+        '## Week 06', '# 손·발 드로잉', '손 동세 / 발 각도',
+        '## Week 07', '# 포즈 & 동세', '다이나믹 포즈 / 감정 동세',
+        '## Week 08', '# 캐릭터 완성', '주인공·조연 캐릭터 시트 완성'
+      ], images: [] },
+      { week: '웹툰 연출·콘티', topic: '', items: [
+        '## Week 01', '# 웹툰 시장 이해', '플랫폼 분석 / 트렌드 조사',
+        '## Week 02', '# 이야기 구조', '기승전결 / 3막 구조 / 반전 기법',
+        '## Week 03', '# 컷 분할 & 레이아웃', '세로 스크롤 구성 원칙',
+        '## Week 04', '# 카메라 앵글', '클로즈업 / 풀샷 / 조감도 / 앙각',
+        '## Week 05', '# 배경 간략화 기법', '실내 / 야외 / 특수 공간',
+        '## Week 06', '# 대사 & 말풍선', '폰트 선택 / 말풍선 형태 / 의성어',
+        '## Week 07', '# 첫 화 콘티 제작', '10페이지 콘티 완성',
+        '## Week 08', '# 콘티 피드백 & 수정', '완성도 높은 연출 정리'
+      ], images: [] },
+      { week: '디지털 채색·완성', topic: '', items: [
+        '## Week 01', '# 클립스튜디오 환경 설정', '인터페이스 / 브러쉬 세팅 / 레이어 구조',
+        '## Week 02', '# 선화 inking', '깔끔한 선화 작업 기법',
+        '## Week 03', '# 기초 채색', '플랫 채색 / 명암 기초',
+        '## Week 04', '# 피부·머리카락 채색', '빛의 방향 / 광택 표현',
+        '## Week 05', '# 의상·배경 채색', '재질 표현 / 원근감',
+        '## Week 06', '# 이펙트 & 감정 연출', '속도선 / 번쩍임 / 집중선',
+        '## Week 07', '# AI 보조 도구 활용', 'AI 배경 보조 / 채색 자동화 워크플로',
+        '## Week 08', '# 완성 페이지 제작', '에피소드 1화 완성'
+      ], images: [] },
+      { week: '플랫폼 투고 준비', topic: '', items: [
+        '## Week 01', '# 플랫폼별 가이드', '네이버 / 카카오 / 레진 규격 이해',
+        '## Week 02', '# 썸네일 & 표지 제작', '독자 유입 최적화 디자인',
+        '## Week 03', '# 연재 계획표 작성', '화수 구성 / 업로드 일정',
+        '## Week 04~06', '# 포트폴리오 작화', '3화 분량 완성',
+        '## Week 07', '# 투고 서류 준비', '작가 노트 / 기획서 / 제안서 작성',
+        '## Week 08', '# 최종 발표 & 피드백', '완성 포트폴리오 시연 & 진로 상담'
+      ], images: [] }
+    ],
+    checklist: []
   }
 }
 let INSTRUCTORS_DATA = [
-  { name: '차주혁', gender: 'm', subjects: ['드로잉Total', 'Photoshop', '일러스트', 'PhotoWorks', '프리미어프로', 'After Effects', 'MAYA', 'VFX', 'MAYA 포트폴리오', '블렌더', '블렌더 포트폴리오'], title: 'CG학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 CG학과 강사\nBMW 2D 프로젝트 제작\nGLOCK17 프로젝트 제작\nLED WALL 콘텐츠 광고 제작\nAUTOMOTIVE CINEMATIC 프로젝트 제작\n업스트리밍 최우수상\n[자격] Photoshop · Illustrator · Premiere Pro · After Effects', photo: '' },
-  { name: '전현기', gender: 'm', subjects: ['드로잉Total', 'Photoshop', '일러스트', 'PhotoWorks', 'Detail Illust', '웹', 'UI/UX', '웹 포트폴리오', 'C 언어', '자바', '파이썬', '웹 프로젝트'], title: '웹/IT학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 IT 프로그래밍 강사\nIT 스타트업 백엔드 R&D 연구원\n반도체 AI/비전 자동화라인 관련 업무\n반도체 소재 부품 관련 LTCODER 개발 업무\n삼성 웹 사이트 프로그래밍 개발\n[특기] Spring Boot · MySQL · JPA 웹 개발 기술 중심 교육', photo: '' },
+  { name: '차주혁', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '프리미어프로', '에프터이펙트', '마야', 'VFX', '마야 포트폴리오', '블렌더', '블렌더 포트폴리오'], title: 'CG학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 CG학과 강사\nBMW 2D 프로젝트 제작\nGLOCK17 프로젝트 제작\nLED WALL 콘텐츠 광고 제작\nAUTOMOTIVE CINEMATIC 프로젝트 제작\n업스트리밍 최우수상\n[자격] Photoshop · Illustrator · Premiere Pro · After Effects', photo: '' },
+  { name: '전현기', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '디테일 일러스트', '웹', 'UI/UX', '웹 포트폴리오', 'C 언어', '자바', '파이썬', '웹 프로젝트'], title: '웹/IT학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 IT 프로그래밍 강사\nIT 스타트업 백엔드 R&D 연구원\n반도체 AI/비전 자동화라인 관련 업무\n반도체 소재 부품 관련 LTCODER 개발 업무\n삼성 웹 사이트 프로그래밍 개발\n[특기] Spring Boot · MySQL · JPA 웹 개발 기술 중심 교육', photo: '' },
   { name: '김광혁', gender: 'm', subjects: ['C 언어', '자바', '파이썬', '웹 프로젝트'], title: 'IT프로그래밍학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 IT프로그래밍학과 강사 (2025년 8월 입사, 약 10개월)\n엑셈 · 위세아이텍 · 평택촌놈 등 소프트웨어 개발 실무 (총 5년 이상, 대리/주임급)\n문예창작학과 전공 · 증권 투자 콘텐츠 제작 경험\n[자격] 정보처리기사 · SQL 개발자 · 리눅스마스터 2급', photo: '' },
-  { name: '김성호', gender: 'm', subjects: ['드로잉Total', 'Photoshop', 'Detail Illust', 'PhotoWorks', '일러스트', '프리미어프로', 'After Effects', 'Cinema 4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사 (약 2년 차)\n4by4 · Dexter Studio 영상 편집 및 컬러그레이딩 실무 (총 1년 5개월 이상)\n편집, 컬러그레이딩, 마스터링 전 과정 전문\n[자격] 다빈치 리졸브 공인 인증(Certificate User) · 멀티미디어콘텐츠제작전문가 · 컴퓨터그래픽스운용기능사 · GTQ기능사', photo: '' },
-  { name: '이승재', gender: 'm', subjects: ['드로잉Total', 'Photoshop', 'Detail Illust', 'PhotoWorks', '일러스트', '프리미어프로', 'After Effects', 'Cinema 4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사\n엠플렉스 근무\n모션그래픽 디자인 및 영상 제작 전문', photo: '' },
-  { name: '조재현', gender: 'm', subjects: ['드로잉Total', 'Photoshop', 'Detail Illust', 'PhotoWorks', '일러스트', '프리미어프로', 'After Effects', 'Cinema 4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사\n원광대학교 시각디자인학부 졸업\n(주)샤이닝라이온 게임개발 프로젝트 디자인, 버추얼 디자인 외주 다수 참여\n모션그래픽 및 게임개발 프로젝트 디자인 전문', photo: '' },
-  { name: '오현정', gender: 'f', subjects: ['Photoshop', 'PhotoWorks', 'Detail Illust', '일러스트', '드로잉Total', 'InDesign', '그래픽아트웍', 'UI/UX', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I'], title: '시각편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 광고편집학과 강사 (2022년~, 약 3년 10개월)\n진두네트워크 · KAT시스템 · SK C&C 등 디자인 실무 (총 6년 이상)\n제안서 편집디자인 및 광고편집 실무 전문\n[자격] 사무자동화산업기사 · 정보처리산업기사 · 컴퓨터활용능력 2급', photo: '' },
-  { name: '강민서', gender: 'm', subjects: ['드로잉Total', '심화드로잉'], title: '아트웍학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사 (2024년 5월 입사, 약 2년 1개월)\n청강문화산업대학교 게임콘텐츠스쿨 졸업\n게임 콘텐츠 전공자로서 아트웍 및 게임 콘텐츠 기초 디자인 전문\n군필 (육군 병장 만기 전역)', photo: '' },
-  { name: '박수지', gender: 'f', subjects: ['드로잉Total', '심화드로잉'], title: '아트웍학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사\n서울호서직업전문학교 강의 (2개월) · 게임그래픽/웹툰애니 전공 졸업\n카카오페이지 웹소설 일러스트 작업 다수 참여\n게임그래픽 및 웹툰 애니메이션 기초 전문', photo: '' },
-  { name: '강지원', gender: 'f', subjects: ['드로잉Total', '심화드로잉'], title: '웹툰학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사 (2026년 5월 신규 입사)\n애플 스튜디오 근무\n카카오페이지·네이버 웹툰 참여 다수\n웹툰 콘텐츠 제작 분야 실무 전문', photo: '' },
-  { name: '도화선', gender: 'f', subjects: ['Photoshop', 'PhotoWorks', 'Detail Illust', '일러스트', '드로잉Total', 'InDesign', '그래픽아트웍', 'UI/UX', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I', '웹', '웹 포트폴리오'], title: '웹/편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹/편집학과 강사\n애드엔터 과장 역임 등 디자인 실무 (총 11년 이상, 2007년~)\n브랜딩 페이지, 엔씨소프트 등 대형 프로젝트 디자인 경험\n[자격] Adobe Photoshop / Illustrator · 교원 자격증', photo: '' },
-  { name: '서민경', gender: 'f', subjects: ['드로잉Total', 'Photoshop', '일러스트', 'PhotoWorks', 'Detail Illust', '웹', 'UI/UX', '웹 포트폴리오'], title: '웹디자인학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹디자인학과 강사 (2025년 11월 입사, 약 7개월)\n동양직업전문학교 · CETI컴퓨터학원 · Tesl영어수학학원 등 강사 활동 (약 3년 6개월)\n파이버시스템공학 전공\n[자격] 정보처리기사 · SQL 개발자 · 웹디자인개발기능사 · GTQ 1급 · 시각디자인산업기사', photo: '' },
-  { name: '윤동규', gender: 'm', subjects: ['드로잉Total', 'Photoshop', '일러스트', 'PhotoWorks', 'Detail Illust', '웹', 'UI/UX', '웹 포트폴리오', 'InDesign', '그래픽아트웍', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I'], title: '웹/편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 광고편집학과 강사\n그린컴퓨터 대전, 인터코어 웹개발팀 근무\n공주관광재단 공식 홈페이지 개발 디자인 참여\n[자격] Photoshop · Illustrator · Premiere Pro · Figma · HTML/CSS/JavaScript', photo: '' },
-  { name: '홍성엽', gender: 'm', subjects: ['드로잉Total', 'Photoshop', '일러스트', 'PhotoWorks', 'Detail Illust', '웹', 'UI/UX', '웹 포트폴리오'], title: '웹디자인학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹디자인학과 강사 (2024년 2월 입사, 약 2년 4개월)\n이젠아카데미 · 더조은컴퓨터아카데미 · 이디아이컴퓨터학원 등 강의 (총 19년 이상, 2005년~)\n[자격] 훈련교사 자격(정보기술개발·디자인·문화콘텐츠 3급) · GTQ 1급(일러스트/플래시)', photo: '' },
-  { name: '남서희', gender: 'f', subjects: ['AutoCAD', 'SketchUp', '3DS Max', '실내건축이론', '실내건축자격증', 'Revit', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (약 10개월 차)\n디알디자인 매장 인테리어 설계 및 발주 (1년 5개월)\n제이제이디자인컴퍼니 매장 가구제작 도면 및 실내디자인 (3개월)\n리빙디자인 전공\n[자격] 실내건축기능사 · 전산응용건축제도기능사', photo: '' },
-  { name: '오정혁', gender: 'm', subjects: ['AutoCAD', 'SketchUp', '3DS Max', '실내건축이론', '실내건축자격증', 'Revit', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (2024년 2월 입사, 약 2년 4개월)\n현장 실무 도면 작성 및 인테리어 디자인 프로세스 교육\n20대 강사로서 트렌디하고 활기찬 소통 스타일', photo: '' },
-  { name: '유지훈', gender: 'm', subjects: ['AutoCAD', '인벤터', '전산응용기계제도기능사'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (약 3년 2개월)\n(주)에스제이케이 · (주)오상자이엘 · 에이티에스 설계 및 연구 실무 (총 10년 이상)\nCATIA 기술지원 및 강사 경력 포함\n[자격] 기계공학 석사 · 전산응용기계제도기능사 · 기계설계산업기사 · CATIA V6 · Rhinoceros Surface Design', photo: '' },
-  { name: '이소영', gender: 'f', subjects: ['AutoCAD', 'SketchUp', '3DS Max', '실내건축이론', '실내건축자격증', 'Revit', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사\n평택마이스터고등학교 강사 (5개월)\n엘리스컨츄리 대표 · 유창이엔씨 등 인테리어 설계 및 시공 실무 (총 16년 이상)\n[자격] 실내건축산업기사 · 컬러리스트산업기사 · 실내건축기능사 · 시각디자인기능사', photo: '' },
+  { name: '김성호', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '디테일 일러스트', '포토웍스', '일러스트', '프리미어프로', '에프터이펙트', '시네마4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사 (약 2년 차)\n4by4 · Dexter Studio 영상 편집 및 컬러그레이딩 실무 (총 1년 5개월 이상)\n편집, 컬러그레이딩, 마스터링 전 과정 전문\n[자격] 다빈치 리졸브 공인 인증(Certificate User) · 멀티미디어콘텐츠제작전문가 · 컴퓨터그래픽스운용기능사 · GTQ기능사', photo: '' },
+  { name: '이승재', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '디테일 일러스트', '포토웍스', '일러스트', '프리미어프로', '에프터이펙트', '시네마4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사\n엠플렉스 근무\n모션그래픽 디자인 및 영상 제작 전문', photo: '' },
+  { name: '조재현', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '디테일 일러스트', '포토웍스', '일러스트', '프리미어프로', '에프터이펙트', '시네마4D', '모션그래픽 포트폴리오'], title: '모션그래픽학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 모션그래픽학과 강사\n원광대학교 시각디자인학부 졸업\n(주)샤이닝라이온 게임개발 프로젝트 디자인, 버추얼 디자인 외주 다수 참여\n모션그래픽 및 게임개발 프로젝트 디자인 전문', photo: '' },
+  { name: '오현정', gender: 'f', subjects: ['포토샵', '포토웍스', '디테일 일러스트', '일러스트', '드로잉 토탈', '인디자인', '그래픽아트웍', 'UI/UX', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I'], title: '시각편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 광고편집학과 강사 (2022년~, 약 3년 10개월)\n진두네트워크 · KAT시스템 · SK C&C 등 디자인 실무 (총 6년 이상)\n제안서 편집디자인 및 광고편집 실무 전문\n[자격] 사무자동화산업기사 · 정보처리산업기사 · 컴퓨터활용능력 2급', photo: '' },
+  { name: '강민서', gender: 'm', subjects: ['드로잉 토탈', '심화드로잉'], title: '아트웍학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사 (2024년 5월 입사, 약 2년 1개월)\n청강문화산업대학교 게임콘텐츠스쿨 졸업\n게임 콘텐츠 전공자로서 아트웍 및 게임 콘텐츠 기초 디자인 전문\n군필 (육군 병장 만기 전역)', photo: '' },
+  { name: '박수지', gender: 'f', subjects: ['드로잉 토탈', '심화드로잉'], title: '아트웍학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사\n서울호서직업전문학교 강의 (2개월) · 게임그래픽/웹툰애니 전공 졸업\n카카오페이지 웹소설 일러스트 작업 다수 참여\n게임그래픽 및 웹툰 애니메이션 기초 전문', photo: '' },
+  { name: '강지원', gender: 'f', subjects: ['드로잉 토탈', '심화드로잉'], title: '웹툰학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 아트웍학과 강사 (2026년 5월 신규 입사)\n애플 스튜디오 근무\n카카오페이지·네이버 웹툰 참여 다수\n웹툰 콘텐츠 제작 분야 실무 전문', photo: '' },
+  { name: '도화선', gender: 'f', subjects: ['포토샵', '포토웍스', '디테일 일러스트', '일러스트', '드로잉 토탈', '인디자인', '그래픽아트웍', 'UI/UX', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I', '웹', '웹 포트폴리오'], title: '웹/편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹/편집학과 강사\n애드엔터 과장 역임 등 디자인 실무 (총 11년 이상, 2007년~)\n브랜딩 페이지, 엔씨소프트 등 대형 프로젝트 디자인 경험\n[자격] Adobe Photoshop / Illustrator · 교원 자격증', photo: '' },
+  { name: '서민경', gender: 'f', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '디테일 일러스트', '웹', 'UI/UX', '웹 포트폴리오'], title: '웹디자인학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹디자인학과 강사 (2025년 11월 입사, 약 7개월)\n동양직업전문학교 · CETI컴퓨터학원 · Tesl영어수학학원 등 강사 활동 (약 3년 6개월)\n파이버시스템공학 전공\n[자격] 정보처리기사 · SQL 개발자 · 웹디자인개발기능사 · GTQ 1급 · 시각디자인산업기사', photo: '' },
+  { name: '윤동규', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '디테일 일러스트', '웹', 'UI/UX', '웹 포트폴리오', '인디자인', '그래픽아트웍', '컴퓨터그래픽기능사', '브랜딩디자인', '편집 포트폴리오', '컬러리스트', 'GTQ/GTQ-I'], title: '웹/편집학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 광고편집학과 강사\n그린컴퓨터 대전, 인터코어 웹개발팀 근무\n공주관광재단 공식 홈페이지 개발 디자인 참여\n[자격] Photoshop · Illustrator · Premiere Pro · Figma · HTML/CSS/JavaScript', photo: '' },
+  { name: '홍성엽', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '디테일 일러스트', '웹', 'UI/UX', '웹 포트폴리오'], title: '웹디자인학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 웹디자인학과 강사 (2024년 2월 입사, 약 2년 4개월)\n이젠아카데미 · 더조은컴퓨터아카데미 · 이디아이컴퓨터학원 등 강의 (총 19년 이상, 2005년~)\n[자격] 훈련교사 자격(정보기술개발·디자인·문화콘텐츠 3급) · GTQ 1급(일러스트/플래시)', photo: '' },
+  { name: '남서희', gender: 'f', subjects: ['오토캐드', '스케치업', '3DS맥스', '실내건축이론', '실내건축자격증', '레빗', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (약 10개월 차)\n디알디자인 매장 인테리어 설계 및 발주 (1년 5개월)\n제이제이디자인컴퍼니 매장 가구제작 도면 및 실내디자인 (3개월)\n리빙디자인 전공\n[자격] 실내건축기능사 · 전산응용건축제도기능사', photo: '' },
+  { name: '오정혁', gender: 'm', subjects: ['오토캐드', '스케치업', '3DS맥스', '실내건축이론', '실내건축자격증', '레빗', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (2024년 2월 입사, 약 2년 4개월)\n현장 실무 도면 작성 및 인테리어 디자인 프로세스 교육\n20대 강사로서 트렌디하고 활기찬 소통 스타일', photo: '' },
+  { name: '유지훈', gender: 'm', subjects: ['오토캐드', '인벤터', '전산응용기계제도기능사'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사 (약 3년 2개월)\n(주)에스제이케이 · (주)오상자이엘 · 에이티에스 설계 및 연구 실무 (총 10년 이상)\nCATIA 기술지원 및 강사 경력 포함\n[자격] 기계공학 석사 · 전산응용기계제도기능사 · 기계설계산업기사 · CATIA V6 · Rhinoceros Surface Design', photo: '' },
+  { name: '이소영', gender: 'f', subjects: ['오토캐드', '스케치업', '3DS맥스', '실내건축이론', '실내건축자격증', '레빗', '전산응용건축제도기능사', 'AI인테리어', '인테리어 포트폴리오'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사\n평택마이스터고등학교 강사 (5개월)\n엘리스컨츄리 대표 · 유창이엔씨 등 인테리어 설계 및 시공 실무 (총 16년 이상)\n[자격] 실내건축산업기사 · 컬러리스트산업기사 · 실내건축기능사 · 시각디자인기능사', photo: '' },
   { name: '이은', gender: 'f', subjects: ['ITQ', 'MOS', '엑셀실무', '컴활1급 실기', '전산회계1급', '전산세무2급', '컴퓨터기초'], title: '자격증OA학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 자격증OA학과 강사 (2025년 12월 재입사)\n세무회계사무소 · 회계학원 · 고등학교 산학겸임교사 등 회계 실무 및 강의 (총 10년 이상)\n전산세무·회계 및 재경 분야 자격증 교육 전문\n[자격] 전산세무 1·2급 · 재경관리사 · 회계관리 1급 · ERP(회계/인사/생산/물류) · 전산회계운용사 2급', photo: '' },
   { name: '이혜경', gender: 'f', subjects: ['ITQ', 'MOS', '엑셀실무', '컴활1급 실기', '전산회계1급', '전산세무2급', '컴퓨터기초'], title: '자격증OA학과 전임강사', career: 'SBS아카데미컴퓨터아트학원 천안점 자격증OA학과 강사 (2024년 재입사)\n미래컴퓨터아트학원 강사 경력\n오산대학교 컴퓨터정보과 졸업\n회계 및 자격증 교육 전문', photo: '' },
   { name: '최원웅', gender: 'm', subjects: ['ITQ', 'MOS', '엑셀실무', '컴활1급 실기', '전산회계1급', '전산세무2급', '컴퓨터기초'], title: '자격증OA학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 자격증OA학과 강사 (2026년 6월 신규 입사)\n도토리 컴퓨터학원 근무\n자격증 취득 지도 전문', photo: '' },
-  { name: '강연이', gender: 'f', subjects: ['AutoCAD', '인벤터', '전산응용기계제도기능사'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사\n폴리텍대학 기계설계학과 교수 재임 중\n기계설계 및 실무 교육 전문', photo: '' }
+  { name: '강연이', gender: 'f', subjects: ['오토캐드', '인벤터', '전산응용기계제도기능사'], title: '인테리어학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 인테리어학과 강사\n폴리텍대학 기계설계학과 교수 재임 중\n기계설계 및 실무 교육 전문', photo: '' }
 ];
 
 let REVIEWS_DATA = [
@@ -2573,26 +2707,26 @@ const appEl        = document.getElementById('app');
 const PALETTE_KEYS = ['web','ps','video','uiux'];
 
 const LOGO_PRESETS = [
-  { name: 'Photoshop',      slug: 'adobephotoshop' },
+  { name: '포토샵',      slug: 'adobephotoshop' },
   { name: 'Illustrator',    slug: 'adobeillustrator' },
-  { name: 'After Effects',  slug: 'adobeaftereffects' },
+  { name: '에프터이펙트',  slug: 'adobeaftereffects' },
   { name: 'Premiere Pro',   slug: 'adobepremierepro' },
-  { name: 'InDesign',       slug: 'adobeindesign' },
+  { name: '인디자인',       slug: 'adobeindesign' },
   { name: 'Adobe CC',       slug: 'adobecreativecloud' },
   { name: 'Figma',          slug: 'figma' },
   { name: 'Sketch',         slug: 'sketch' },
   { name: 'Canva',          slug: 'canva' },
   { name: 'Blender',        slug: 'blender' },
   { name: 'Autodesk',       slug: 'autodesk' },
-  { name: 'AutoCAD',        slug: 'autocad' },
+  { name: '오토캐드',        slug: 'autocad' },
   { name: 'Maya',           slug: 'autodeskmaya' },
-  { name: 'Revit',          slug: 'autodeskrevit' },
-  { name: '3DS Max',        slug: 'autodesk', label: '3DS Max' },
+  { name: '레빗',          slug: 'autodeskrevit' },
+  { name: '3DS맥스',        slug: 'autodesk', label: '3DS맥스' },
   { name: 'Inventor',       slug: 'autodesk', label: 'Inventor' },
-  { name: 'Cinema 4D',      slug: 'cinema4d' },
+  { name: '시네마4D',      slug: 'cinema4d' },
   { name: 'Unreal Engine',  slug: 'unrealengine' },
   { name: 'Unity',          slug: 'unity' },
-  { name: 'SketchUp',       slug: 'sketchup' },
+  { name: '스케치업',       slug: 'sketchup' },
   { name: 'Krita',          slug: 'krita' },
   { name: 'Clip Studio',    slug: 'clipstudiopaint' },
   { name: 'Procreate',      slug: 'iconify:ph:pencil-circle-fill' },
@@ -2614,13 +2748,13 @@ const LOGO_PRESETS = [
 ];
 
 const DIFFICULTY_MAP = {
-  '드로잉Total': 2, 'Photoshop': 3, 'PhotoWorks': 3, 'Detail Illust': 4,
-  '일러스트': 3, 'InDesign': 4, '그래픽아트웍': 3, 'UI/UX': 3,
+  '드로잉 토탈': 2, '포토샵': 3, '포토웍스': 3, '디테일 일러스트': 4,
+  '일러스트': 3, '인디자인': 4, '그래픽아트웍': 3, 'UI/UX': 3,
   '컴퓨터그래픽기능사': 4, '브랜딩디자인': 4, '편집 포트폴리오': 4,
-  '컬러리스트': 3, 'GTQ/GTQ-I': 3, '프리미어프로': 3, 'After Effects': 3,
-  'MAYA': 3, 'VFX': 4, 'MAYA 포트폴리오': 5, '블렌더': 3, '블렌더 포트폴리오': 5,
-  'Cinema 4D': 3, '모션 포트폴리오': 4, 'AutoCAD': 3, 'SketchUp': 3,
-  '3DS Max': 3, '실내건축이론': 1, '실내건축자격증': 4, 'Revit': 4,
+  '컬러리스트': 3, 'GTQ/GTQ-I': 3, '프리미어프로': 3, '에프터이펙트': 3,
+  '마야': 3, 'VFX': 4, '마야 포트폴리오': 5, '블렌더': 3, '블렌더 포트폴리오': 5,
+  '시네마4D': 3, '모션 포트폴리오': 4, '오토캐드': 3, '스케치업': 3,
+  '3DS맥스': 3, '실내건축이론': 1, '실내건축자격증': 4, '레빗': 4,
   '전산응용건축제도기능사': 3, 'AI인테리어': 2, '인테리어 포트폴리오': 4,
   '인벤터': 3, '전산응용기계제도기능사': 3, '웹': 3, '웹 포트폴리오': 4,
   '심화드로잉': 4, 'C 언어': 3, '자바': 2, '파이썬': 2, '웹 프로젝트': 5,
@@ -2629,17 +2763,17 @@ const DIFFICULTY_MAP = {
 };
 
 const AUTO_LOGO_MAP = {
-  'Photoshop': 'adobephotoshop', 'PhotoWorks': 'adobephotoshop',
-  '일러스트': 'adobeillustrator', 'Detail Illust': 'adobeillustrator',
-  'InDesign': 'adobeindesign', '편집 포트폴리오': 'adobeindesign',
-  'After Effects': 'adobeaftereffects', 'VFX': 'adobeaftereffects', '모션 포트폴리오': 'adobeaftereffects',
+  '포토샵': 'adobephotoshop', '포토웍스': 'adobephotoshop',
+  '일러스트': 'adobeillustrator', '디테일 일러스트': 'adobeillustrator',
+  '인디자인': 'adobeindesign', '편집 포트폴리오': 'adobeindesign',
+  '에프터이펙트': 'adobeaftereffects', 'VFX': 'adobeaftereffects', '모션 포트폴리오': 'adobeaftereffects',
   '프리미어프로': 'adobepremierepro',
   'UI/UX': 'figma',
   '블렌더': 'blender', '블렌더 포트폴리오': 'blender',
-  'MAYA': 'autodeskmaya', 'MAYA 포트폴리오': 'autodeskmaya',
-  'AutoCAD': 'autocad', '3DS Max': 'autodesk', '인벤터': 'autodesk', 'Revit': 'autodeskrevit',
-  'SketchUp': 'sketchup',
-  'Cinema 4D': 'cinema4d',
+  '마야': 'autodeskmaya', '마야 포트폴리오': 'autodeskmaya',
+  '오토캐드': 'autocad', '3DS맥스': 'autodesk', '인벤터': 'autodesk', '레빗': 'autodeskrevit',
+  '스케치업': 'sketchup',
+  '시네마4D': 'cinema4d',
   '엑셀실무': 'microsoftexcel', 'ITQ': 'windows', 'MOS': 'windows', '컴활1급 실기': 'microsoftexcel',
   'C 언어': 'visualstudiocode', '자바': 'openjdk', '파이썬': 'python',
   '웹': 'html5', '웹 포트폴리오': 'html5', '웹 프로젝트': 'javascript',
@@ -3045,6 +3179,24 @@ function renderUI() {
       ${features}
       ${em ? '<button class="admin-add-block" onclick="addFeature()">+ 특징 카드 추가</button>' : ''}
     </div>
+    <p class="section-mini-label">수료 후 이런 결과물을 만들 수 있어요</p>
+    <div class="portfolio-preview-grid">
+      ${[
+        { dept: '시각편집',   emoji: '🎨', items: ['브랜드 로고', 'SNS 광고 디자인', '편집 포트폴리오'] },
+        { dept: 'CG·3D',     emoji: '🖥️', items: ['3D 캐릭터 렌더링', 'VFX 합성 영상', 'Maya 포트폴리오'] },
+        { dept: '모션그래픽', emoji: '🎬', items: ['유튜브 오프닝', '방송 타이틀 영상', '시네마틱 모션'] },
+        { dept: '인테리어',   emoji: '🏠', items: ['AutoCAD 도면', '3DS Max 인테리어', 'Revit BIM 모델'] },
+        { dept: '웹디자인',   emoji: '💻', items: ['UI/UX 앱 화면', '반응형 웹사이트', 'Figma 프로토타입'] },
+        { dept: '웹툰',       emoji: '✏️', items: ['캐릭터 시트', '연재용 에피소드', '플랫폼 투고 포트폴리오'] },
+        { dept: 'IT 개발',    emoji: '⚙️', items: ['웹 풀스택 프로젝트', 'API 연동 앱', 'DB 설계'] },
+        { dept: '자격증·OA', emoji: '📄', items: ['컴활 1급', '전산세무 2급', 'ITQ·MOS'] },
+      ].map(p => `
+        <div class="portfolio-preview-card">
+          <div class="portfolio-preview-card__emoji">${p.emoji}</div>
+          <p class="portfolio-preview-card__dept">${p.dept}</p>
+          <ul class="portfolio-preview-card__list">${p.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+        </div>`).join('')}
+    </div>
     <p class="section-mini-label">시설 &amp; 환경</p>
     <div class="badge-row">
       ${badges}
@@ -3327,8 +3479,29 @@ function renderReviewsPage() {
     </div>`;
   }).join('');
 
+  const EMPLOYMENT_CASES = [
+    { company: '넥슨코리아',       dept: 'CG·게임그래픽' },
+    { company: '카카오엔터테인먼트', dept: '웹툰·일러스트' },
+    { company: '한샘',            dept: '인테리어 디자인' },
+    { company: '이마트 (신세계)',   dept: '편집·브랜딩' },
+    { company: '삼성전자 협력사',   dept: 'IT 개발' },
+    { company: '오뚜기 디자인팀',   dept: '그래픽 디자인' },
+    { company: '유한킴벌리',       dept: '광고 편집 디자인' },
+    { company: '스튜디오N',        dept: '모션그래픽' },
+    { company: '대우건설 협력사',   dept: '건축·인테리어 CAD' },
+    { company: '프리랜서 다수',     dept: '웹디자인·퍼블리싱' },
+  ];
+  const empChips = EMPLOYMENT_CASES.map(e =>
+    `<span class="emp-chip"><span class="emp-chip__co">${e.company}</span><span class="emp-chip__dept">${e.dept}</span></span>`
+  ).join('');
+
   document.getElementById('reviews-content').innerHTML = `
     <p class="page-label">수강생 후기</p>
+    <div class="employment-section">
+      <p class="employment-section__label">🏆 수료생 취업 현황</p>
+      <p class="employment-section__sub">SBS아카데미 수료생들이 취업한 기업 · 분야입니다.</p>
+      <div class="emp-chip-row">${empChips}</div>
+    </div>
     <div class="review-banner">
       <p class="review-banner__headline">수강생이 직접 남긴,<br>솔직한 후기입니다.</p>
       <p class="review-banner__sub">허위 작성 없이 실제 수강생들이 남긴 이야기입니다.</p>
@@ -3346,6 +3519,162 @@ function renderReviewsPage() {
       <div class="review-ghost" aria-hidden="true"></div>
       <p class="review-more-label">· · · 등등</p>`}
     </div>`;
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER: 자격증 시험 일정
+══════════════════════════════════════════════════ */
+const EXAM_SCHEDULE = [
+  {
+    cat: '컴퓨터활용능력',
+    name: '컴퓨터활용능력 1급',
+    org: '대한상공회의소',
+    sessions: [
+      { round: '1회', written: '2025-01-18~19', practical: '2025-02-22~03-01', result: '2025-03-14' },
+      { round: '2회', written: '2025-04-05~06', practical: '2025-05-03~10',    result: '2025-05-23' },
+      { round: '3회', written: '2025-07-05~06', practical: '2025-08-02~09',    result: '2025-08-22' },
+      { round: '4회', written: '2025-10-18~19', practical: '2025-11-15~22',   result: '2025-12-05' },
+    ]
+  },
+  {
+    cat: 'GTQ',
+    name: 'GTQ 그래픽기술자격 1급',
+    org: '한국생산성본부(KPC)',
+    sessions: [
+      { round: '68회', written: '2025-03-08', practical: '-', result: '2025-03-28' },
+      { round: '69회', written: '2025-05-10', practical: '-', result: '2025-05-30' },
+      { round: '70회', written: '2025-07-12', practical: '-', result: '2025-08-01' },
+      { round: '71회', written: '2025-09-20', practical: '-', result: '2025-10-10' },
+      { round: '72회', written: '2025-11-08', practical: '-', result: '2025-11-28' },
+    ]
+  },
+  {
+    cat: '전산세무회계',
+    name: '전산세무 2급',
+    org: '한국세무사회',
+    sessions: [
+      { round: '115회', written: '2025-02-08', practical: '-', result: '2025-03-07' },
+      { round: '116회', written: '2025-04-05', practical: '-', result: '2025-04-25' },
+      { round: '117회', written: '2025-06-07', practical: '-', result: '2025-06-27' },
+      { round: '118회', written: '2025-08-02', practical: '-', result: '2025-08-22' },
+      { round: '119회', written: '2025-10-04', practical: '-', result: '2025-10-24' },
+      { round: '120회', written: '2025-12-06', practical: '-', result: '2025-12-26' },
+    ]
+  },
+  {
+    cat: '전산세무회계',
+    name: '전산회계 1급',
+    org: '한국세무사회',
+    sessions: [
+      { round: '115회', written: '2025-02-08', practical: '-', result: '2025-03-07' },
+      { round: '116회', written: '2025-04-05', practical: '-', result: '2025-04-25' },
+      { round: '117회', written: '2025-06-07', practical: '-', result: '2025-06-27' },
+      { round: '118회', written: '2025-08-02', practical: '-', result: '2025-08-22' },
+      { round: '119회', written: '2025-10-04', practical: '-', result: '2025-10-24' },
+      { round: '120회', written: '2025-12-06', practical: '-', result: '2025-12-26' },
+    ]
+  },
+  {
+    cat: '국가기술자격',
+    name: '컴퓨터그래픽스운용기능사',
+    org: '한국산업인력공단',
+    sessions: [
+      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
+      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
+      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
+      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+    ]
+  },
+  {
+    cat: '국가기술자격',
+    name: '전산응용건축제도기능사',
+    org: '한국산업인력공단',
+    sessions: [
+      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
+      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
+      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
+      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+    ]
+  },
+  {
+    cat: '국가기술자격',
+    name: '전산응용기계제도기능사',
+    org: '한국산업인력공단',
+    sessions: [
+      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
+      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
+      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
+      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+    ]
+  },
+  {
+    cat: '국가기술자격',
+    name: '실내건축기능사',
+    org: '한국산업인력공단',
+    sessions: [
+      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
+      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
+      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
+      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+    ]
+  },
+  {
+    cat: 'MOS',
+    name: 'MOS (Microsoft Office Specialist)',
+    org: 'Certiport / 와우패스',
+    sessions: [
+      { round: '상시', written: '연중 상시 접수', practical: '-', result: '즉시 발표' },
+    ]
+  },
+];
+
+function renderExamsPage() {
+  const cats = [...new Set(EXAM_SCHEDULE.map(e => e.cat))];
+  const tabs = cats.map((c, i) =>
+    `<button class="exam-tab-btn ${i===0?'is-active':''}" onclick="switchExamCat(this,'${c}')">${c}</button>`
+  ).join('');
+
+  const groups = cats.map(cat => {
+    const exams = EXAM_SCHEDULE.filter(e => e.cat === cat);
+    const rows = exams.map(ex => {
+      const sessionRows = ex.sessions.map(s => `
+        <tr>
+          <td>${s.round}</td>
+          <td>${s.written}</td>
+          <td>${s.practical}</td>
+          <td>${s.result}</td>
+        </tr>`).join('');
+      return `
+        <div class="exam-card">
+          <div class="exam-card__head">
+            <span class="exam-card__name">${ex.name}</span>
+            <span class="exam-card__org">${ex.org}</span>
+          </div>
+          <div class="exam-table-wrap">
+            <table class="exam-table">
+              <thead><tr><th>회차</th><th>필기(접수·시험)</th><th>실기(접수·시험)</th><th>합격자 발표</th></tr></thead>
+              <tbody>${sessionRows}</tbody>
+            </table>
+          </div>
+          <p class="exam-notice">※ 일정은 시행처 공고 기준이며 변동될 수 있습니다. 반드시 공식 홈페이지에서 재확인하세요.</p>
+        </div>`;
+    }).join('');
+    return `<div class="exam-group" data-cat="${cat}" style="${cat===cats[0]?'':'display:none'}">${rows}</div>`;
+  }).join('');
+
+  document.getElementById('exams-content').innerHTML = `
+    <p class="page-label">자격증 시험 일정</p>
+    <p class="exams-sub">SBS아카데미에서 준비할 수 있는 국가자격증 · 민간자격증 시험 일정입니다.</p>
+    <div class="exam-tab-row">${tabs}</div>
+    ${groups}`;
+}
+
+function switchExamCat(btn, cat) {
+  document.querySelectorAll('.exam-tab-btn').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  document.querySelectorAll('.exam-group').forEach(g => {
+    g.style.display = g.dataset.cat === cat ? '' : 'none';
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -3616,6 +3945,7 @@ const DEPT_INTRO_TEXT = {
   d07: 'SBS아카데미 프로그래밍학과는 C언어, Java, Python 등 다양한 언어와 알고리즘을 기반으로 실무 중심의 코딩 역량을 기릅니다.\n프로젝트형 학습을 통해 실제로 작동하는 기능을 직접 구현하며 소프트웨어 개발 전문가로 성장합니다.',
   d08: 'SBS아카데미 자격증학과는 컴퓨터 활용능력(컴활), MOS, ITQ 등 사무관리에 필요한 자격증을 체계적으로 취득하여 업무 역량을 다집니다.\n엑셀·파워포인트·워드·액세스부터 전산회계·전산세무까지 기업에서 필요한 실무 인재를 양성합니다.',
   d09: 'SBS아카데미 유튜브학과는 ChatGPT, VIEW, CAPCUT, VEO, Midjourney 등 AI 도구를 직접 체험하고 콘텐츠 기획부터 촬영·편집까지 배웁니다.\n유튜브, 릴스, 틱톡 등 다양한 채널에 맞는 영상 콘텐츠 제작 능력을 키워 멀티미디어 크리에이터로 성장합니다.',
+  d11: 'SBS아카데미 웹툰학과는 이야기와 그림을 결합하여 세로 스크롤 웹툰 작품을 완성하는 과정입니다.\n드로잉 기초부터 콘티·연출·디지털 채색까지 체계적으로 학습하며, 네이버·카카오 등 플랫폼 투고까지 목표로 한 실전형 커리큘럼을 제공합니다.',
 };
 
 let BOOKS_DATA = {
@@ -3684,6 +4014,7 @@ const DEFAULT_JOBS = {
   d07:  ['소프트웨어 개발자', 'Java 백엔드 개발자', 'Python 개발자', '웹 애플리케이션 개발자', 'IT 시스템 운영자'],
   d08:  ['사무직', '경리·회계 담당자', '세무 보조원', 'IT 사무관리직', '공공기관 사무행정직'],
   d09:  ['유튜브 크리에이터', 'SNS 마케터', '영상 편집자', 'AI 콘텐츠 디렉터', '숏폼 콘텐츠 제작자'],
+  d11:  ['웹툰 작가', '웹툰 어시스턴트', '캐릭터 디자이너', '스토리보드 작가', '게임 원화 아티스트', '프리랜서 일러스트레이터'],
 };
 const DEFAULT_OUTCOMES = {
   d01:  ['Photoshop / Illustrator / InDesign으로 실무 수준의 디자인 작업을 할 수 있습니다', '브랜드 아이덴티티(BI) 및 편집 디자인 포트폴리오를 완성할 수 있습니다', 'GTQ(그래픽기술자격) 및 컬러리스트 자격증에 도전할 수 있습니다', 'UI/UX 기획부터 화면 디자인까지 디자인 전반을 이해할 수 있습니다'],
@@ -3696,6 +4027,7 @@ const DEFAULT_OUTCOMES = {
   d07:  ['Java / Python / C언어로 실무 수준의 코드를 작성할 수 있습니다', 'Spring Boot 기반 웹 애플리케이션 백엔드를 개발할 수 있습니다', '정보처리기사 · SQL개발자 자격증을 취득할 수 있습니다', '알고리즘 문제 풀이 능력으로 개발사 코딩 테스트에 대응할 수 있습니다'],
   d08:  ['컴퓨터활용능력 1·2급을 취득할 수 있습니다', 'MOS · ITQ 자격증을 취득할 수 있습니다', '전산회계 1급 / 전산세무 2급을 취득할 수 있습니다', '엑셀 실무 데이터 분석 및 자동화 수식을 작성할 수 있습니다'],
   d09:  ['ChatGPT · Midjourney · Vrew 등 AI 도구로 콘텐츠를 기획하고 제작할 수 있습니다', '유튜브·인스타그램·틱톡에 맞는 영상을 촬영하고 편집할 수 있습니다', '조회수와 알고리즘을 고려한 채널 운영 전략을 수립할 수 있습니다', 'AI 생성 영상과 실사 영상을 합성·편집하는 워크플로를 구현할 수 있습니다'],
+  d11:  ['캐릭터 드로잉부터 배경까지 웹툰 전 페이지를 혼자 완성할 수 있습니다', '네이버·카카오 등 웹툰 플랫폼에 투고 가능한 포트폴리오를 완성할 수 있습니다', '클립스튜디오로 디지털 채색과 효과 작업을 할 수 있습니다', '세로 스크롤 연출과 콘티 설계 능력을 갖출 수 있습니다'],
 };
 
 /* ══════════════════════════════════════════════════
@@ -3794,6 +4126,7 @@ function renderAll() {
   });
   renderInstructorsPage();
   renderReviewsPage();
+  renderExamsPage();
 }
 
 /* ══════════════════════════════════════════════════
@@ -3838,7 +4171,7 @@ function activateCoursePanels(courseId) {
 /* ══════════════════════════════════════════════════
    PAGE SWITCHING
 ══════════════════════════════════════════════════ */
-const PAGE_ORDER = ['intro','roadmap','curriculum','instructors','reviews','checklist'];
+const PAGE_ORDER = ['intro','roadmap','curriculum','instructors','reviews','checklist','exams'];
 
 function goToPage(pageId) {
   if (pageId === currentPage) return;
