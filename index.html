@@ -729,8 +729,9 @@
   .exam-reg-list { margin:0; padding-left:16px; }
   .exam-reg-list li { font-size:11px; color:var(--c-text-2); margin-bottom:4px; line-height:1.5; }
   .exam-reg-list li strong { color:var(--c-accent); font-weight:600; }
-  .exam-grade-section { margin-bottom:4px; }
-  .exam-grade-label { font-size:12px; font-weight:700; color:var(--c-accent); padding:10px 4px 6px; border-bottom:2px solid var(--c-accent); margin-bottom:10px; letter-spacing:.3px; }
+  .exam-grade-tab-row { display:flex; gap:6px; margin-bottom:14px; }
+  .exam-grade-tab-btn { padding:6px 18px; border-radius:16px; border:1.5px solid var(--c-border); font-size:13px; font-weight:600; background:#fff; cursor:pointer; transition:all 150ms; }
+  .exam-grade-tab-btn.is-active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
 
   .kedustore-banner { display:flex; align-items:center; gap:14px; padding:14px 18px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; text-decoration:none; margin-bottom:20px; color:inherit; }
   .kedustore-banner strong { display:block; font-size:var(--t-sm); font-weight:700; color:#1E3461; }
@@ -4319,14 +4320,15 @@ function renderExamsPage() {
     let inner = '';
     if (cat === '국가기술자격') {
       const grades = [...new Set(exams.map(e => e.grade || '기능사'))];
-      inner = grades.map(grade => {
+      const gradeTabs = grades.map((g, i) =>
+        `<button class="exam-grade-tab-btn ${i===0?'is-active':''}" onclick="switchExamGrade(this,'${g}')">${g}</button>`
+      ).join('');
+      const gradeGroups = grades.map((grade, i) => {
         const cards = exams.filter(e => (e.grade || '기능사') === grade)
           .map(ex => _buildExamCard(ex, today, soon)).join('');
-        return `<div class="exam-grade-section">
-          <div class="exam-grade-label">${grade}</div>
-          ${cards}
-        </div>`;
+        return `<div class="exam-grade-group" data-grade="${grade}" style="${i===0?'':'display:none'}">${cards}</div>`;
       }).join('');
+      inner = `<div class="exam-grade-tab-row">${gradeTabs}</div>${gradeGroups}`;
     } else {
       inner = exams.map(ex => _buildExamCard(ex, today, soon)).join('');
     }
@@ -4348,6 +4350,16 @@ function switchExamCat(btn, cat) {
   btn.classList.add('is-active');
   container.querySelectorAll('.exam-group').forEach(g => {
     g.style.display = g.dataset.cat === cat ? 'block' : 'none';
+  });
+}
+
+function switchExamGrade(btn, grade) {
+  const group = btn.closest('.exam-group');
+  if (!group) return;
+  group.querySelectorAll('.exam-grade-tab-btn').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  group.querySelectorAll('.exam-grade-group').forEach(g => {
+    g.style.display = g.dataset.grade === grade ? 'block' : 'none';
   });
 }
 
