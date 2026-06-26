@@ -3669,13 +3669,10 @@ function renderReviewsPage() {
 const EXAM_SCHEDULE = [
   {
     cat: '컴퓨터활용능력',
-    name: '컴퓨터활용능력 1급',
+    name: '컴퓨터활용능력 1·2급',
     org: '대한상공회의소',
     sessions: [
-      { round: '1회', written: '2025-01-18~19', practical: '2025-02-22~03-01', result: '2025-03-14' },
-      { round: '2회', written: '2025-04-05~06', practical: '2025-05-03~10',    result: '2025-05-23' },
-      { round: '3회', written: '2025-07-05~06', practical: '2025-08-02~09',    result: '2025-08-22' },
-      { round: '4회', written: '2025-10-18~19', practical: '2025-11-15~22',   result: '2025-12-05' },
+      { round: '상시', written: '연중 상시 CBT 접수·시험 (2026-01-05~)', practical: '-', result: '시험 익일 오전 10시' },
     ]
   },
   {
@@ -3683,11 +3680,18 @@ const EXAM_SCHEDULE = [
     name: 'GTQ 그래픽기술자격 1급',
     org: '한국생산성본부(KPC)',
     sessions: [
-      { round: '68회', written: '2025-03-08', practical: '-', result: '2025-03-28' },
-      { round: '69회', written: '2025-05-10', practical: '-', result: '2025-05-30' },
-      { round: '70회', written: '2025-07-12', practical: '-', result: '2025-08-01' },
-      { round: '71회', written: '2025-09-20', practical: '-', result: '2025-10-10' },
-      { round: '72회', written: '2025-11-08', practical: '-', result: '2025-11-28' },
+      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
+      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
+      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
+      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-15' },
+      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-26' },
+      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
+      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
+      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-11' },
+      { round: '9회',  written: '2026-09-19', practical: '-', result: '2026-10-16' },
+      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
+      { round: '11회', written: '2026-11-28', practical: '-', result: '2026-12-28' },
+      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
     ]
   },
   {
@@ -3695,12 +3699,12 @@ const EXAM_SCHEDULE = [
     name: '전산세무 2급',
     org: '한국세무사회',
     sessions: [
-      { round: '115회', written: '2025-02-08', practical: '-', result: '2025-03-07' },
-      { round: '116회', written: '2025-04-05', practical: '-', result: '2025-04-25' },
-      { round: '117회', written: '2025-06-07', practical: '-', result: '2025-06-27' },
-      { round: '118회', written: '2025-08-02', practical: '-', result: '2025-08-22' },
-      { round: '119회', written: '2025-10-04', practical: '-', result: '2025-10-24' },
-      { round: '120회', written: '2025-12-06', practical: '-', result: '2025-12-26' },
+      { round: '124회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
+      { round: '125회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
+      { round: '126회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
+      { round: '127회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
+      { round: '128회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
+      { round: '129회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
     ]
   },
   {
@@ -3708,12 +3712,12 @@ const EXAM_SCHEDULE = [
     name: '전산회계 1급',
     org: '한국세무사회',
     sessions: [
-      { round: '115회', written: '2025-02-08', practical: '-', result: '2025-03-07' },
-      { round: '116회', written: '2025-04-05', practical: '-', result: '2025-04-25' },
-      { round: '117회', written: '2025-06-07', practical: '-', result: '2025-06-27' },
-      { round: '118회', written: '2025-08-02', practical: '-', result: '2025-08-22' },
-      { round: '119회', written: '2025-10-04', practical: '-', result: '2025-10-24' },
-      { round: '120회', written: '2025-12-06', practical: '-', result: '2025-12-26' },
+      { round: '121회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
+      { round: '122회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
+      { round: '123회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
+      { round: '124회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
+      { round: '125회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
+      { round: '126회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
     ]
   },
   {
@@ -3721,10 +3725,10 @@ const EXAM_SCHEDULE = [
     name: '컴퓨터그래픽스운용기능사',
     org: '한국산업인력공단',
     sessions: [
-      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
-      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
-      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
-      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
+      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
+      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
+      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
     ]
   },
   {
@@ -3732,10 +3736,10 @@ const EXAM_SCHEDULE = [
     name: '전산응용건축제도기능사',
     org: '한국산업인력공단',
     sessions: [
-      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
-      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
-      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
-      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
+      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
+      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
+      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
     ]
   },
   {
@@ -3743,10 +3747,10 @@ const EXAM_SCHEDULE = [
     name: '전산응용기계제도기능사',
     org: '한국산업인력공단',
     sessions: [
-      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
-      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
-      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
-      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
+      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
+      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
+      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
     ]
   },
   {
@@ -3754,10 +3758,10 @@ const EXAM_SCHEDULE = [
     name: '실내건축기능사',
     org: '한국산업인력공단',
     sessions: [
-      { round: '1회', written: '2025-01-21~02-14', practical: '2025-03-15~04-02', result: '2025-04-17' },
-      { round: '2회', written: '2025-04-01~04-25', practical: '2025-06-07~06-27', result: '2025-07-11' },
-      { round: '3회', written: '2025-07-15~08-08', practical: '2025-09-13~10-01', result: '2025-10-16' },
-      { round: '4회', written: '2025-10-14~11-07', practical: '2025-12-20~12-30', result: '2026-01-09' },
+      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
+      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
+      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
+      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
     ]
   },
   {
@@ -3843,10 +3847,12 @@ function renderExamsPage() {
 }
 
 function switchExamCat(btn, cat) {
-  document.querySelectorAll('.exam-tab-btn').forEach(b => b.classList.remove('is-active'));
+  const container = document.getElementById('exams-content');
+  if (!container) return;
+  container.querySelectorAll('.exam-tab-btn').forEach(b => b.classList.remove('is-active'));
   btn.classList.add('is-active');
-  document.querySelectorAll('.exam-group').forEach(g => {
-    g.style.display = g.dataset.cat === cat ? '' : 'none';
+  container.querySelectorAll('.exam-group').forEach(g => {
+    g.style.display = g.dataset.cat === cat ? 'block' : 'none';
   });
 }
 
