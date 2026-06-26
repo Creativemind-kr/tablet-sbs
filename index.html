@@ -3496,7 +3496,17 @@ async function _cropConfirm() {
   ctx.drawImage(img,
     -_cropX * inv, -_cropY * inv, CROP_VW * inv, CROP_VH * inv,
     0, 0, CROP_OUT_W, CROP_OUT_H);
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.80);
+  // WebP: 투명도 유지 + JPEG보다 작은 용량. 미지원 시 흰 배경 JPEG로 폴백
+  let dataUrl = canvas.toDataURL('image/webp', 0.82);
+  if (!dataUrl.startsWith('data:image/webp')) {
+    const fb = document.createElement('canvas');
+    fb.width = CROP_OUT_W; fb.height = CROP_OUT_H;
+    const fbx = fb.getContext('2d');
+    fbx.fillStyle = '#fff';
+    fbx.fillRect(0, 0, CROP_OUT_W, CROP_OUT_H);
+    fbx.drawImage(canvas, 0, 0);
+    dataUrl = fb.toDataURL('image/jpeg', 0.82);
+  }
   const kb = Math.round(dataUrl.length * 0.75 / 1024);
   if (_cropIdx >= 0 && INSTRUCTORS_DATA[_cropIdx]) {
     INSTRUCTORS_DATA[_cropIdx].photo = dataUrl;
