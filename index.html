@@ -4280,15 +4280,39 @@ function buildExamDDayTable() {
     return `<span class="dday-pill dday-ok">D-${diff}</span>`;
   }
 
-  const rows = EXAM_SCHEDULE.map(ex => {
-    const info = getNextInfo(ex);
+  // 국가기술자격은 grade별로 묶어 대표 1행씩만 표시
+  const displayList = [];
+  const gradesSeen = new Set();
+  for (const ex of EXAM_SCHEDULE) {
+    if (ex.cat === '국가기술자격') {
+      const grade = ex.grade || '기능사';
+      if (gradesSeen.has(grade)) continue;
+      gradesSeen.add(grade);
+      // 해당 grade의 모든 시험 중 가장 이른 upcoming 정보 선택
+      const gradeExams = EXAM_SCHEDULE.filter(e => e.cat === '국가기술자격' && (e.grade || '기능사') === grade);
+      let best = null;
+      for (const ge of gradeExams) {
+        const info = getNextInfo(ge);
+        if (!best) { best = info; continue; }
+        if (!info) continue;
+        if (best.status === 'always') continue;
+        if (info.status === 'always') { best = info; continue; }
+        if (info.status === 'upcoming' && (best.status !== 'upcoming' || info.diff < best.diff)) best = info;
+      }
+      displayList.push({ name: `국가기술자격 (${grade})`, info: best });
+    } else {
+      displayList.push({ name: ex.name, info: getNextInfo(ex) });
+    }
+  }
+
+  const rows = displayList.map(({ name, info }) => {
     const s = info?.s;
     const dateStr = !info ? '-'
       : info.status === 'always' ? '연중 상시'
       : info.status === 'waiting' ? `발표: ${s.result}`
       : s.written;
     return `<tr>
-      <td><span class="edd-name">${ex.name}</span></td>
+      <td><span class="edd-name">${name}</span></td>
       <td class="edd-round">${s ? s.round : '-'}</td>
       <td class="edd-date">${dateStr}</td>
       <td>${ddayPill(info)}</td>
