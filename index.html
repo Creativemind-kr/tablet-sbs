@@ -366,6 +366,8 @@
     transition: background var(--fast), color var(--fast), border-color var(--fast);
   }
   .sub-nav__btn:hover { color: var(--c-text); background: var(--c-bg-2); }
+  .dept-drag-handle { cursor: grab; margin-right: 5px; opacity: 0.35; font-size: 13px; user-select: none; }
+  .sub-nav__btn.dept-is-dragging { opacity: 0.35; outline: 2px dashed var(--c-accent); }
   .sub-nav__btn.is-active {
     background: var(--c-course);
     color: #ffffff;
@@ -2659,6 +2661,7 @@ let COURSES = {
     checklist: []
   }
 }
+let DEPT_ORDER = Object.keys(COURSES);
 let INSTRUCTORS_DATA = [
   { name: '차주혁', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '프리미어프로', '에프터이펙트', '마야', 'VFX', '마야 포트폴리오', '블렌더', '블렌더 포트폴리오'], title: 'CG학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 CG학과 강사\nBMW 2D 프로젝트 제작\nGLOCK17 프로젝트 제작\nLED WALL 콘텐츠 광고 제작\nAUTOMOTIVE CINEMATIC 프로젝트 제작\n업스트리밍 최우수상\n[자격] Photoshop · Illustrator · Premiere Pro · After Effects', photo: '' },
   { name: '전현기', gender: 'm', subjects: ['드로잉 토탈', '포토샵', '일러스트', '포토웍스', '디테일 일러스트', '웹', 'UI/UX', '웹 포트폴리오', 'C 언어', '자바', '파이썬', '웹 프로젝트'], title: '웹/IT학과 강사', career: 'SBS아카데미컴퓨터아트학원 천안점 IT 프로그래밍 강사\nIT 스타트업 백엔드 R&D 연구원\n반도체 AI/비전 자동화라인 관련 업무\n반도체 소재 부품 관련 LTCODER 개발 업무\n삼성 웹 사이트 프로그래밍 개발\n[특기] Spring Boot · MySQL · JPA 웹 개발 기술 중심 교육', photo: '' },
@@ -3016,7 +3019,7 @@ function cancelLogin() {
 ══════════════════════════════════════════════════ */
 let _editSnap = null;
 function _takeSnap() {
-  return JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, BOOKS_DATA });
+  return JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, BOOKS_DATA, DEPT_ORDER });
 }
 
 function showAdminUI() {
@@ -3051,6 +3054,7 @@ function adminCancel() {
       COURSES = s.COURSES; UI_DATA = s.UI_DATA;
       INSTRUCTORS_DATA = s.INSTRUCTORS_DATA;
       REVIEWS_DATA = s.REVIEWS_DATA; BOOKS_DATA = s.BOOKS_DATA;
+      if (s.DEPT_ORDER) DEPT_ORDER = s.DEPT_ORDER;
       exitEditMode();
     }, '변경사항 버리기');
   } else {
@@ -3118,10 +3122,12 @@ function closeDeleteConfirm() {
    Firebase Storage 공통 업로드 헬퍼
 ══════════════════════════════════════════════════ */
 async function uploadToStorage(file, prefix) {
-  if (!storage) { loadStorageSDK(); throw new Error('Storage 로드 중입니다. 잠시 후 다시 시도하세요.'); }
-  const ref = storage.ref(`${prefix}/${Date.now()}_${file.name}`);
-  await ref.put(file);
-  return await ref.getDownloadURL();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = e => resolve(e.target.result);
+    reader.onerror = () => reject(new Error('파일 읽기 실패'));
+    reader.readAsDataURL(file);
+  });
 }
 
 /* ══════════════════════════════════════════════════
@@ -3288,8 +3294,7 @@ async function _emSave() {
   });
   try {
     for (const [key, file] of Object.entries(_emPending)) {
-      if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
-      showToast('이미지 업로드 중...');
+      showToast('이미지 처리 중...');
       try {
         _emData[key] = await uploadToStorage(file, 'uploads');
       } catch(err) { showToast(err.message, 'error'); return; }
@@ -3331,9 +3336,9 @@ function updateSubNavArrows(navId) {
 }
 
 function renderSubNavs() {
-  const ids    = Object.keys(COURSES);
+  const ids    = DEPT_ORDER;
   const addBtn = isEditMode ? `<button class="admin-add-course-btn" onclick="addCourse()">+ 강좌 추가</button>` : '';
-  const btns   = ids.map(id => `<button class="sub-nav__btn" data-course="${id}">${COURSES[id].label}</button>`).join('') + addBtn;
+  const btns   = ids.map(id => `<button class="sub-nav__btn" data-course="${id}"${isEditMode ? ` draggable="true" data-dept="${id}"` : ''}>${isEditMode ? `<span class="dept-drag-handle">⠿</span>` : ''}${COURSES[id].label}</button>`).join('') + addBtn;
   document.getElementById('roadmap-subnav').innerHTML    = btns;
   document.getElementById('curr-subnav').innerHTML       = btns;
   document.getElementById('checklist-subnav').innerHTML  = btns;
@@ -4119,7 +4124,7 @@ function renderAll() {
   });
 
   // 강좌별 렌더링
-  Object.keys(COURSES).forEach(id => {
+  DEPT_ORDER.forEach(id => {
     renderRoadmapView(id);
     renderCurriculumView(id);
     renderChecklistCard(id);
@@ -4143,7 +4148,7 @@ function setCourseColor(courseId) {
    COURSE PANEL ACTIVATION
 ══════════════════════════════════════════════════ */
 function activateCoursePanels(courseId) {
-  const ids = Object.keys(COURSES);
+  const ids = DEPT_ORDER;
   if (!COURSES[courseId]) courseId = ids[0];
   if (!courseId) return;
 
@@ -4290,6 +4295,48 @@ document.addEventListener('dragend', () => {
 });
 
 /* ══════════════════════════════════════════════════
+   DRAG: 학과 탭 순서 변경 (서브네비)
+══════════════════════════════════════════════════ */
+let _dragDept = null;
+
+document.addEventListener('dragstart', e => {
+  const btn = e.target.closest('.sub-nav__btn[data-dept]');
+  if (!btn) return;
+  _dragDept = btn.dataset.dept;
+  btn.classList.add('dept-is-dragging');
+  e.dataTransfer.effectAllowed = 'move';
+});
+
+document.addEventListener('dragover', e => {
+  if (!_dragDept) return;
+  const btn = e.target.closest('.sub-nav__btn[data-dept]');
+  if (btn) e.preventDefault();
+});
+
+document.addEventListener('drop', e => {
+  if (!_dragDept) return;
+  const btn = e.target.closest('.sub-nav__btn[data-dept]');
+  if (!btn || btn.dataset.dept === _dragDept) { _dragDept = null; return; }
+  e.preventDefault();
+  const fromIdx = DEPT_ORDER.indexOf(_dragDept);
+  const toIdx   = DEPT_ORDER.indexOf(btn.dataset.dept);
+  DEPT_ORDER.splice(fromIdx, 1);
+  DEPT_ORDER.splice(toIdx, 0, _dragDept);
+  const saved = _dragDept;
+  _dragDept = null;
+  renderSubNavs();
+  renderAll();
+  if (currentCourse) activateCoursePanels(currentCourse);
+  else if (saved && COURSES[saved]) activateCoursePanels(saved);
+});
+
+document.addEventListener('dragend', e => {
+  document.querySelectorAll('.sub-nav__btn.dept-is-dragging')
+    .forEach(b => b.classList.remove('dept-is-dragging'));
+  _dragDept = null;
+});
+
+/* ══════════════════════════════════════════════════
    CRUD — 학원 소개
 ══════════════════════════════════════════════════ */
 function addFeature() {
@@ -4356,13 +4403,15 @@ function addCourse() {
     curriculum: [{ week: '1–2주차', topic: '주제 입력', items: ['세부 항목 입력'] }],
     checklist:  ['준비물을 입력하세요']
   };
+  DEPT_ORDER.push(key);
   renderAll();
   activateCoursePanels(key);
 }
 function deleteCourse(id) {
   openDeleteConfirm(`'${COURSES[id].label}' 강좌를 삭제하시겠습니까?`, () => {
     delete COURSES[id];
-    const remaining = Object.keys(COURSES);
+    DEPT_ORDER = DEPT_ORDER.filter(k => k !== id);
+    const remaining = DEPT_ORDER;
     renderAll();
     if (remaining.length) activateCoursePanels(remaining[0]);
   });
@@ -4438,21 +4487,18 @@ function moveCurrItem(id, wi, ii, dir) {
   if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
 }
 async function addInlineImage(id, wi) {
-  if (!storage) { showToast('Firebase Storage 미연결', 'error'); return; }
   const inp = document.createElement('input');
   inp.type = 'file'; inp.accept = 'image/*';
   inp.onchange = async () => {
     const file = inp.files[0]; if (!file) return;
-    showToast('이미지 업로드 중...');
+    showToast('이미지 처리 중...');
     try {
-      const ref = storage.ref(`curriculum/${id}/${Date.now()}_${file.name}`);
-      await ref.put(file);
-      const url = await ref.getDownloadURL();
+      const url = await uploadToStorage(file, 'curriculum');
       COURSES[id].curriculum[wi].items.push('@@img:' + url);
       renderCurriculumView(id);
       if (currentCourse === id) document.getElementById('cr-'+id)?.classList.add('is-active');
       showToast('이미지가 본문에 추가되었습니다 ✓');
-    } catch(e) { showToast('업로드 실패: ' + e.message, 'error'); }
+    } catch(e) { showToast('처리 실패: ' + e.message, 'error'); }
   };
   inp.click();
 }
