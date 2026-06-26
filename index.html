@@ -4019,78 +4019,6 @@ function renderReviewsPage() {
 ══════════════════════════════════════════════════ */
 const EXAM_SCHEDULE = [
   {
-    cat: '컴퓨터활용능력',
-    name: '컴퓨터활용능력 1·2급',
-    org: '대한상공회의소',
-    sessions: [
-      { round: '상시 CBT', written: '연중 상시', practical: '-', result: '시험 익일 오전 10시' },
-    ]
-  },
-  {
-    cat: 'GTQ',
-    name: 'GTQ 그래픽기술자격 1급',
-    org: '한국생산성본부(KPC)',
-    sessions: [
-      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
-      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
-      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
-      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-15' },
-      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-26' },
-      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
-      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
-      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-11' },
-      { round: '9회',  written: '2026-09-19', practical: '-', result: '2026-10-16' },
-      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
-      { round: '11회', written: '2026-11-28', practical: '-', result: '2026-12-28' },
-      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
-    ]
-  },
-  {
-    cat: 'GTQi',
-    name: 'GTQi 그래픽기술자격(일러스트) 1급',
-    org: '한국생산성본부(KPC)',
-    sessions: [
-      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
-      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
-      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
-      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-22' },
-      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-19' },
-      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
-      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
-      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-18' },
-      { round: '9회',  written: '2026-09-26', practical: '-', result: '2026-10-16' },
-      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
-      { round: '11회', written: '2026-11-21', practical: '-', result: '2026-12-11' },
-      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
-    ]
-  },
-  {
-    cat: '전산세무회계',
-    name: '전산세무 2급',
-    org: '한국세무사회',
-    sessions: [
-      { round: '124회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
-      { round: '125회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
-      { round: '126회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
-      { round: '127회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
-      { round: '128회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
-      { round: '129회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
-    ]
-  },
-  {
-    cat: '전산세무회계',
-    name: '전산회계 1급',
-    org: '한국세무사회',
-    sessions: [
-      { round: '121회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
-      { round: '122회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
-      { round: '123회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
-      { round: '124회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
-      { round: '125회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
-      { round: '126회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
-    ]
-  },
-  {
     cat: '국가기술자격', grade: '기능사',
     name: '컴퓨터그래픽스운용기능사',
     org: '한국산업인력공단',
@@ -4194,6 +4122,78 @@ const EXAM_SCHEDULE = [
       { round: '1회', written: '2026-02-07', practical: '2026-04-05~04-18', result: '2026-05-28' },
       { round: '2회', written: '2026-05-09', practical: '2026-07-12~07-25', result: '2026-09-17' },
       { round: '3회', written: '2026-09-05', practical: '2026-10-25~11-07', result: '2026-11-26' },
+    ]
+  },
+  {
+    cat: '컴퓨터활용능력',
+    name: '컴퓨터활용능력 1·2급',
+    org: '대한상공회의소',
+    sessions: [
+      { round: '상시 CBT', written: '연중 상시', practical: '-', result: '시험 익일 오전 10시' },
+    ]
+  },
+  {
+    cat: 'GTQ',
+    name: 'GTQ 그래픽기술자격 1급',
+    org: '한국생산성본부(KPC)',
+    sessions: [
+      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
+      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
+      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
+      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-15' },
+      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-26' },
+      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
+      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
+      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-11' },
+      { round: '9회',  written: '2026-09-19', practical: '-', result: '2026-10-16' },
+      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
+      { round: '11회', written: '2026-11-28', practical: '-', result: '2026-12-28' },
+      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
+    ]
+  },
+  {
+    cat: 'GTQi',
+    name: 'GTQi 그래픽기술자격(일러스트) 1급',
+    org: '한국생산성본부(KPC)',
+    sessions: [
+      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
+      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
+      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
+      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-22' },
+      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-19' },
+      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
+      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
+      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-18' },
+      { round: '9회',  written: '2026-09-26', practical: '-', result: '2026-10-16' },
+      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
+      { round: '11회', written: '2026-11-21', practical: '-', result: '2026-12-11' },
+      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
+    ]
+  },
+  {
+    cat: '전산세무회계',
+    name: '전산세무 2급',
+    org: '한국세무사회',
+    sessions: [
+      { round: '124회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
+      { round: '125회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
+      { round: '126회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
+      { round: '127회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
+      { round: '128회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
+      { round: '129회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
+    ]
+  },
+  {
+    cat: '전산세무회계',
+    name: '전산회계 1급',
+    org: '한국세무사회',
+    sessions: [
+      { round: '121회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
+      { round: '122회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
+      { round: '123회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
+      { round: '124회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
+      { round: '125회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
+      { round: '126회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
     ]
   },
   {
