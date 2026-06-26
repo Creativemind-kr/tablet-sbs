@@ -211,6 +211,58 @@
   /* ══════════════════════════════════════
      6. PAGE 1 — 학원 소개
   ══════════════════════════════════════ */
+
+  /* 영상 배경 */
+  #page-intro {
+    position: relative;
+    overflow: hidden;
+  }
+  .intro-bg-video {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .intro-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.52) 0%,
+      rgba(0,0,0,0.38) 50%,
+      rgba(0,0,0,0.62) 100%
+    );
+    z-index: 1;
+  }
+  #page-intro .page__inner {
+    position: relative;
+    z-index: 2;
+  }
+  /* 인트로 페이지 텍스트 색상 → 흰색 계열로 */
+  #page-intro .page-label          { color: rgba(255,255,255,0.6); }
+  #page-intro .hero-title          { color: #fff; }
+  #page-intro .hero-title em::after { opacity: 0.55; }
+  #page-intro .hero-sub,
+  #page-intro .hero-flow           { color: rgba(255,255,255,0.75); }
+  #page-intro .flow-step           { color: rgba(255,255,255,0.85); }
+  #page-intro .flow-arr            { color: rgba(255,255,255,0.4); }
+  #page-intro .stat-card           { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: #fff; }
+  #page-intro .stat-num            { color: #fff; }
+  #page-intro .stat-lbl            { color: rgba(255,255,255,0.7); }
+  #page-intro .feature-grid        { --fg-bg: rgba(255,255,255,0.1); }
+  #page-intro .feature-card        { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); color: #fff; }
+  #page-intro .feature-card__title { color: #fff; }
+  #page-intro .feature-card__desc  { color: rgba(255,255,255,0.75); }
+  #page-intro .feature-card--featured { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+  #page-intro .section-mini-label  { color: rgba(255,255,255,0.5); }
+  #page-intro .badge               { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.2); }
+  #page-intro .portfolio-preview-card { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); color: #fff; }
+  #page-intro .portfolio-preview-card__dept { color: #fff; }
+  #page-intro .portfolio-preview-card__list li { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.15); }
+
   .hero-title {
     font-size: var(--t-hero);
     font-weight: 800;
@@ -1207,6 +1259,10 @@
 
     <!-- ── PAGE 1: 학원 소개 (동적 렌더링) ── -->
     <div class="page is-active" id="page-intro">
+      <video class="intro-bg-video" autoplay loop muted playsinline poster="">
+        <source src="bg.mp4" type="video/mp4">
+      </video>
+      <div class="intro-bg-overlay"></div>
       <div class="page__inner" id="intro-content"></div>
     </div>
 
