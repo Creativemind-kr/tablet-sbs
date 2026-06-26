@@ -722,6 +722,15 @@
   .exam-table td { padding:6px 8px; border-bottom:1px solid var(--c-border); color:var(--c-text-1); vertical-align:top; }
   .exam-table tr:last-child td { border-bottom:none; }
   .exam-notice { font-size:10px; color:var(--c-text-2); margin-top:8px; }
+  .exam-reg-box { margin-top:12px; border-top:1px solid var(--c-border); padding-top:12px; }
+  .exam-reg-title { font-size:var(--t-xs); font-weight:700; color:var(--c-text-1); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+  .exam-reg-btn { display:inline-flex; align-items:center; gap:5px; background:var(--c-accent); color:#fff; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:600; text-decoration:none; margin-bottom:10px; }
+  .exam-reg-btn svg { width:13px; height:13px; }
+  .exam-reg-list { margin:0; padding-left:16px; }
+  .exam-reg-list li { font-size:11px; color:var(--c-text-2); margin-bottom:4px; line-height:1.5; }
+  .exam-reg-list li strong { color:var(--c-accent); font-weight:600; }
+  .exam-grade-section { margin-bottom:4px; }
+  .exam-grade-label { font-size:12px; font-weight:700; color:var(--c-accent); padding:10px 4px 6px; border-bottom:2px solid var(--c-accent); margin-bottom:10px; letter-spacing:.3px; }
 
   .kedustore-banner { display:flex; align-items:center; gap:14px; padding:14px 18px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; text-decoration:none; margin-bottom:20px; color:inherit; }
   .kedustore-banner strong { display:block; font-size:var(--t-sm); font-weight:700; color:#1E3461; }
@@ -4013,7 +4022,7 @@ const EXAM_SCHEDULE = [
     name: '컴퓨터활용능력 1·2급',
     org: '대한상공회의소',
     sessions: [
-      { round: '상시', written: '연중 상시 CBT 접수·시험 (2026-01-05~)', practical: '-', result: '시험 익일 오전 10시' },
+      { round: '상시 CBT', written: '연중 상시', practical: '-', result: '시험 익일 오전 10시' },
     ]
   },
   {
@@ -4032,6 +4041,25 @@ const EXAM_SCHEDULE = [
       { round: '9회',  written: '2026-09-19', practical: '-', result: '2026-10-16' },
       { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
       { round: '11회', written: '2026-11-28', practical: '-', result: '2026-12-28' },
+      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
+    ]
+  },
+  {
+    cat: 'GTQi',
+    name: 'GTQi 그래픽기술자격(일러스트) 1급',
+    org: '한국생산성본부(KPC)',
+    sessions: [
+      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
+      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
+      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
+      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-22' },
+      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-19' },
+      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
+      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
+      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-18' },
+      { round: '9회',  written: '2026-09-26', practical: '-', result: '2026-10-16' },
+      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
+      { round: '11회', written: '2026-11-21', practical: '-', result: '2026-12-11' },
       { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
     ]
   },
@@ -4062,7 +4090,7 @@ const EXAM_SCHEDULE = [
     ]
   },
   {
-    cat: '국가기술자격',
+    cat: '국가기술자격', grade: '기능사',
     name: '컴퓨터그래픽스운용기능사',
     org: '한국산업인력공단',
     sessions: [
@@ -4073,7 +4101,7 @@ const EXAM_SCHEDULE = [
     ]
   },
   {
-    cat: '국가기술자격',
+    cat: '국가기술자격', grade: '기능사',
     name: '전산응용건축제도기능사',
     org: '한국산업인력공단',
     sessions: [
@@ -4084,7 +4112,7 @@ const EXAM_SCHEDULE = [
     ]
   },
   {
-    cat: '국가기술자격',
+    cat: '국가기술자격', grade: '기능사',
     name: '전산응용기계제도기능사',
     org: '한국산업인력공단',
     sessions: [
@@ -4095,7 +4123,7 @@ const EXAM_SCHEDULE = [
     ]
   },
   {
-    cat: '국가기술자격',
+    cat: '국가기술자격', grade: '기능사',
     name: '실내건축기능사',
     org: '한국산업인력공단',
     sessions: [
@@ -4106,22 +4134,23 @@ const EXAM_SCHEDULE = [
     ]
   },
   {
-    cat: 'GTQi',
-    name: 'GTQi 그래픽기술자격(일러스트) 1급',
-    org: '한국생산성본부(KPC)',
+    cat: '국가기술자격', grade: '산업기사',
+    name: '실내건축산업기사',
+    org: '한국산업인력공단',
     sessions: [
-      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
-      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
-      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
-      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-22' },
-      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-19' },
-      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
-      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
-      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-18' },
-      { round: '9회',  written: '2026-09-26', practical: '-', result: '2026-10-16' },
-      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
-      { round: '11회', written: '2026-11-21', practical: '-', result: '2026-12-11' },
-      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
+      { round: '1회', written: '2026-03-07', practical: '2026-05-31~06-20', result: '2026-07-16' },
+      { round: '2회', written: '2026-06-06', practical: '2026-08-22~09-04', result: '2026-11-05' },
+      { round: '3회', written: '2026-09-05', practical: '2026-11-22~12-05', result: '2026-12-31' },
+    ]
+  },
+  {
+    cat: '국가기술자격', grade: '기사',
+    name: '실내건축기사',
+    org: '한국산업인력공단',
+    sessions: [
+      { round: '1회', written: '2026-02-07', practical: '2026-04-05~04-18', result: '2026-05-28' },
+      { round: '2회', written: '2026-05-09', practical: '2026-07-12~07-25', result: '2026-09-17' },
+      { round: '3회', written: '2026-09-05', practical: '2026-10-25~11-07', result: '2026-11-26' },
     ]
   },
   {
@@ -4146,7 +4175,16 @@ const EXAM_SCHEDULE = [
   {
     cat: 'MOS',
     name: 'MOS (Microsoft Office Specialist)',
-    org: 'Certiport / 와우패스',
+    org: 'Certiport / YBM IT',
+    registerUrl: 'https://www.ybmsisa.com/common/login.asp?what=www.ybmit.com&url=%2Ftest_rec%2Fgrp_rec_main.jsp%3FUnivCode%3DICA013%26UnivGubun%3DG%26chk%3Dnull',
+    registerNote: [
+      '접수 사이트 로그인 후 그룹명: <strong>SBS아카데미컴퓨터아트학원-천안 특별시험(단체)</strong> 선택',
+      '응시료: 과목당 <strong>59,000원</strong> <span style="color:#9CA3AF">(일반 79,000원 → 20,000원 할인)</span>',
+      '시험 일시: 매주 <strong>토요일 15:30 / 16:30</strong> 중 선택',
+      'Certiport 계정 사전 생성 필수 (certiport.com 가입 후 접수 가능)',
+      '시험 취소: 시험일 <strong>3일 전</strong>까지 / 일정 변경: <strong>2일 전</strong>까지',
+      'MOS Master: Excel Expert + Word Expert + PowerPoint + Access 또는 Outlook (4과목)',
+    ],
     sessions: [
       { round: '상시', written: '연중 상시 접수', practical: '-', result: '즉시 발표' },
     ]
@@ -4155,6 +4193,15 @@ const EXAM_SCHEDULE = [
     cat: 'ACP',
     name: 'ACP (Adobe Certified Professional)',
     org: 'Adobe / Certiport',
+    registerUrl: 'https://www.aiexam.co.kr',
+    registerNote: [
+      '접수 사이트 → 단체 접수 선택 → 단체접수코드: <strong>sbsartca</strong> 입력',
+      'Certiport 계정 사전 생성 필수 (certiport.com 가입 후 접수 가능)',
+      '시험 당일 <strong>신분증 지참</strong> 필수',
+      '원서 접수 마감: 정규시험 <strong>2일 전</strong>까지',
+      '시험 장소: <strong>학원 내</strong> 진행 (외부 시험장 없음)',
+      '응시료: 접수 사이트 0원 표기 (학원에 별도 납부)',
+    ],
     sessions: [
       { round: '상시', written: '연중 상시 접수', practical: '-', result: '즉시 발표' },
     ]
@@ -4220,6 +4267,44 @@ function parseExamDate(str) {
   return m ? new Date(m[1]) : null;
 }
 
+function _buildExamCard(ex, today, soon) {
+  const sessionRows = ex.sessions.map(s => {
+    const d = parseExamDate(s.written);
+    const isUp = d && d >= today && d <= soon;
+    const badge = isUp ? `<span class="exam-upcoming-badge">예정</span>` : '';
+    return `<tr${isUp ? ' class="is-upcoming"' : ''}>
+      <td>${s.round}${badge}</td>
+      <td>${s.written}</td>
+      <td>${s.practical}</td>
+      <td>${s.result}</td>
+    </tr>`;
+  }).join('');
+  const regBox = ex.registerUrl ? `
+    <div class="exam-reg-box">
+      <div class="exam-reg-title">시험 접수 안내</div>
+      <a href="${ex.registerUrl}" class="exam-reg-btn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+        접수 바로가기
+      </a>
+      <ul class="exam-reg-list">${ex.registerNote.map(n => `<li>${n}</li>`).join('')}</ul>
+    </div>` : '';
+  return `
+    <div class="exam-card">
+      <div class="exam-card__head">
+        <span class="exam-card__name">${ex.name}</span>
+        <span class="exam-card__org">${ex.org}</span>
+      </div>
+      <div class="exam-table-wrap">
+        <table class="exam-table">
+          <thead><tr><th>회차</th><th>필기(접수·시험)</th><th>실기(접수·시험)</th><th>합격자 발표</th></tr></thead>
+          <tbody>${sessionRows}</tbody>
+        </table>
+      </div>
+      ${regBox}
+      <p class="exam-notice">※ 일정은 시행처 공고 기준이며 변동될 수 있습니다. 반드시 공식 홈페이지에서 재확인하세요.</p>
+    </div>`;
+}
+
 function renderExamsPage() {
   const today = new Date(); today.setHours(0,0,0,0);
   const soon  = new Date(today); soon.setDate(today.getDate() + 60);
@@ -4231,34 +4316,21 @@ function renderExamsPage() {
 
   const groups = cats.map(cat => {
     const exams = EXAM_SCHEDULE.filter(e => e.cat === cat);
-    const rows = exams.map(ex => {
-      const sessionRows = ex.sessions.map(s => {
-        const d = parseExamDate(s.written);
-        const isUp = d && d >= today && d <= soon;
-        const badge = isUp ? `<span class="exam-upcoming-badge">예정</span>` : '';
-        return `<tr${isUp ? ' class="is-upcoming"' : ''}>
-          <td>${s.round}${badge}</td>
-          <td>${s.written}</td>
-          <td>${s.practical}</td>
-          <td>${s.result}</td>
-        </tr>`;
-      }).join('');
-      return `
-        <div class="exam-card">
-          <div class="exam-card__head">
-            <span class="exam-card__name">${ex.name}</span>
-            <span class="exam-card__org">${ex.org}</span>
-          </div>
-          <div class="exam-table-wrap">
-            <table class="exam-table">
-              <thead><tr><th>회차</th><th>필기(접수·시험)</th><th>실기(접수·시험)</th><th>합격자 발표</th></tr></thead>
-              <tbody>${sessionRows}</tbody>
-            </table>
-          </div>
-          <p class="exam-notice">※ 일정은 시행처 공고 기준이며 변동될 수 있습니다. 반드시 공식 홈페이지에서 재확인하세요.</p>
+    let inner = '';
+    if (cat === '국가기술자격') {
+      const grades = [...new Set(exams.map(e => e.grade || '기능사'))];
+      inner = grades.map(grade => {
+        const cards = exams.filter(e => (e.grade || '기능사') === grade)
+          .map(ex => _buildExamCard(ex, today, soon)).join('');
+        return `<div class="exam-grade-section">
+          <div class="exam-grade-label">${grade}</div>
+          ${cards}
         </div>`;
-    }).join('');
-    return `<div class="exam-group" data-cat="${cat}" style="${cat===cats[0]?'':'display:none'}">${rows}</div>`;
+      }).join('');
+    } else {
+      inner = exams.map(ex => _buildExamCard(ex, today, soon)).join('');
+    }
+    return `<div class="exam-group" data-cat="${cat}" style="${cat===cats[0]?'':'display:none'}">${inner}</div>`;
   }).join('');
 
   document.getElementById('exams-content').innerHTML = `
