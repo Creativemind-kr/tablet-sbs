@@ -909,7 +909,11 @@
   /* ══════════════════════════════════════
      15. INSTRUCTORS
   ══════════════════════════════════════ */
-  .instructor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 24px; }
+  .inst-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; margin-top: 8px; }
+  .inst-filter-btn { padding: 6px 16px; border-radius: 99px; border: 1.5px solid var(--c-border); background: var(--c-bg); font-size: var(--t-sm); font-weight: 500; color: var(--c-text-2); cursor: pointer; transition: all 130ms; }
+  .inst-filter-btn:hover { border-color: var(--c-text); color: var(--c-text); }
+  .inst-filter-btn.is-active { background: var(--c-text); color: #fff; border-color: var(--c-text); }
+  .instructor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 0; }
   .instructor-card { background: var(--c-bg-2); border-radius: 16px; padding: 26px 22px; display: flex; gap: 18px; align-items: flex-start; }
   .instructor-avatar { position: relative; width: 88px; height: 88px; border-radius: 50%; background: #374151; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; overflow: visible; }
   .instructor-avatar.is-m { background: #1E3461; }
@@ -2910,6 +2914,7 @@ let isAdmin    = false;
 let isEditMode = false;
 let currentPage   = 'intro';
 let currentCourse = 'web';
+let instFilter    = '전체';
 let db      = null;
 let storage = null;
 
@@ -3487,12 +3492,35 @@ function renderRoadmapView(id) {
 /* ══════════════════════════════════════════════════
    RENDER: 강사 소개 페이지
 ══════════════════════════════════════════════════ */
+function _instDept(inst) {
+  if (inst.dept) return inst.dept;
+  const m = (inst.title || '').match(/^(.+?)\s*강사/);
+  return m ? m[1].trim() : '기타';
+}
+
+function filterInstructors(dept) {
+  instFilter = dept;
+  document.querySelectorAll('.inst-filter-btn').forEach(btn =>
+    btn.classList.toggle('is-active', btn.dataset.dept === dept));
+  document.querySelectorAll('.instructor-card[data-dept]').forEach(card =>
+    card.style.display = (dept === '전체' || card.dataset.dept === dept) ? '' : 'none');
+}
+
 function renderInstructorsPage() {
   const em = isEditMode;
   const svgM = '<svg viewBox="0 0 24 24" fill="rgba(255,255,255,.85)" width="40" height="40"><circle cx="12" cy="8" r="4"/><path d="M20 20v-1c0-3.31-3.58-6-8-6s-8 2.69-8 6v1h16z"/></svg>';
   const svgF = '<svg viewBox="0 0 24 24" fill="rgba(255,255,255,.85)" width="40" height="40"><circle cx="12" cy="8.5" r="4"/><path d="M8 7c0-2 1.5-4 4-4s4 2 4 4" stroke="rgba(255,255,255,.85)" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 20v-1c0-3.31-3.58-6-8-6s-8 2.69-8 6v1h16z"/></svg>';
-  const cards = INSTRUCTORS_DATA.map((inst, i) => `
-    <div class="instructor-card">
+
+  const depts = ['전체', ...[...new Set(INSTRUCTORS_DATA.map(_instDept))]];
+  const filterHtml = `<div class="inst-filter-bar">${
+    depts.map(d => `<button class="inst-filter-btn${d === instFilter ? ' is-active' : ''}" data-dept="${d}" onclick="filterInstructors('${d}')">${d}</button>`).join('')
+  }</div>`;
+
+  const cards = INSTRUCTORS_DATA.map((inst, i) => {
+    const dept = _instDept(inst);
+    const hidden = instFilter !== '전체' && instFilter !== dept ? ' style="display:none"' : '';
+    return `
+    <div class="instructor-card" data-dept="${dept}"${hidden}>
       <div class="instructor-avatar ${inst.gender === 'f' ? 'is-f' : 'is-m'}">
         ${inst.photo ? `<img src="${inst.photo}" alt="${inst.name}">` : (inst.gender === 'f' ? svgF : svgM)}
         ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();editInstructor(${i})" title="수정">✏️</button>` : ''}
@@ -3504,10 +3532,12 @@ function renderInstructorsPage() {
         <p class="instructor-career">${em ? E('instructors.'+i+'.career', inst.career) : inst.career}</p>
         ${em ? `<div style="margin-top:8px"><button class="admin-del-btn" onclick="deleteInstructor(${i})">✕ 삭제</button></div>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   document.getElementById('instructors-content').innerHTML = `
     <p class="page-label">강사 소개</p>
+    ${filterHtml}
     <div class="instructor-grid">
       ${cards}
       ${em ? `<button class="admin-add-block" onclick="addInstructor()" style="min-height:120px">+ 강사 추가</button>` : ''}
