@@ -223,7 +223,7 @@
     object-fit: cover;
     object-position: center;
     pointer-events: none;
-    z-index: -1;
+    z-index: 1;
     opacity: 0;
     transition: opacity 0.8s ease;
   }
@@ -237,7 +237,7 @@
       rgba(0,0,0,0.38) 50%,
       rgba(0,0,0,0.62) 100%
     );
-    z-index: -1;
+    z-index: 2;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.8s ease;
@@ -245,7 +245,7 @@
   .intro-bg-overlay.is-ready { opacity: 1; }
   #page-intro .page__inner {
     position: relative;
-    z-index: 2;
+    z-index: 3;
   }
   /* 인트로 페이지 텍스트 색상 → 흰색 계열로 */
   #page-intro .page-label          { color: rgba(255,255,255,0.6); }
@@ -5091,6 +5091,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderAll();
   activateCoursePanels('web');
   initAdminTrigger();
+
+  // 초기 상태: intro 페이지이므로 영상 표시
+  _syncBgVideo('intro');
 
   // 영상 지연 로드 — 렌더 완료 후 500ms 뒤에 소스 삽입
   setTimeout(() => {
