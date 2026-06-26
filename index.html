@@ -3424,6 +3424,7 @@ function _applyCropTransform() {
 function _updateCropPreview() {
   const canvas = document.getElementById('crop-preview-canvas');
   const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   const img = document.getElementById('crop-src-img');
   const inv = 1 / _cropScale;
   ctx.drawImage(img, -_cropX * inv, -_cropY * inv,
