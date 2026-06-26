@@ -3495,7 +3495,7 @@ function renderRoadmapView(id) {
 function _instDept(inst) {
   if (inst.dept) return inst.dept;
   const m = (inst.title || '').match(/^(.+?)\s*강사/);
-  return m ? m[1].trim() : '기타';
+  return m ? m[1].replace(/\s*전임\s*$/, '').trim() : '기타';
 }
 
 function filterInstructors(dept) {
