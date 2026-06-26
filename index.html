@@ -925,7 +925,7 @@
   .instructor-grid { display: flex; flex-direction: column; gap: 0; margin-top: 0; }
   .instructor-card {
     display: grid;
-    grid-template-columns: 44px 76px 1fr;
+    grid-template-columns: 44px 100px 1fr;
     gap: 0 22px;
     align-items: center;
     padding: 24px 0;
@@ -949,23 +949,48 @@
   }
   .instructor-avatar {
     position: relative;
-    width: 72px;
-    height: 72px;
-    border-radius: 10px;
+    width: 96px;
+    height: 120px;
+    border-radius: 8px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1.7rem;
+    font-size: 2rem;
     font-weight: 900;
     color: rgba(255,255,255,0.9);
     flex-shrink: 0;
-    overflow: visible;
+    overflow: hidden;
     letter-spacing: -0.04em;
+    gap: 4px;
   }
   .instructor-avatar.is-m { background: #1E3461; }
   .instructor-avatar.is-f { background: #7C1D40; }
-  .instructor-avatar img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; }
-  .inst-photo-btn { position: absolute; bottom: -4px; right: -4px; width: 22px; height: 22px; border-radius: 50%; background: #3B82F6; color: #fff; border: 2px solid #fff; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; z-index: 1; }
+  .instructor-avatar.no-photo {
+    background: var(--c-bg-2);
+    border: 2px dashed var(--c-border);
+    color: var(--c-text-3);
+    font-size: 1.4rem;
+  }
+  .instructor-avatar img { width: 96px; height: 120px; object-fit: cover; object-position: center top; }
+  .inst-no-photo-label { font-size: 10px; font-weight: 600; color: var(--c-text-3); letter-spacing: .04em; }
+  .inst-photo-btn {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.5);
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; padding: 0; z-index: 1;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+  .instructor-card:hover .inst-photo-btn { opacity: 1; }
   .inst-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
   .inst-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
   .instructor-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0; line-height: 1.1; }
@@ -1099,7 +1124,9 @@
   .lightbox__close { position: absolute; top: 18px; right: 22px; color: #fff; font-size: 2rem; background: none; border: none; cursor: pointer; line-height: 1; }
 
   @media (max-width: 680px) {
-    .instructor-card { grid-template-columns: 36px 64px 1fr; gap: 0 14px; }
+    .instructor-card { grid-template-columns: 36px 80px 1fr; gap: 0 14px; }
+    .instructor-avatar { width: 76px; height: 96px; }
+    .instructor-avatar img { width: 76px; height: 96px; }
     .review-grid { grid-template-columns: 1fr; }
   }
 
@@ -3635,9 +3662,12 @@ function renderInstructorsPage() {
     const dept = _instDept(inst);
     const hidden = instFilter !== '전체' && instFilter !== dept ? ' style="display:none"' : '';
     const num = String(i + 1).padStart(2, '0');
-    const avatarInner = inst.photo
-      ? `<img src="${inst.photo}" alt="${inst.name}">`
-      : `<span>${inst.name.charAt(0)}</span>`;
+    const hasPhoto = !!inst.photo;
+    const avatarClass = hasPhoto ? '' : (inst.gender === 'f' ? 'is-f' : 'is-m');
+    const avatarExtra = hasPhoto ? '' : ' no-photo';
+    const avatarInner = hasPhoto
+      ? `<img src="${inst.photo}" alt="${inst.name}" loading="lazy">`
+      : `<span>${inst.name.charAt(0)}</span><span class="inst-no-photo-label">사진없음</span>`;
     const subs = Array.isArray(inst.subjects) ? inst.subjects : (inst.subject ? inst.subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : []);
     const subHtml = subs.length
       ? `<div class="inst-subject-chips">${subs.map((s,si)=>`<span class="inst-subject-chip">${s}${em?`<button class="inst-subject-chip__del" onclick="deleteInstSubject(${i},${si})" title="삭제">✕</button>`:''}</span>`).join('')}${em?`<button class="admin-add-btn" style="padding:3px 10px;font-size:var(--t-xs)" onclick="addInstSubject(${i})">+</button>`:''}</div>`
@@ -3645,9 +3675,9 @@ function renderInstructorsPage() {
     return `
     <div class="instructor-card" data-dept="${dept}"${hidden}>
       <div class="instructor-num">${num}</div>
-      <div class="instructor-avatar ${inst.gender === 'f' ? 'is-f' : 'is-m'}">
+      <div class="instructor-avatar ${avatarClass}${avatarExtra}">
         ${avatarInner}
-        ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();editInstructor(${i})" title="수정"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>` : ''}
+        ${em ? `<button class="inst-photo-btn" onclick="event.stopPropagation();editInstructor(${i})" title="사진 수정"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>` : ''}
       </div>
       <div class="inst-info">
         <div class="inst-name-row">
