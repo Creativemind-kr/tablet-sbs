@@ -1522,6 +1522,7 @@
   <div class="modal-box">
     <h3><span class="icon-svg" style="margin-right:6px;color:var(--c-text-2)"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>관리자 로그인</h3>
     <form onsubmit="submitLogin();return false;" style="margin:0">
+    <input type="text" name="username" autocomplete="username" style="display:none" value="admin">
     <input type="password" id="admin-pw" placeholder="비밀번호 입력"
            autocomplete="current-password">
     </form>
@@ -4683,7 +4684,7 @@ function renderAll() {
   });
 
   // 강좌별 렌더링
-  DEPT_ORDER.forEach(id => {
+  DEPT_ORDER.filter(id => COURSES[id]).forEach(id => {
     renderRoadmapView(id);
     renderCurriculumView(id);
     renderChecklistCard(id);
