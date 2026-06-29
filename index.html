@@ -5630,30 +5630,60 @@ function editInstructor(i) {
 }
 function addInstSubject(i) {
   const seen = new Set();
-  const courseOptions = [];
+  const allCourses = [];
   Object.values(COURSES).forEach(c => {
     (c.curriculum || []).forEach(w => {
       if (w.week && w.week !== 'AI + 기초디자인 공통 기반' && !seen.has(w.week)) {
         seen.add(w.week);
-        courseOptions.push({ value: w.week, label: w.week });
+        allCourses.push(w.week);
       }
     });
   });
-  openEditModal({
-    title: '담당 강좌 추가',
-    fields: [{ key: 'sub', label: '강좌명', type: 'select', options: courseOptions }],
-    defaults: { sub: courseOptions[0]?.value || '' },
-    onSave: (d) => {
-      if (!d.sub?.trim()) return;
-      if (!Array.isArray(INSTRUCTORS_DATA[i].subjects)) {
-        INSTRUCTORS_DATA[i].subjects = INSTRUCTORS_DATA[i].subject ? INSTRUCTORS_DATA[i].subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [];
-        delete INSTRUCTORS_DATA[i].subject;
-      }
-      if (INSTRUCTORS_DATA[i].subjects.includes(d.sub.trim())) return;
-      INSTRUCTORS_DATA[i].subjects.push(d.sub.trim());
-      renderInstructorsPage();
+  const existing = new Set(
+    Array.isArray(INSTRUCTORS_DATA[i].subjects)
+      ? INSTRUCTORS_DATA[i].subjects
+      : (INSTRUCTORS_DATA[i].subject ? INSTRUCTORS_DATA[i].subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [])
+  );
+  const available = allCourses.filter(o => !existing.has(o));
+  if (!available.length) { showToast('추가할 수 있는 강좌가 없습니다.'); return; }
+
+  document.getElementById('em-title').textContent = '담당 강좌 추가';
+  const body = document.getElementById('em-body');
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <span style="font-size:12px;color:var(--c-text-3);">복수 선택 후 저장</span>
+      <button type="button" id="sub-toggle-all-btn" onclick="_subToggleAll()"
+        style="font-size:12px;padding:3px 10px;border:1px solid var(--c-border);border-radius:6px;background:none;cursor:pointer;color:var(--c-text-2);">전체 선택</button>
+    </div>
+    <div id="sub-checklist" style="max-height:300px;overflow-y:auto;border:1.5px solid var(--c-border);border-radius:8px;">
+      ${available.map((opt, idx) => `
+        <label style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:14px;${idx > 0 ? 'border-top:1px solid var(--c-border);' : ''}">
+          <input type="checkbox" class="subchk" value="${opt.replace(/"/g,'&quot;')}" style="width:16px;height:16px;accent-color:var(--c-accent);flex-shrink:0;cursor:pointer;">
+          <span>${opt}</span>
+        </label>`).join('')}
+    </div>`;
+
+  document.getElementById('em-save').onclick = () => {
+    const checked = [...document.querySelectorAll('.subchk:checked')].map(el => el.value);
+    if (!checked.length) { closeEditModal(); return; }
+    if (!Array.isArray(INSTRUCTORS_DATA[i].subjects)) {
+      INSTRUCTORS_DATA[i].subjects = INSTRUCTORS_DATA[i].subject
+        ? INSTRUCTORS_DATA[i].subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [];
+      delete INSTRUCTORS_DATA[i].subject;
     }
-  });
+    checked.forEach(s => { if (!INSTRUCTORS_DATA[i].subjects.includes(s)) INSTRUCTORS_DATA[i].subjects.push(s); });
+    closeEditModal();
+    renderInstructorsPage();
+  };
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function _subToggleAll() {
+  const chks = [...document.querySelectorAll('.subchk')];
+  const allChecked = chks.every(c => c.checked);
+  chks.forEach(c => c.checked = !allChecked);
+  const btn = document.getElementById('sub-toggle-all-btn');
+  if (btn) btn.textContent = allChecked ? '전체 선택' : '전체 해제';
 }
 function deleteInstSubject(i, si) {
   if (!Array.isArray(INSTRUCTORS_DATA[i].subjects)) {
