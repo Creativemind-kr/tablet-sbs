@@ -1396,7 +1396,7 @@
   <header class="header">
     <div class="header__logo">
       SBS아카데미
-      <span>컴퓨터아트학원</span>
+      <span>AIX학원</span>
     </div>
     <nav class="main-nav" role="tablist">
       <button class="main-nav__btn is-active" data-page="intro"        role="tab"><span class="dot"></span>학원 소개</button>
@@ -3537,12 +3537,13 @@ async function saveInstData() {
 /* ════════════════════════════════════════════════ */
 
 async function uploadToStorage(file, prefix) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = e => resolve(e.target.result);
-    reader.onerror = () => reject(new Error('파일 읽기 실패'));
-    reader.readAsDataURL(file);
-  });
+  if (!storage) {
+    loadStorageSDK();
+    throw new Error('Storage 로드 중입니다. 잠시 후 다시 시도해주세요');
+  }
+  const path = `${prefix}/${Date.now()}_${file.name}`;
+  const snap = await storage.ref().child(path).put(file);
+  return snap.ref.getDownloadURL();
 }
 
 /* ══════════════════════════════════════════════════
