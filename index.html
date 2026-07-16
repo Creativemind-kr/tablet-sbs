@@ -3167,25 +3167,38 @@ function loadStorageSDK() {
   document.head.appendChild(s);
 }
 
+const CURRICULUM_DOC_IDS = ['courses', 'ui', 'instructors', 'reviews', 'books'];
+
+function applyFirestoreData(data) {
+  if (!data) return;
+  if (data.courses && Object.keys(data.courses).length) COURSES = data.courses;
+  if (data.ui)          UI_DATA          = data.ui;
+  if (data.instructors) {
+    INSTRUCTORS_DATA = data.instructors.map(inst => {
+      if (!Array.isArray(inst.subjects)) {
+        inst.subjects = inst.subject ? inst.subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [];
+        delete inst.subject;
+      }
+      return inst;
+    });
+  }
+  if (data.reviews)     REVIEWS_DATA     = data.reviews;
+  if (data.books)       Object.assign(BOOKS_DATA, data.books);
+}
+
 async function loadFromFirestore() {
   if (!db) return;
   try {
-    const snap = await db.collection('curriculum').doc('main').get();
-    if (snap.exists) {
-      const data = snap.data();
-      if (data.courses && Object.keys(data.courses).length) COURSES = data.courses;
-      if (data.ui)          UI_DATA          = data.ui;
-      if (data.instructors) {
-        INSTRUCTORS_DATA = data.instructors.map(inst => {
-          if (!Array.isArray(inst.subjects)) {
-            inst.subjects = inst.subject ? inst.subject.split(/[·,]/).map(s=>s.trim()).filter(Boolean) : [];
-            delete inst.subject;
-          }
-          return inst;
-        });
-      }
-      if (data.reviews)     REVIEWS_DATA     = data.reviews;
-      if (data.books)       Object.assign(BOOKS_DATA, data.books);
+    const snaps = await Promise.all(
+      CURRICULUM_DOC_IDS.map(id => db.collection('curriculum').doc(id).get())
+    );
+    const anyExists = snaps.some(s => s.exists);
+    if (anyExists) {
+      snaps.forEach(s => { if (s.exists) applyFirestoreData(s.data()); });
+    } else {
+      // 구버전 단일 문서(main)에서 마이그레이션
+      const legacy = await db.collection('curriculum').doc('main').get();
+      if (legacy.exists) applyFirestoreData(legacy.data());
     }
   } catch(e) {
     console.warn('데이터 로드 실패, 기본값 사용:', e.message);
@@ -3197,14 +3210,14 @@ async function saveData() {
     showToast('Firebase 미연결 — FIREBASE_CONFIG 설정 필요', 'error');
     throw new Error('Firebase 미연결');
   }
-  await db.collection('curriculum').doc('main').set({
-    courses:     COURSES,
-    ui:          UI_DATA,
-    instructors: INSTRUCTORS_DATA,
-    reviews:     REVIEWS_DATA,
-    books:       BOOKS_DATA,
-    updatedAt:   new Date().toISOString()
-  });
+  const updatedAt = new Date().toISOString();
+  await Promise.all([
+    db.collection('curriculum').doc('courses').set({ courses: COURSES, updatedAt }),
+    db.collection('curriculum').doc('ui').set({ ui: UI_DATA, updatedAt }),
+    db.collection('curriculum').doc('instructors').set({ instructors: INSTRUCTORS_DATA, updatedAt }),
+    db.collection('curriculum').doc('reviews').set({ reviews: REVIEWS_DATA, updatedAt }),
+    db.collection('curriculum').doc('books').set({ books: BOOKS_DATA, updatedAt }),
+  ]);
   showToast('저장되었습니다 ✓');
 }
 
