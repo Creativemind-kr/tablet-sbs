@@ -3167,7 +3167,8 @@ function loadStorageSDK() {
   document.head.appendChild(s);
 }
 
-const CURRICULUM_DOC_IDS = ['courses', 'ui', 'instructors', 'reviews', 'books'];
+const CURRICULUM_DOC_IDS = ['ui', 'instructors', 'reviews', 'books']; // 'courses'는 학과별 서브컬렉션(depts)으로 분리 저장 (1MB 문서 제한 회피)
+let _knownDeptIds = new Set(); // Firestore에 이미 저장된 학과 id — 삭제된 학과의 잔여 문서를 정리하기 위해 추적
 
 function applyFirestoreData(data) {
   if (!data) return;
@@ -3189,13 +3190,29 @@ function applyFirestoreData(data) {
 async function loadFromFirestore() {
   if (!db) return;
   try {
-    const snaps = await Promise.all(
-      CURRICULUM_DOC_IDS.map(id => db.collection('curriculum').doc(id).get())
-    );
-    const anyExists = snaps.some(s => s.exists);
-    if (anyExists) {
-      snaps.forEach(s => { if (s.exists) applyFirestoreData(s.data()); });
+    const [deptSnap, ...snaps] = await Promise.all([
+      db.collection('curriculum').doc('courses').collection('depts').get(),
+      ...CURRICULUM_DOC_IDS.map(id => db.collection('curriculum').doc(id).get())
+    ]);
+    snaps.forEach(s => { if (s.exists) applyFirestoreData(s.data()); });
+
+    let coursesLoaded = false;
+    if (!deptSnap.empty) {
+      const courses = {};
+      deptSnap.forEach(d => { courses[d.id] = d.data(); _knownDeptIds.add(d.id); });
+      COURSES = courses;
+      coursesLoaded = true;
     } else {
+      // 과거 단일 courses 문서에서 마이그레이션 (다음 저장 시 자동으로 depts 서브컬렉션으로 분리 저장됨)
+      const legacyCourses = await db.collection('curriculum').doc('courses').get();
+      if (legacyCourses.exists && legacyCourses.data().courses) {
+        COURSES = legacyCourses.data().courses;
+        Object.keys(COURSES).forEach(id => _knownDeptIds.add(id));
+        coursesLoaded = true;
+      }
+    }
+
+    if (!coursesLoaded && !snaps.some(s => s.exists)) {
       // 구버전 단일 문서(main)에서 마이그레이션
       const legacy = await db.collection('curriculum').doc('main').get();
       if (legacy.exists) applyFirestoreData(legacy.data());
@@ -3211,13 +3228,20 @@ async function saveData() {
     throw new Error('Firebase 미연결');
   }
   const updatedAt = new Date().toISOString();
+  const deptsRef = db.collection('curriculum').doc('courses').collection('depts');
+  const currentDeptIds = Object.keys(COURSES);
+  const deptWrites = currentDeptIds.map(id => deptsRef.doc(id).set({ ...COURSES[id], updatedAt }));
+  const removedDeptIds = [..._knownDeptIds].filter(id => !currentDeptIds.includes(id));
+  const deptDeletes = removedDeptIds.map(id => deptsRef.doc(id).delete());
   await Promise.all([
-    db.collection('curriculum').doc('courses').set({ courses: COURSES, updatedAt }),
+    ...deptWrites,
+    ...deptDeletes,
     db.collection('curriculum').doc('ui').set({ ui: UI_DATA, updatedAt }),
     db.collection('curriculum').doc('instructors').set({ instructors: INSTRUCTORS_DATA, updatedAt }),
     db.collection('curriculum').doc('reviews').set({ reviews: REVIEWS_DATA, updatedAt }),
     db.collection('curriculum').doc('books').set({ books: BOOKS_DATA, updatedAt }),
   ]);
+  _knownDeptIds = new Set(currentDeptIds);
   showToast('저장되었습니다 ✓');
 }
 
