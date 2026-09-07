@@ -4467,7 +4467,13 @@ function renderExamsPage() {
   }).join('');
 
   document.getElementById('exams-content').innerHTML = `
-    <p class="page-label">자격증 시험 일정</p>
+    <div class="page-label-row">
+      <p class="page-label">자격증 시험 일정</p>
+      <a href="https://cbt-site-pearl.vercel.app/" target="_blank" rel="noopener" class="pretest-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        CBT 모의고사 체험하기
+      </a>
+    </div>
     <p class="exams-sub">SBS아카데미에서 준비할 수 있는 국가자격증 · 민간자격증 시험 일정입니다. D-Day는 오늘 기준 자동 계산됩니다.</p>
     ${buildExamDDayTable()}
     <div class="exam-tab-row">${tabs}</div>
