@@ -210,6 +210,24 @@
     margin-bottom: 20px;
     line-height: 1.1;
   }
+  .page-label-row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .page-label-row .page-label { margin-bottom: 20px; }
+  .pretest-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    background: var(--c-accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: var(--t-sm);
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 20px;
+    white-space: nowrap;
+  }
+  .pretest-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 
   /* ══════════════════════════════════════
      6. PAGE 1 — 학원 소개
@@ -1426,7 +1444,13 @@
     <!-- ── PAGE 2: 학과별 로드맵 ── -->
     <div class="page" id="page-roadmap">
       <div class="page__inner">
-        <p class="page-label">학과별 로드맵</p>
+        <div class="page-label-row">
+          <p class="page-label">학과별 로드맵</p>
+          <a href="https://aix-level-test.vercel.app/" target="_blank" rel="noopener" class="pretest-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            사전테스트 바로가기
+          </a>
+        </div>
         <div class="sub-nav-wrap">
           <button class="sub-nav-arr" id="roadmap-subnav-prev" onclick="shiftSubNav('roadmap-subnav',-1)" disabled>&#8249;</button>
           <nav class="sub-nav" id="roadmap-subnav"></nav>
