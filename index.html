@@ -5836,15 +5836,17 @@ function addBook(id) {
   openEditModal({
     title: '교재 추가',
     fields: [
-      { key: 'name', label: '교재명',    type: 'text' },
-      { key: 'img',  label: '이미지 URL', type: 'text', placeholder: '/images/books/ps.png' },
-      { key: 'link', label: '구매 링크', type: 'text', placeholder: 'https://www.kedustore.com/...' },
+      { key: 'name',    label: '교재명',    type: 'text' },
+      { key: 'imgFile', label: '표지 이미지', type: 'file-drop' },
+      { key: 'img',     label: '또는 이미지 URL', type: 'text', placeholder: '/images/books/ps.png',
+        hint: '이미지를 올리면 URL보다 우선 적용됩니다' },
+      { key: 'link',    label: '구매 링크', type: 'text', placeholder: 'https://www.kedustore.com/...' },
     ],
-    defaults: { name: '', img: '', link: 'https://www.kedustore.com/books/list.asp#3' },
+    defaults: { name: '', imgFile: '', img: '', link: 'https://www.kedustore.com/books/list.asp#3' },
     onSave: (d) => {
       if (!d.name?.trim()) return;
       if (!BOOKS_DATA[id]) BOOKS_DATA[id] = [];
-      BOOKS_DATA[id].push({ img: d.img, name: d.name.trim(), link: d.link });
+      BOOKS_DATA[id].push({ img: d.imgFile || d.img, name: d.name.trim(), link: d.link });
       renderChecklistCard(id);
       document.getElementById('cl-'+id)?.classList.add('is-active');
     }
@@ -5862,13 +5864,15 @@ function editBook(id, bi) {
   openEditModal({
     title: '교재 수정',
     fields: [
-      { key: 'name', label: '교재명',    type: 'text' },
-      { key: 'img',  label: '이미지 URL', type: 'text', placeholder: '/images/books/ps.png' },
-      { key: 'link', label: '구매 링크', type: 'text' },
+      { key: 'name',    label: '교재명',    type: 'text' },
+      { key: 'imgFile', label: '표지 이미지', type: 'file-drop' },
+      { key: 'img',     label: '또는 이미지 URL', type: 'text', placeholder: '/images/books/ps.png',
+        hint: '이미지를 올리면 URL보다 우선 적용됩니다' },
+      { key: 'link',    label: '구매 링크', type: 'text' },
     ],
-    defaults: { name: b.name, img: b.img, link: b.link||'' },
+    defaults: { name: b.name, imgFile: '', img: b.img, link: b.link||'' },
     onSave: (d) => {
-      BOOKS_DATA[id][bi] = { name: d.name.trim()||b.name, img: d.img||b.img, link: d.link };
+      BOOKS_DATA[id][bi] = { name: d.name.trim()||b.name, img: d.imgFile || d.img || b.img, link: d.link };
       renderChecklistCard(id);
       document.getElementById('cl-'+id)?.classList.add('is-active');
     }
