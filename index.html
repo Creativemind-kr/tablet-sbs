@@ -86,6 +86,9 @@
   }
   #page-intro { font-family: 'Pretendard Variable', Pretendard, var(--font); }
   #page-intro :is(input, textarea, select) { font-family: inherit; }
+  /* Pretendard는 기본 자간이 좁아 Noto 기준 음수 자간을 완화 */
+  #page-intro .hero-title { letter-spacing: -.015em; line-height: 1.12; }
+  #page-intro .stat-num   { letter-spacing: -.01em; }
   button {
     cursor: pointer; border: none; background: none;
     font: inherit; color: inherit;
