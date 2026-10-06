@@ -83,12 +83,13 @@
     color: var(--c-text);
     background: var(--c-bg);
     -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
   }
   #page-intro { font-family: 'Pretendard Variable', Pretendard, var(--font); }
   #page-intro :is(input, textarea, select) { font-family: inherit; }
   /* Pretendard는 기본 자간이 좁아 Noto 기준 음수 자간을 완화 */
-  #page-intro .hero-title { letter-spacing: -.015em; line-height: 1.12; }
-  #page-intro .stat-num   { letter-spacing: -.01em; }
+  #page-intro .hero-title { letter-spacing: -.015em; line-height: 1.12; word-break: keep-all; font-size: min(var(--t-hero), 4.2rem); }
+  #page-intro .stat-num   { letter-spacing: -.01em; line-height: 1.15; }
   button {
     cursor: pointer; border: none; background: none;
     font: inherit; color: inherit;
@@ -1435,7 +1436,7 @@
       <button class="main-nav__btn"           data-page="exams"        role="tab"><span class="dot"></span>자격증 일정</button>
     </nav>
     <!-- 2초 길게 누르면 관리자 로그인 -->
-    <div class="header__indicator" id="indicator" title="">1 / 6</div>
+    <div class="header__indicator" id="indicator" title="">1 / 7</div>
   </header>
 
   <!-- ══ CONTENT ══ -->
