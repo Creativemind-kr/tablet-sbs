@@ -1,7 +1,7 @@
 {
   "name": "SBS아카데미 커리큘럼",
   "short_name": "SBS아카데미",
-  "description": "SBS컴퓨터아트학원 학과별 커리큘럼 안내",
+  "description": "SBS아카데미AIX학원 학과별 커리큘럼 안내",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
