@@ -3851,6 +3851,14 @@ function addSwipeNav(viewsId, navId) {
   el._swipeInit = true;
   let sx, sy;
   el.addEventListener('touchstart', e => {
+    // 가로 스크롤 박스(이미지 갤러리·표 등) 안에서 시작한 터치는 그 박스 스크롤용 → 탭 이동 안 함
+    for (let n = e.target; n && n !== el; n = n.parentElement) {
+      const ox = getComputedStyle(n).overflowX;
+      if (ox === 'auto' || ox === 'scroll') {
+        sx = sy = null;
+        return;
+      }
+    }
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
   }, { passive: true });
