@@ -1514,19 +1514,17 @@
     font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); font-weight: 900; font-size: 24px; line-height: 1;
   }
   .rmd__sub { font-size: 17px; font-weight: 600; color: #475569; word-break: keep-all; }
-  .rmd__body { margin: auto 0; padding: 20px 0 14px; display: flex; align-items: center; gap: 28px; }
+  .rmd__body { margin: auto 0; padding: 16px 0 12px; display: flex; flex-direction: column; gap: 26px; }
   .rmd__route {
     flex: 1; min-width: 0; display: grid;
     grid-template-columns: repeat(var(--n), minmax(0, 200px)); justify-content: center;
   }
-  /* 역이 많은 노선은 오른쪽 예시 사진 자리만큼 글씨를 조금 작게 */
-  .rmd__route[data-n="6"] .rmd__n, .rmd__route[data-n="7"] .rmd__n { font-size: 18.5px; }
-  .rmd__route[data-n="6"] .rmd__d, .rmd__route[data-n="7"] .rmd__d { font-size: 13.5px; }
-  /* 노선 끝 오른쪽: 결과물 예시 사진 */
-  .rmd__ex { flex: 0 0 clamp(190px, 21%, 250px); display: flex; flex-direction: column; gap: 10px; }
+  /* 노선 아래: 결과물 예시 사진 4칸 */
+  .rmd__ex { width: 100%; max-width: 1000px; align-self: center; display: flex; flex-direction: column; gap: 10px; }
+  .rmd__ex-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
   .rmd__ex-h { font-size: 15px; font-weight: 800; color: var(--c); letter-spacing: -0.01em; }
   .rmd__ex-fig { margin: 0; }
-  .rmd__ex-fig img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
+  .rmd__ex-fig img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
   .rmd__ex-fig figcaption { margin-top: 4px; font-size: 10.5px; line-height: 1.3; color: #94a3b8; word-break: keep-all; }
   .rmd__col { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; min-width: 0; }
   .rmd__slot { height: 32px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-sizing: border-box; }
@@ -1564,11 +1562,20 @@
     .rmd__n { font-size: 17px; }
     .rmd__d { font-size: 13px; }
   }
+  /* 높이가 낮은 가로 화면(1024×768, 1280×800 등): 간격·사진 폭을 줄여 한 화면에 */
+  @media (orientation: landscape) and (max-height: 800px) {
+    .rmd { padding-top: 14px; padding-bottom: 14px; }
+    .rmd__head { margin-top: 12px; }
+    .rmd__name { font-size: 28px; }
+    .rmd__body { gap: 16px; padding: 8px 0 8px; }
+    .rmd__ex { max-width: 860px; gap: 8px; }
+    .rmd__legend { padding-top: 10px; }
+  }
   /* 세로 화면: 역이 위에서 아래로 내려가는 세로 노선(칸 높이 고정 → 앞 역 점에서 이 역 점까지 선을 이음) */
   @media (orientation: portrait) {
-    .rmd__body { align-items: flex-start; gap: 20px; }
-    .rmd__route { grid-template-columns: minmax(0, 520px); grid-auto-rows: 104px; padding: 4px 0; }
-    .rmd__ex { flex-basis: 200px; padding-top: 4px; }
+    .rmd__body { gap: 18px; }
+    .rmd__route { grid-template-columns: minmax(0, 560px); grid-auto-rows: 88px; padding: 4px 0; }
+    .rmd__ex-grid { gap: 8px; }
     .rmd__col {
       display: grid; grid-template-columns: 56px minmax(0, 1fr); grid-template-rows: auto auto 1fr;
       column-gap: 14px; align-items: start; justify-items: start; text-align: left; padding: 0;
@@ -1578,8 +1585,8 @@
     .rmd__slot:empty { display: none; }
     .rmd__n { grid-column: 2; grid-row: 2; margin-top: 0; font-size: 19px; }
     .rmd__d { grid-column: 2; grid-row: 3; margin-top: 3px; font-size: 14px; }
-    .rmd__seg { left: 23px; width: 10px; top: -82px; height: 104px; }
-    .rmd__seg--dash { left: 24px; width: 8px; top: -82px; height: 104px; background: repeating-linear-gradient(180deg, var(--sc) 0 10px, transparent 10px 18px); }
+    .rmd__seg { left: 23px; width: 10px; top: -66px; height: 88px; }
+    .rmd__seg--dash { left: 24px; width: 8px; top: -66px; height: 88px; background: repeating-linear-gradient(180deg, var(--sc) 0 10px, transparent 10px 18px); }
   }
   /* 가운데 순환선 */
   .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 40px; line-height: 1; color: #fff; }
@@ -4208,18 +4215,19 @@ const RMAP = {
       ['컴퓨터활용\u200b능력1급', '엑셀·액세스 고급 국가기술', 'g'],
       ['세무2급, 회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
       ['AI업무\u200b자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
-    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '유튜브', st: [
-      ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
-      ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
-      ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
-      ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
-    { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', st: [
+    // align = 맞은편(오른쪽) 노선 높이에 맞춤: 프로그래밍↔웹디자인, 유튜브↔모션/영상·마야/CG 사이, 기계/제품↔인테리어(캐드)
+    { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', align: ['lsb'], st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
       ['Python', '데이터 분석 · AI 스크립팅', 'g'],
       ['Web Total', '풀스택 웹 · 바이브 코딩', 'a'],
       ['웹프로젝트', '프론트·백엔드 협업 포폴', 'p'] ] },
-    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '기계/제품', st: [
+    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '유튜브/크리에이터', align: ['l5', 'l8'], st: [
+      ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
+      ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
+      ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
+      ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
+    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '기계/제품', align: ['l7'], st: [
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
@@ -4286,22 +4294,22 @@ const RMAP = {
     brand: 'SBS ACADEMY COMPUTER AIX', branch: 'CHEONAN ASAN',
   },
 };
-// 노선 상세 오른쪽 '결과물 예시' 사진: images/roadmap-ex/ (Unsplash 무료 라이선스, 출처는 그 폴더의 출처.md)
+// 노선 상세 아래 '결과물 예시' 사진 4칸: images/roadmap-ex/ (Unsplash 무료 라이선스, 출처는 그 폴더의 출처.md)
 // 학원 수강생 작품이 아닌 참고 사진 — 실제 결과물로 바꿀 땐 같은 파일 이름으로 덮어쓰기
 const RMAP_EX = {
-  l9: [['l9-1.webp', "2H Media"], ['l9-2.webp', "Balázs Kétyi"]],
-  l6: [['l6-1.webp', "Gorilla ROI Data Connector"], ['l6-2.webp', "Carlos Muza"]],
-  lkg: [['lkg-1.webp', "Jakob Owens"], ['lkg-2.webp', "Sanjeev Nagaraj"]],
-  l1: [['l1-1.webp', "Christopher Gower"], ['l1-2.webp', "Juanjo Jaramillo"]],
-  lsb: [['lsb-1.webp', "Balázs Kétyi"], ['lsb-2.webp', "UX Indonesia"]],
-  l22: [['l22-1.webp', "EnCata PD"], ['l22-2.webp', "Kevin Shek"]],
-  l21: [['l21-1.webp', "YongGuang Tian"], ['l21-2.webp', "Balázs Kétyi"]],
-  l4: [['l4-1.webp', "Irene Strong"], ['l4-2.webp', "Mona Miller"]],
-  l3: [['l3-1.webp', "MK +2"], ['l3-2.webp', "Tarah Dane"]],
-  l5: [['l5-1.webp', "Sebastian Svenson"], ['l5-2.webp', "Andri Aeschlimann"]],
-  l8: [['l8-1.webp', "Anshita Nair"], ['l8-2.webp', "Kristina Skoreva"]],
-  l7: [['l7-1.webp', "Clay Banks"], ['l7-2.webp', "Spacejoy"]],
-  lsu: [['lsu-1.webp', "Brian Zajac"], ['lsu-2.webp', "Daniel McCullough"]]
+  l9: [['l9-1.webp', "2H Media"], ['l9-2.webp', "Balázs Kétyi"], ['l9-3.webp', "Maxim Berg"], ['l9-4.webp', "Creatvise"]],
+  l6: [['l6-1.webp', "Gorilla ROI Data Connector"], ['l6-2.webp', "Carlos Muza"], ['l6-3.webp', "Luke Chesser"], ['l6-4.webp', "Ngital"]],
+  lkg: [['lkg-1.webp', "Jakob Owens"], ['lkg-2.webp', "Sanjeev Nagaraj"], ['lkg-3.webp', "Peter Stumpf"], ['lkg-4.webp', "Jakub Żerdzicki"]],
+  l1: [['l1-1.webp', "Christopher Gower"], ['l1-2.webp', "Juanjo Jaramillo"], ['l1-3.webp', "Ilya Pavlov"], ['l1-4.webp', "Jakub Żerdzicki"]],
+  lsb: [['lsb-1.webp', "Balázs Kétyi"], ['lsb-2.webp', "UX Indonesia"], ['lsb-3.webp', "Lee Campbell"], ['lsb-4.webp', "Eftakher Alam"]],
+  l22: [['l22-1.webp', "EnCata PD"], ['l22-2.webp', "Kevin Shek"], ['l22-3.webp', "EnCata PD"], ['l22-4.webp', "ThisisEngineering"]],
+  l21: [['l21-1.webp', "YongGuang Tian"], ['l21-2.webp', "Balázs Kétyi"], ['l21-3.webp', "Nik"], ['l21-4.webp', "Kelly Sikkema"]],
+  l4: [['l4-1.webp', "Irene Strong"], ['l4-2.webp', "Mona Miller"], ['l4-3.webp', "elnaz asadi"], ['l4-4.webp', "Kelly Sikkema"]],
+  l3: [['l3-1.webp', "MK +2"], ['l3-2.webp', "Tarah Dane"], ['l3-3.webp', "Rochelle Lee"], ['l3-4.webp', "MK +2"]],
+  l5: [['l5-1.webp', "Sebastian Svenson"], ['l5-2.webp', "Andri Aeschlimann"], ['l5-3.webp', "jonakoh _"], ['l5-4.webp', "Mikoto Studio"]],
+  l8: [['l8-1.webp', "Anshita Nair"], ['l8-2.webp', "Kristina Skoreva"], ['l8-3.webp', "luthfi alfarizi"], ['l8-4.webp', "Javier Miranda"]],
+  l7: [['l7-1.webp', "Clay Banks"], ['l7-2.webp', "Spacejoy"], ['l7-3.webp', "SUHER DAA"], ['l7-4.webp', "Kam Idris"]],
+  lsu: [['lsu-1.webp', "Brian Zajac"], ['lsu-2.webp', "Daniel McCullough"], ['lsu-3.webp', "Amsterdam City Archives"], ['lsu-4.webp', "Pedro Miranda"]]
 };
 const RMAP_DEFAULT = {};   // 글씨 번호 → 기본 글씨(그릴 때 채움)
 
@@ -4379,6 +4387,18 @@ function renderRoadmapMap() {
       else row._y = mid > 1 ? top + (bot - top) * (k - n0) / (mid - 1) : (top + bot) / 2;
       rows[row.id] = row;
     });
+    // align 이 있는 줄: 맞은편 노선(들) 높이에 맞춤(여럿이면 그 가운데). 나머지 줄은 맞춘 줄 사이에 고르게
+    if (list.some(r => r.align)) {
+      const fixed = list.map((r, k) => r.align ? r.align.reduce((a, id) => a + rows[id]._y, 0) / r.align.length
+        : k === 0 ? ROW_TOP : k === list.length - 1 ? ROW_BOT : null);
+      list.forEach((r, k) => {
+        if (fixed[k] != null) { r._y = fixed[k]; return; }
+        let a = k - 1, b = k + 1;
+        while (fixed[a] == null) a--;
+        while (fixed[b] == null) b++;
+        r._y = fixed[a] + (fixed[b] - fixed[a]) * (k - a) / (b - a);
+      });
+    }
     // 갈라져 나온 줄(from)은 부모 줄 역 위치를 쓰므로 나중에
     [...list.filter(r => !r.from), ...list.filter(r => r.from)].forEach(row => {
       const n = row.st.length;
@@ -4397,8 +4417,8 @@ function renderRoadmapMap() {
       else { row._ax = row._lx = cx + s * EDGE_X; row._ay = y < cy ? LT : LB; }
     });
   };
+  place(RMAP.right, 1);    // 오른쪽 먼저(왼쪽 줄이 오른쪽 높이에 맞추므로)
   place(RMAP.left, -1);
-  place(RMAP.right, 1);
 
   const all = [...RMAP.left, ...RMAP.right];
   // 1) 선
@@ -4543,9 +4563,9 @@ function renderRoadmapDetail() {
       }));
   }
   const ex = row ? (RMAP_EX[row.id] || []) : [];
-  const exHtml = ex.length ? `<aside class="rmd__ex">${T('ex_title', '결과물 예시', 'rmd__ex-h')}`
-    + ex.map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt="" loading="lazy" decoding="async">`
-      + `<figcaption>참고 사진 · ${rmEsc(by)} / Unsplash</figcaption></figure>`).join('') + `</aside>` : '';
+  const exHtml = ex.length ? `<section class="rmd__ex">${T('ex_title', '결과물 예시', 'rmd__ex-h')}<div class="rmd__ex-grid">`
+    + ex.slice(0, 4).map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt="" loading="lazy" decoding="async">`
+      + `<figcaption>참고 사진 · ${rmEsc(by)} / Unsplash</figcaption></figure>`).join('') + `</div></section>` : '';
   box.innerHTML = `<div class="rmd" style="--c:${color}">`
     + `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`
     + `<div class="rmd__head">${head}</div>`
