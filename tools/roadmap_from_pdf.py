@@ -76,6 +76,15 @@ def main(pdf):
                 items.append([k, t, round(ax, 2), round(by, 2), round(s['size'], 2), w,
                               '#%06x' % s['color'], a, fam, round(x1 - x0, 1), ls.get(k, 0)])
 
+    # 세부 글씨 표시(1) — 전체 보기에선 숨기고 확대하면 보임
+    #   역 아래 과목 목록·안내 문장(Medium), 아래 자격시험 설명(SemiBold 8.5), 범례 둘째 줄(SemiBold 8.0 중 아래 줄)
+    for it in items:
+        t, ax, by, size, w = it[1], it[2], it[3], it[4], it[5]
+        d = w == 500 or (w == 600 and size == 8.5)
+        if w == 600 and size == 8.0:
+            d = any(o is not it and o[5] == 600 and o[4] == 8.0 and abs(o[2] - ax) < 4 and o[3] < by for o in items)
+        it.append(1 if d else 0)
+
     # 2) 글씨 없는 배경
     page.add_redact_annot(page.rect, fill=False)
     page.apply_redactions(images=pymupdf.PDF_REDACT_IMAGE_NONE,
@@ -88,7 +97,7 @@ def main(pdf):
     # 3) index.html 의 RMAP_TEXTS 블록 교체
     js = ',\n'.join('  ' + json.dumps(it, ensure_ascii=False) for it in items)
     block = ('/* RMAP_TEXTS:BEGIN — tools/roadmap_from_pdf.py 가 자동 생성. 직접 고치지 말고 사이트 편집 모드로 고치기 */\n'
-             '// [번호, 글씨, 기준x, 바닥선y, 글자크기, 굵기, 색, 맞춤(l/c/r), 글꼴(pre/pl), PDF폭, 자간] — 단위: PDF pt(노선도 폭 2000)\n'
+             '// [번호, 글씨, 기준x, 바닥선y, 글자크기, 굵기, 색, 맞춤(l/c/r), 글꼴(pre/pl), PDF폭, 자간, 세부(1=확대 시에만)] — 단위: PDF pt(노선도 폭 2000)\n'
              'const RMAP_TEXTS = [\n' + js + '\n];\n/* RMAP_TEXTS:END */')
     html = open(HTML, encoding='utf-8').read()
     pat = re.compile(r'/\* RMAP_TEXTS:BEGIN.*?/\* RMAP_TEXTS:END \*/', re.S)
