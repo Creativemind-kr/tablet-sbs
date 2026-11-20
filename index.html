@@ -1512,6 +1512,9 @@
   }
   .rmap__texts > .rm-pill::before { width: 10px; height: 10px; }
   .rmap__texts > .rm-pill::after { content: '›'; font-size: 1.45em; line-height: .55; margin-left: 1px; }
+  .rmap__texts > .rm-pill--l { padding: 4px 10px 4px 8px; }
+  .rmap__texts > .rm-pill--l::before { content: '‹'; width: auto; height: auto; border-radius: 0; background: none; font-size: 1.45em; line-height: .55; margin-right: 1px; }
+  .rmap__texts > .rm-pill--l::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; margin-left: 0; }
   .rmap__texts > .rm-pill:active { background: color-mix(in srgb, var(--c) 12%, #fff); }
   /* 노선 상세(전체 노선도 위에 겹쳐 열림) */
   /* 상세가 열리면 전체 노선도는 아예 숨김(편집 모드 저장 때 가려진 글씨가 빈칸으로 들어가지 않게) */
@@ -1640,6 +1643,8 @@
     color: #fff; background: #16a34a; border-radius: 999px; padding: 2.5px 8px; white-space: nowrap;
   }
   .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.03em; }
+  .rm-core__kw { font-size: 12.5px; font-weight: 700; line-height: 1.2; color: #15803d; white-space: nowrap; }
+  .rmd__kw { margin-top: 5px; font-size: 15px; font-weight: 700; line-height: 1.3; color: #15803d; }
   .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
   .rmap__view:not(.is-detail) .rm-core__desc { display: none; }
   /* 머리줄: 제목(왼쪽 위)·범례(오른쪽 위, 가로) */
@@ -4224,7 +4229,7 @@ const RMAP = {
     d1: 'AI아키텍처 → AI포토샵 → AI일러스트', d2: '기초 코어 순환 후 희망 학과 노선 환승',
     loop: '순환 ↻',
     cores: [
-      { k: 'c1', tag: 'CORE 01', name: 'AI아키텍처', desc: '생성형 AI 구조 이해 · 프롬프트 설계' },
+      { k: 'c1', tag: 'CORE 01', name: 'AI아키텍처', kw: '프롬프트 · 엔지니어링', desc: '생성형 AI 구조 이해 · 프롬프트 설계' },
       { k: 'c3', tag: 'CORE 03', name: 'AI일러스트 올인원', desc: '벡터 드로잉 · 로고·캐릭터 그래픽' },
       { k: 'c2', tag: 'CORE 02', name: 'AI포토샵 올인원', desc: '툴 기초·레이어 · AI 이미지 합성' },
     ],
@@ -4247,7 +4252,9 @@ const RMAP = {
     // AI학과: 디자인자격증 바로 아래(↔ 시각편집). 과목 설명은 커리큘럼 AI학과 'AI에이전트 — Claude Code 활용'에서
     { id: 'lai', color: '#4338ca', dept: 'd10', label: 'AI학과', align: ['l3'], st: [
       ['AI에이전트 1', '에이전트 기반 작업 방식 · 반복 업무 자동화', 'a'],
-      ['AI에이전트 2', '실무 제작 보조 · Claude Code 활용', 'a'] ] },
+      ['AI에이전트 2', '실무 제작 보조 · Claude Code 활용', 'a'],
+      ['AI업무자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'],
+      ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
     // align = 맞은편(오른쪽) 노선 높이에 맞춤: 디자인자격증↔웹툰, AI학과↔시각편집, 프로그래밍↔웹디자인,
     //         유튜브↔모션/영상·마야/CG 사이, 기계/제품↔인테리어(캐드)
     { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', align: ['lsb'], st: [
@@ -4291,34 +4298,37 @@ const RMAP = {
       ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
       ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
       ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
-      ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
+      ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'],
+      ['AI웹디자인 수익화', '템플릿·웹 외주 · 창업 수익', 'r', '+ 수익화'] ] },
     { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '모션/영상', st: [
       ['AI프리미어\u200b프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
       ['AI에펙', '모션그래픽 · 키프레임 · 합성', 'a'],
       ['AI블렌더', '3D 에셋 모델링 · 스타일 씬', 'a'],
       ['시포디', 'Cinema4D 다이내믹 · 옥테인', 'g'],
       ['AI모션/\u200bCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
-      ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'] ] },
+      ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'],
+      ['AI모션 수익화', '숏폼·광고 영상 · 외주 창업 수익', 'r', '+ 수익화'] ] },
     { id: 'l8', color: '#e6186c', dept: 'd02', label: '마야/CG', st: [
       ['AI프리미어\u200b프로', '영상 편집 · 사운드 · 색보정', 'a'],
       ['AI에펙', '실사 합성 · 트래킹 · VFX 기초', 'a'],
       ['AI블렌더', '3D 크리처 · 하드서페이스', 'a'],
       ['AI마야', 'MAYA 모델링 · 리깅 · 애니', 'a'],
       ['AI모션/\u200bCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
-      ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'] ] },
+      ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'],
+      ['AI CG 수익화', '3D 에셋 판매 · 외주 창업 수익', 'r', '+ 수익화'] ] },
     { id: 'l7', color: '#65830d', dept: 'd04a', label: '인테리어', st: [
       ['실내건축\u200b기초', '공간설계 이론 · 수작업 제도', 'g'],
       ['AI캐드', 'AutoCAD 도면 설계', 't'],
       ['AI스케치업', '3D 공간 모델링 · 투시도', 'a'],
       ['맥스', '3dsMax 하이폴리곤 · 라이팅', 'g'],
-      ['AI인테리어', '생성형 공간 시안 · AI 렌더링', 'a'],
-      ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'] ] },
+      ['AI인테리어\u200b+D5', '생성형 공간 시안 · AI 렌더링', 'a'],
+      ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'],
+      ['AI인테리어 수익화', '공간 시안·렌더링 · 외주 창업 수익', 'r', '+ 수익화'] ] },
     // 실내건축자격·BIM: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
     { id: 'lsu', color: '#d97706', dept: 'd04a', label: '실내건축자격 · BIM', from: ['l7', 1], st: [
       ['실내건축\u200b자격', '기능사·산업기사·기사', 'g'],
       ['전산응용\u200b건축', '건축제도 실기 작도', 'g'],
-      ['AI BIM(레빗)', '3D BIM · 물량·도면화', 'p'],
-      ['AI인테리어\u200bD5', 'D5 실시간 AI 렌더링', 'x', '+ AI렌더'] ] },
+      ['AI BIM(레빗)', '3D BIM · 물량·도면화', 'p'] ] },
   ],
   foot: {
     center: '자체시험센터 운영',
@@ -4405,7 +4415,7 @@ function renderRoadmapMap() {
   const LT = ROW_TOP - RC - 6, LB = CONN_BOT + RC + 6;   // 위·아래 변 높이
   const cy = (LT + LB) / 2;
   const EDGE_X = HW - RC - 16;            // 옆면 높이 밖의 노선은 위·아래 변(가운데에서 이 거리)에서 나와 꺾임
-  const COL_IN = cx + 220, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
+  const COL_IN = cx + 212, COL_OUT = W - 56;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
   // 역 사이 간격: 과정이 가장 많은 노선이 COL_IN~COL_OUT 를 꽉 채우는 간격(모든 노선 공통)
   const MAXN = Math.max(...[...RMAP.left, ...RMAP.right].filter(r => !r.from).map(r => r.st.length));
   const STEP = (COL_OUT - COL_IN) / Math.max(1, MAXN - 1);
@@ -4504,7 +4514,8 @@ function renderRoadmapMap() {
     });
     const x0 = Math.min(...xs), x1 = Math.max(...xs);
     html.push(`<div class="rm-hit" data-line="${row.id}" style="left:${x0 - LBL_W / 2}px;top:${y - 44}px;width:${x1 - x0 + LBL_W}px;height:92px"></div>`);
-    html.push(V(row.id + '_label', row.label, 'rm-pill', `left:${(x0 + x1) / 2}px;top:${y - 13}px;--c:${row.color}`,
+    // 왼쪽 노선은 순환선에서 바깥(왼쪽)으로 뻗으므로 이름표도 '‹ 이름 ●'(화살표가 바깥, 점이 순환선 쪽)
+    html.push(V(row.id + '_label', row.label, 'rm-pill' + (row._s < 0 ? ' rm-pill--l' : ''), `left:${(x0 + x1) / 2}px;top:${y - 13}px;--c:${row.color}`,
       ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
@@ -4536,8 +4547,11 @@ function renderRoadmapMap() {
   [[cx - 64, LT], [cx + 64, LT], [cx, LB]]
     .forEach(([x, y], i) => html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
   hub.cores.forEach((c, i) => {
-    html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${boxW}px;height:${boxH}px">`
-      + V(c.k + '_tag', c.tag, 'rm-core__tag') + V(c.k + '_name', c.name, 'rm-core__name') + V(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
+    // 키워드(kw)가 있는 상자는 이름 아래에 키워드 줄 + 칸을 넓게(위 CORE 01은 혼자라 자리 넉넉)
+    const w = c.kw ? 176 : boxW;
+    html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${w}px;min-height:${boxH}px">`
+      + V(c.k + '_tag', c.tag, 'rm-core__tag') + V(c.k + '_name', c.name, 'rm-core__name')
+      + (c.kw ? V(c.k + '_kw', c.kw, 'rm-core__kw') : '') + V(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
   });
 
   // 5) 머리말·범례·아래 칸
@@ -4598,7 +4612,7 @@ function rmDetailHtml(id, pdf) {
       + T('hub_d2', hub.d2, 'rmd__sub');
     cols = ['c1', 'c2', 'c3'].map(k => hub.cores.find(c => c.k === k)).map((c, i) =>
       col(i ? seg(color) : '', T(c.k + '_tag', c.tag, 'rmd__badge rmd__badge--core'), dot('t', '#0f172a', '#16a34a'),
-        T(c.k + '_name', c.name, 'rmd__n'), T(c.k + '_desc', c.desc, 'rmd__d')));
+        T(c.k + '_name', c.name, 'rmd__n') + (c.kw ? T(c.k + '_kw', c.kw, 'rmd__kw') : ''), T(c.k + '_desc', c.desc, 'rmd__d')));
   } else {
     color = row.color;
     const dept = row.dept && COURSES[row.dept] ? row.dept : '';
