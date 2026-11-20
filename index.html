@@ -236,6 +236,38 @@
     white-space: nowrap;
   }
   .pretest-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .page-btns { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .page-btns .pretest-btn { margin-bottom: 0; }
+  /* PDF로 보내기(수강생 카톡 전달용) */
+  .pdf-btn {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; margin-bottom: 20px;
+    padding: 9px 16px; border-radius: 10px; border: 1.5px solid var(--c-accent); background: #fff; color: var(--c-accent);
+    font: inherit; font-size: var(--t-sm); font-weight: 700; white-space: nowrap; cursor: pointer;
+  }
+  .page-btns .pdf-btn, #page-roadmap .pdf-btn { margin-bottom: 0; }
+  .pdf-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .pdf-btn:active { background: var(--c-bg-2); }
+  /* PDF 만드는 중·완료 창 */
+  .pdfx { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 20px; background: rgba(15,23,42,.45); }
+  .pdfx[hidden] { display: none; }
+  .pdfx__box { width: min(420px, 100%); box-sizing: border-box; padding: 24px 22px 20px; border-radius: 18px; background: #fff; box-shadow: 0 16px 40px rgba(15,23,42,.25); text-align: center; }
+  .pdfx__title { margin: 0; font-size: 19px; font-weight: 800; color: var(--c-text); }
+  .pdfx__sub { margin: 8px 0 0; font-size: 14px; color: var(--c-text-2); word-break: keep-all; }
+  .pdfx__btns { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+  .pdfx__btns:empty { display: none; }
+  .pdfx__btn { height: 48px; border-radius: 12px; border: 1px solid var(--c-border); background: #fff; font: inherit; font-size: 15px; font-weight: 700; color: var(--c-text); cursor: pointer; }
+  .pdfx__btn--main { border: 0; background: var(--c-accent); color: #fff; }
+  .pdfx__spin { width: 34px; height: 34px; margin: 0 auto 14px; border-radius: 50%; border: 4px solid #e2e8f0; border-top-color: var(--c-accent); animation: pdfxSpin .8s linear infinite; }
+  @keyframes pdfxSpin { to { transform: rotate(360deg); } }
+  /* PDF용으로 화면 밖에 그리는 칸 */
+  .pdf-host { position: absolute; left: -30000px; top: 0; background: #fff; color: var(--c-text); }
+  .pdf-host .accordion__body { max-height: none !important; overflow: visible !important; }
+  .pdf-host .rmd { animation: none; min-height: 0; height: 100%; }
+  .pdf-host .rmd__ex-fig img { aspect-ratio: 16 / 10; }
+  .pdf-curr__head { padding: 4px 0 16px; margin-bottom: 6px; border-bottom: 2px solid var(--c-text); }
+  .pdf-curr__org { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #64748b; }
+  .pdf-curr__title { margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.02em; color: var(--c-text); }
+  .pdf-curr__meta { margin: 6px 0 0; font-size: 14px; color: #475569; }
 
   /* ══════════════════════════════════════
      6. PAGE 1 — 학원 소개
@@ -1557,36 +1589,36 @@
   .rmd__legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 80px 0 0; border-top: 1px solid #eef2f7; }
   .rmd__legend .rm-lg__t { font-size: 13px; }
   @media (max-width: 820px) {
-    .rmd { padding: 14px 16px 16px; }
-    .rmd__name { font-size: 24px; }
-    .rmd__n { font-size: 17px; }
-    .rmd__d { font-size: 13px; }
+    .rmap .rmd { padding: 14px 16px 16px; }
+    .rmap .rmd__name { font-size: 24px; }
+    .rmap .rmd__n { font-size: 17px; }
+    .rmap .rmd__d { font-size: 13px; }
   }
   /* 높이가 낮은 가로 화면(1024×768, 1280×800 등): 간격·사진 폭을 줄여 한 화면에 */
   @media (orientation: landscape) and (max-height: 800px) {
-    .rmd { padding-top: 14px; padding-bottom: 14px; }
-    .rmd__head { margin-top: 12px; }
-    .rmd__name { font-size: 28px; }
-    .rmd__body { gap: 16px; padding: 8px 0 8px; }
-    .rmd__ex { max-width: 860px; gap: 8px; }
-    .rmd__legend { padding-top: 10px; }
+    .rmap .rmd { padding-top: 14px; padding-bottom: 14px; }
+    .rmap .rmd__head { margin-top: 12px; }
+    .rmap .rmd__name { font-size: 28px; }
+    .rmap .rmd__body { gap: 16px; padding: 8px 0 8px; }
+    .rmap .rmd__ex { max-width: 860px; gap: 8px; }
+    .rmap .rmd__legend { padding-top: 10px; }
   }
   /* 세로 화면: 역이 위에서 아래로 내려가는 세로 노선(칸 높이 고정 → 앞 역 점에서 이 역 점까지 선을 이음) */
   @media (orientation: portrait) {
-    .rmd__body { gap: 18px; }
-    .rmd__route { grid-template-columns: minmax(0, 560px); grid-auto-rows: 88px; padding: 4px 0; }
-    .rmd__ex-grid { gap: 8px; }
-    .rmd__col {
+    .rmap .rmd__body { gap: 18px; }
+    .rmap .rmd__route { grid-template-columns: minmax(0, 560px); grid-auto-rows: 88px; padding: 4px 0; }
+    .rmap .rmd__ex-grid { gap: 8px; }
+    .rmap .rmd__col {
       display: grid; grid-template-columns: 56px minmax(0, 1fr); grid-template-rows: auto auto 1fr;
       column-gap: 14px; align-items: start; justify-items: start; text-align: left; padding: 0;
     }
-    .rmd__mark { grid-column: 1; grid-row: 1 / 4; height: 44px; justify-self: stretch; }
-    .rmd__slot { grid-column: 2; grid-row: 1; height: auto; padding: 0 0 5px; justify-content: flex-start; }
-    .rmd__slot:empty { display: none; }
-    .rmd__n { grid-column: 2; grid-row: 2; margin-top: 0; font-size: 19px; }
-    .rmd__d { grid-column: 2; grid-row: 3; margin-top: 3px; font-size: 14px; }
-    .rmd__seg { left: 23px; width: 10px; top: -66px; height: 88px; }
-    .rmd__seg--dash { left: 24px; width: 8px; top: -66px; height: 88px; background: repeating-linear-gradient(180deg, var(--sc) 0 10px, transparent 10px 18px); }
+    .rmap .rmd__mark { grid-column: 1; grid-row: 1 / 4; height: 44px; justify-self: stretch; }
+    .rmap .rmd__slot { grid-column: 2; grid-row: 1; height: auto; padding: 0 0 5px; justify-content: flex-start; }
+    .rmap .rmd__slot:empty { display: none; }
+    .rmap .rmd__n { grid-column: 2; grid-row: 2; margin-top: 0; font-size: 19px; }
+    .rmap .rmd__d { grid-column: 2; grid-row: 3; margin-top: 3px; font-size: 14px; }
+    .rmap .rmd__seg { left: 23px; width: 10px; top: -66px; height: 88px; }
+    .rmap .rmd__seg--dash { left: 24px; width: 8px; top: -66px; height: 88px; background: repeating-linear-gradient(180deg, var(--sc) 0 10px, transparent 10px 18px); }
   }
   /* 가운데 순환선 */
   .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 40px; line-height: 1; color: #fff; }
@@ -1737,10 +1769,13 @@
             <p class="rmap__hint rmap__hint--view">노선이나 가운데 순환선을 누르면 과목과 설명이 크게 보여요</p>
             <p class="rmap__hint rmap__hint--edit">편집: 노선을 눌러 상세 화면에서 글씨를 바로 고치기 → 저장</p>
           </div>
+          <div class="page-btns">
+          <button type="button" class="pdf-btn" data-pdf="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7"/><path d="M21 3l-9 9"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>PDF로 보내기</button>
           <a href="https://aix-level-test.vercel.app/" target="_blank" rel="noopener" class="pretest-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             사전테스트 바로가기
           </a>
+          </div>
         </div>
         <!-- AI 커리큘럼 로드맵(2호선 노선도): 선은 SVG, 글씨는 실제 텍스트(편집 모드에서 수정)
              노선·역 구조는 스크립트의 RMAP, 그리기는 renderRoadmapMap() -->
@@ -1752,15 +1787,6 @@
             </div>
           </div>
           <div class="rmap__detail" id="rmap-detail" hidden></div>
-          <div class="rmap__tools">
-            <div class="rmap__group">
-              <button type="button" class="rmap__btn rmap__btn--lbl" data-rmap="full" id="rmap-full" aria-label="크게 보기">
-                <svg class="ic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
-                <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
-                <span id="rmap-full-lbl">크게</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -1768,7 +1794,10 @@
     <!-- ── PAGE 3: 커리큘럼 ── -->
     <div class="page" id="page-curriculum">
       <div class="page__inner">
-        <p class="page-label">커리큘럼(학과별)</p>
+        <div class="page-label-row">
+          <p class="page-label">커리큘럼(학과별)</p>
+          <button type="button" class="pdf-btn" data-pdf="curr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7"/><path d="M21 3l-9 9"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg>PDF로 보내기</button>
+        </div>
         <div class="sub-nav-wrap">
           <button class="sub-nav-arr" id="curr-subnav-prev" onclick="shiftSubNav('curr-subnav',-1)" disabled>&#8249;</button>
           <nav class="sub-nav" id="curr-subnav"></nav>
@@ -4374,6 +4403,9 @@ function renderRoadmapMap() {
   const cy = (LT + LB) / 2;
   const EDGE_X = HW - RC - 16;            // 옆면 높이 밖의 노선은 위·아래 변(가운데에서 이 거리)에서 나와 꺾임
   const COL_IN = 940, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
+  // 역 사이 간격: 과정이 가장 많은 노선이 COL_IN~COL_OUT 를 꽉 채우는 간격(모든 노선 공통)
+  const MAXN = Math.max(...[...RMAP.left, ...RMAP.right].filter(r => !r.from).map(r => r.st.length));
+  const STEP = (COL_OUT - COL_IN) / Math.max(1, MAXN - 1);
   const CORNER = 20;
   const html = [];
   const lines = [], dots = [], loopDots = [];
@@ -4404,15 +4436,14 @@ function renderRoadmapMap() {
         r._y = fixed[a] + (fixed[b] - fixed[a]) * (k - a) / (b - a);
       });
     }
+    // 역 간격은 모든 노선이 같음(가장 긴 노선이 끝까지) → 과정 수가 적은 노선은 종점이 순환선 가까이
     // 갈라져 나온 줄(from)은 부모 줄 역 위치를 쓰므로 나중에
     [...list.filter(r => !r.from), ...list.filter(r => r.from)].forEach(row => {
-      const n = row.st.length;
       if (row.from) {
-        const par = rows[row.from[0]], px = par._x;
-        const start = row.from[1] + 1;
-        row._x = row.st.map((_, i) => px[start + i] ?? (px[start] + (xout - px[start]) * i / (n - 1)));
+        const px = rows[row.from[0]]._x, start = row.from[1] + 1, last = px.length - 1;
+        row._x = row.st.map((_, i) => px[start + i] ?? px[last] + s * STEP * (start + i - last));
       } else {
-        row._x = row.st.map((_, i) => xin + (xout - xin) * i / (n - 1));
+        row._x = row.st.map((_, i) => xin + s * STEP * i);
       }
     });
     // 순환선에 붙는 자리: 옆면(바로 수평) 또는 위·아래 변(꺾어서)
@@ -4536,18 +4567,21 @@ function rmRoute(id) {
 function renderRoadmapDetail() {
   const wrap = document.getElementById('rmap'), box = document.getElementById('rmap-detail');
   if (!wrap || !box) return;
-  const hub = RMAP.hub, row = rmRows().find(r => r.id === rmapOpen);
-  if (rmapOpen !== 'hub' && !row) rmapOpen = null;
+  if (rmapOpen !== 'hub' && !rmRows().some(r => r.id === rmapOpen)) rmapOpen = null;
   wrap.classList.toggle('is-open', !!rmapOpen);
   box.hidden = !rmapOpen;
-  if (!rmapOpen) { box.innerHTML = ''; return; }
-  const T = rmT;
+  box.innerHTML = rmapOpen ? rmDetailHtml(rmapOpen, false) : '';
+}
+// 노선 상세 화면 마크업. pdf=true 면 버튼 없이·고칠 수 없게·사진 바로 불러오기
+function rmDetailHtml(id, pdf) {
+  const hub = RMAP.hub, row = rmRows().find(r => r.id === id);
+  const T = pdf ? (k, d, c, s = '', a = '') => rmT(k, d, c, s, a, false) : rmT;
   const seg = (c, dash) => `<span class="rmd__seg${dash ? ' rmd__seg--dash' : ''}" style="--sc:${c}"></span>`;
   const col = (line, top, mark, name, desc) =>
     `<div class="rmd__col">${line}<div class="rmd__slot">${top}</div><div class="rmd__mark">${mark}</div>${name}${desc}</div>`;
   const dot = (t, lc, inner) => `<span class="rmd__dot rmd__dot--${t}" style="--lc:${lc};--in:${inner}"></span>`;
   let head, cols, color, go = '';
-  if (rmapOpen === 'hub') {
+  if (id === 'hub') {
     color = '#16a34a';
     head = `<div class="rmd__title"><span class="rmd__num">${rmEsc(rmText('hub_num', hub.num))}</span>${T('hub_name', hub.name, 'rmd__name')}</div>`
       + T('hub_d2', hub.d2, 'rmd__sub');
@@ -4569,10 +4603,10 @@ function renderRoadmapDetail() {
   }
   const ex = row ? (RMAP_EX[row.id] || []) : [];
   const exHtml = ex.length ? `<section class="rmd__ex">${T('ex_title', '결과물 예시', 'rmd__ex-h')}<div class="rmd__ex-grid">`
-    + ex.slice(0, 4).map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt="" loading="lazy" decoding="async">`
+    + ex.slice(0, 4).map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt=""${pdf ? '' : ' loading="lazy"'} decoding="async">`
       + `<figcaption>참고 사진 · ${rmEsc(by)} / Unsplash</figcaption></figure>`).join('') + `</div></section>` : '';
-  box.innerHTML = `<div class="rmd" style="--c:${color}">`
-    + `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`
+  return `<div class="rmd" style="--c:${color}">`
+    + (pdf ? '' : `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`)
     + `<div class="rmd__head">${head}</div>`
     + `<div class="rmd__body"><div class="rmd__route" data-n="${cols.length}" style="--n:${cols.length}">${cols.join('')}</div>${exHtml}</div>`
     + `<div class="rmd__legend">` + RMAP.legend.map(([t, label], i) =>
@@ -6655,37 +6689,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const W = RMAP_W, H = RMAP_H;   // 노선도 판 크기(renderRoadmapMap 과 같은 값)
   stage.style.width = W + 'px'; stage.style.height = H + 'px';
   const fw = () => frame.clientWidth, fh = () => frame.clientHeight;
-  // 오른쪽 아래 버튼이 차지하는 폭·높이(+여유 8px) — 노선도를 가리지 않게 비켜 두는 데 씀
-  const tools = wrap.querySelector('.rmap__tools');
-  let TW = 0, TH = 0;
-  function measureTools() {
-    // offset 값으로 잼(페이지 전환 애니메이션의 scale 영향 안 받게). 버튼과 노선도 영역은 같은 .rmap 기준
-    if (!tools.offsetWidth || !fw()) return;
-    TW = fw() - tools.offsetLeft + 8; TH = fh() - tools.offsetTop + 8;
-  }
+  // 화면에 맞춰 가운데에(크게 보기·확대 없음)
   function fit() {
     if (!fw() || !fh()) return;
-    measureTools();
-    const fW = fw(), fH = fh();
-    let s = Math.min(fW / W, fH / H);
-    // 버튼이 노선도 오른쪽 아래를 가리면 → 왼쪽(안 되면 위)으로 비켜 두고, 자리가 없으면 그만큼 작게
-    if (fW - W * s < TW && fH - H * s < TH) s = Math.max(Math.min((fW - TW) / W, fH / H), Math.min(fW / W, (fH - TH) / H));
-    const freeX = Math.max(0, fW - W * s), freeY = Math.max(0, fH - H * s);
-    let x = freeX / 2, y = freeY / 2;
-    if (freeX / 2 < TW && freeY / 2 < TH) { if (freeX >= TW - 0.5) x = freeX - TW; else if (freeY >= TH - 0.5) y = freeY - TH; }
-    stage.style.transform = `translate(${Math.max(0, x)}px,${Math.max(0, y)}px) scale(${s})`;
+    const s = Math.min(fw() / W, fh() / H);
+    stage.style.transform = `translate(${(fw() - W * s) / 2}px,${(fh() - H * s) / 2}px) scale(${s})`;
   }
-
-  const fullBtn = document.getElementById('rmap-full'), fullLbl = document.getElementById('rmap-full-lbl');
-  function setFull(on) {
-    wrap.classList.toggle('is-full', on);
-    fullLbl.textContent = on ? '닫기' : '크게';
-    fullBtn.setAttribute('aria-label', on ? '크게 보기 닫기' : '크게 보기');
-    requestAnimationFrame(fit);
-  }
-  tools.addEventListener('click', e => {
-    if (e.target.closest('[data-rmap="full"]')) setFull(!wrap.classList.contains('is-full'));
-  });
   // 노선·순환선 누르면 상세 / 상세: 뒤로, 학과 커리큘럼 바로가기
   wrap.addEventListener('click', e => {
     if (e.target.closest('[contenteditable="true"]')) return;   // 편집 모드: 글씨 누르면 고치기
@@ -6694,7 +6703,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.target.closest('.rmd__back')) { closeRoadmapLine(); return; }
     const go = e.target.closest('.rmd__go');
     if (go) {
-      if (wrap.classList.contains('is-full')) setFull(false);
       goToPage('curriculum');
       activateCoursePanels(go.dataset.dept);
     }
@@ -6706,14 +6714,212 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || (e.target.closest && e.target.closest('[contenteditable="true"]'))) return;
     if (rmapOpen) closeRoadmapLine();
-    else if (wrap.classList.contains('is-full')) setFull(false);
-  });
-  // 다른 메뉴로 넘어가면 크게 보기 닫기
-  document.addEventListener('click', e => {
-    if (e.target.closest('.main-nav__btn') && wrap.classList.contains('is-full')) setFull(false);
   });
   new ResizeObserver(fit).observe(frame);
   fit();
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════
+   PDF로 보내기 — 커리큘럼·로드맵을 PDF 한 파일로 만들어 공유(카카오톡 등)·저장
+   - 커리큘럼(학과): 전체 노선도 + 그 학과 노선 상세 + 커리큘럼(주차까지 펼침)
+   - 로드맵: 노선 상세를 보고 있으면 그 학과, 전체 노선도면 전체 로드맵(순환선 + 모든 노선)
+   - 화면을 그림으로 떠서 A4에 넣음(html2canvas + jsPDF, 누를 때만 불러옴)
+   - 커리큘럼 사진(Firebase 저장소)은 다른 주소라 그림으로 뜰 수 없어 PDF에서 빠짐
+══════════════════════════════════════════════════ */
+(function () {
+  const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+  const ORG = 'SBS아카데미컴퓨터AIX학원';
+  let libs = null, busy = false;
+  const loadLibs = () => libs || (libs = Promise.all(LIBS.map(src => new Promise((ok, no) => {
+    const s = document.createElement('script'); s.src = src; s.onload = ok;
+    s.onerror = () => { libs = null; no(new Error('PDF 도구를 불러오지 못했어요(인터넷 연결 확인)')); };
+    document.head.appendChild(s);
+  }))));
+
+  // 진행·완료 창
+  function sheet() {
+    let el = document.getElementById('pdfx');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'pdfx'; el.className = 'pdfx'; el.hidden = true;
+      el.innerHTML = '<div class="pdfx__box" role="dialog" aria-modal="true"><div class="pdfx__spin"></div><p class="pdfx__title"></p><p class="pdfx__sub"></p><div class="pdfx__btns"></div></div>';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+  function show(title, sub, btns, spin) {
+    const el = sheet();
+    el.querySelector('.pdfx__title').textContent = title;
+    el.querySelector('.pdfx__sub').textContent = sub || '';
+    el.querySelector('.pdfx__spin').style.display = spin ? '' : 'none';
+    const b = el.querySelector('.pdfx__btns'); b.innerHTML = '';
+    (btns || []).forEach(([label, fn, main]) => {
+      const x = document.createElement('button'); x.type = 'button'; x.className = 'pdfx__btn' + (main ? ' pdfx__btn--main' : '');
+      x.textContent = label; x.onclick = fn; b.appendChild(x);
+    });
+    el.hidden = false;
+  }
+  const hide = () => { sheet().hidden = true; };
+
+  // 화면 밖에 그려서 그림으로 뜨기
+  function host(width, cls) {
+    const h = document.createElement('div'); h.className = 'pdf-host' + (cls ? ' ' + cls : '');
+    h.style.width = width + 'px'; document.body.appendChild(h); return h;
+  }
+  const imgsReady = el => Promise.all([...el.querySelectorAll('img')].map(i =>
+    i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 8000); })));
+  const sameOrigin = img => { try { return new URL(img.src, location.href).origin === location.origin; } catch (_) { return false; } };
+  // PDF 도구가 못 읽는 최신 색 표기(color-mix → color(srgb …))를 rgba 로 바꿔 둠
+  const COLOR_PROPS = ['color', 'backgroundColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'outlineColor'];
+  const toRgba = v => v.replace(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)(?: \/ ([\d.]+))?\)/g,
+    (_, r, g, b, a) => `rgba(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},${a == null ? 1 : a})`);
+  function fixColors(root) {
+    [root, ...root.querySelectorAll('*')].forEach(el => {
+      const cs = getComputedStyle(el);
+      COLOR_PROPS.forEach(p => { const v = cs[p]; if (v && v.includes('color(')) el.style[p] = toRgba(v); });
+    });
+  }
+  const shot = (el, scale) => window.html2canvas(el, {
+    scale, backgroundColor: '#ffffff', useCORS: true, logging: false,
+    ignoreElements: n => n.tagName === 'IMG' && !sameOrigin(n),
+  });
+
+  async function overview() {
+    const st = document.getElementById('rmap-stage').cloneNode(true);
+    st.removeAttribute('id'); st.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+    st.style.cssText = `position:relative;transform:none;width:${RMAP_W}px;height:${RMAP_H}px`;
+    const h = host(RMAP_W); h.appendChild(st);
+    try { return await shot(h, 1.6); } finally { h.remove(); }
+  }
+  async function detail(id) {
+    const h = host(1400);
+    h.innerHTML = `<div style="padding:8px 0">${rmDetailHtml(id, true)}</div>`;
+    await imgsReady(h);
+    try { return await shot(h, 1.4); } finally { h.remove(); }
+  }
+  async function curriculum(id) {
+    const c = COURSES[id], src = document.getElementById('cr-' + id);
+    if (!c || !src) return [];
+    const h = host(820, 'pdf-curr');
+    const head = document.createElement('div'); head.className = 'pdf-curr__head';
+    const meta = src.querySelector('.curr-header__meta')?.textContent.trim() || '';
+    head.innerHTML = `<p class="pdf-curr__org">${rmEsc(ORG)}</p><p class="pdf-curr__title">${rmEsc(c.label || '')} 커리큘럼</p>`
+      + (meta ? `<p class="pdf-curr__meta">${rmEsc(meta)}</p>` : '');
+    h.appendChild(head);
+    const blocks = [head];
+    src.querySelectorAll('.curr-tab-panel:not([id^="ct-pf"]) > .accordion, .outcomes-section').forEach(n => {
+      const k = n.cloneNode(true); h.appendChild(k); blocks.push(k);
+    });
+    h.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+    h.querySelectorAll('.img-gallery, .curr-inline-img, .curr-month-img-section, .curr-month-img-empty').forEach(n => n.remove());
+    fixColors(h);
+    await imgsReady(h);
+    try {
+      const out = [];
+      for (const b of blocks) out.push(await shot(b, 1.7));
+      return out;
+    } finally { h.remove(); }
+  }
+
+  // A4에 넣기: 가로 페이지(노선도) / 세로로 이어 붙이기(커리큘럼)
+  function assemble(parts) {
+    const { jsPDF } = window.jspdf;
+    let pdf = null;
+    const page = land => {
+      if (!pdf) pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: land ? 'landscape' : 'portrait', compress: true });
+      else pdf.addPage('a4', land ? 'landscape' : 'portrait');
+    };
+    const jpg = cv => cv.toDataURL('image/jpeg', 0.86);
+    for (const part of parts) {
+      if (part.land) {
+        page(true);
+        const W = 297, H = 210, M = 10, cv = part.land;
+        const s = Math.min((W - 2 * M) / cv.width, (H - 2 * M) / cv.height);
+        const w = cv.width * s, hh = cv.height * s;
+        pdf.addImage(jpg(cv), 'JPEG', (W - w) / 2, (H - hh) / 2, w, hh);
+      } else if (part.flow && part.flow.length) {
+        const M = 12, CW = 210 - 2 * M, CH = 297 - 2 * M, GAP = 3;
+        let y = Infinity;   // 첫 블록에서 새 쪽 시작
+        for (const cv of part.flow) {
+          if (!cv.width || !cv.height) continue;
+          const k = CW / cv.width;            // 캔버스 1px → mm
+          const full = cv.height * k;
+          // 한 쪽에 다 들어가는 블록은 쪽 중간에서 잘리지 않게 다음 쪽으로
+          if (y + full > M + CH && y !== M && full <= CH) { page(false); y = M; }
+          let from = 0;
+          while (from < cv.height) {
+            let room = M + CH - y;
+            if (room < 20) { page(false); y = M; room = CH; }
+            const takePx = Math.min(cv.height - from, Math.max(1, Math.floor(room / k)));
+            const piece = document.createElement('canvas'); piece.width = cv.width; piece.height = takePx;
+            piece.getContext('2d').drawImage(cv, 0, from, cv.width, takePx, 0, 0, cv.width, takePx);
+            pdf.addImage(jpg(piece), 'JPEG', M, y, CW, takePx * k);
+            y += takePx * k + GAP; from += takePx;
+            if (from < cv.height) { page(false); y = M; }
+          }
+        }
+      }
+    }
+    return pdf.output('blob');
+  }
+
+  const safe = s => String(s).replace(/[/:*?"<>|]/g, '_').trim();
+  async function make(kind, id) {
+    if (busy) return; busy = true;
+    show('PDF 만드는 중…', '잠시만 기다려 주세요', [], true);
+    try {
+      await loadLibs();
+      await document.fonts.ready;
+      const parts = []; let name, done = 0, total = 0;
+      const step = () => { const s = sheet().querySelector('.pdfx__sub'); s.textContent = `${++done} / ${total}`; };
+      if (kind === 'dept') {
+        const c = COURSES[id];
+        const lines = rmRows().filter(r => r.dept === id);
+        name = `${safe(c?.label || '학과')}_커리큘럼_로드맵.pdf`;
+        total = 1 + lines.length + 1;
+        parts.push({ land: await overview() }); step();
+        for (const r of lines) { parts.push({ land: await detail(r.id) }); step(); }
+        parts.push({ flow: await curriculum(id) }); step();
+      } else {
+        const ids = ['hub', ...rmRows().map(r => r.id)];
+        name = 'AI커리큘럼_로드맵.pdf';
+        total = 1 + ids.length;
+        parts.push({ land: await overview() }); step();
+        for (const k of ids) { parts.push({ land: await detail(k) }); step(); }
+      }
+      const blob = assemble(parts);
+      const file = new File([blob], name, { type: 'application/pdf' });
+      const mb = (blob.size / 1048576).toFixed(1);
+      const canShare = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+      const save = () => {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+      };
+      const share = async () => {
+        try { await navigator.share({ files: [file], title: name }); hide(); }
+        catch (e) { if (e && e.name !== 'AbortError') showToast('공유 창을 열지 못했어요. 저장하기를 눌러 주세요', 'error'); }
+      };
+      show('PDF가 준비됐어요', `${name} · ${mb}MB`, [
+        ...(canShare ? [['카카오톡 등으로 보내기', share, true]] : []),
+        ['기기에 저장하기', save, !canShare],
+        ['닫기', hide],
+      ]);
+    } catch (e) {
+      console.error('[pdf]', e);
+      show('PDF를 만들지 못했어요', e && e.message ? e.message : '잠시 후 다시 해 주세요', [['닫기', hide, true]]);
+    } finally { busy = false; }
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-pdf]');
+    if (!b) return;
+    if (b.dataset.pdf === 'curr') make('dept', currentCourse);
+    else {
+      const row = typeof rmapOpen !== 'undefined' && rmapOpen && rmapOpen !== 'hub' ? rmRows().find(r => r.id === rmapOpen) : null;
+      if (row && row.dept && COURSES[row.dept]) make('dept', row.dept); else make('roadmap');
+    }
+  });
 })();
 </script>
 <script>
