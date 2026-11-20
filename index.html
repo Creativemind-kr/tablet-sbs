@@ -1514,10 +1514,20 @@
     font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); font-weight: 900; font-size: 24px; line-height: 1;
   }
   .rmd__sub { font-size: 17px; font-weight: 600; color: #475569; word-break: keep-all; }
+  .rmd__body { margin: auto 0; padding: 20px 0 14px; display: flex; align-items: center; gap: 28px; }
   .rmd__route {
-    margin: auto 0; padding: 24px 0 16px; display: grid;
+    flex: 1; min-width: 0; display: grid;
     grid-template-columns: repeat(var(--n), minmax(0, 200px)); justify-content: center;
   }
+  /* 역이 많은 노선은 오른쪽 예시 사진 자리만큼 글씨를 조금 작게 */
+  .rmd__route[data-n="6"] .rmd__n, .rmd__route[data-n="7"] .rmd__n { font-size: 18.5px; }
+  .rmd__route[data-n="6"] .rmd__d, .rmd__route[data-n="7"] .rmd__d { font-size: 13.5px; }
+  /* 노선 끝 오른쪽: 결과물 예시 사진 */
+  .rmd__ex { flex: 0 0 clamp(190px, 21%, 250px); display: flex; flex-direction: column; gap: 10px; }
+  .rmd__ex-h { font-size: 15px; font-weight: 800; color: var(--c); letter-spacing: -0.01em; }
+  .rmd__ex-fig { margin: 0; }
+  .rmd__ex-fig img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
+  .rmd__ex-fig figcaption { margin-top: 4px; font-size: 10.5px; line-height: 1.3; color: #94a3b8; word-break: keep-all; }
   .rmd__col { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; min-width: 0; }
   .rmd__slot { height: 32px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-sizing: border-box; }
   .rmd__mark { height: 40px; display: grid; place-items: center; position: relative; z-index: 1; }
@@ -1556,7 +1566,9 @@
   }
   /* 세로 화면: 역이 위에서 아래로 내려가는 세로 노선(칸 높이 고정 → 앞 역 점에서 이 역 점까지 선을 이음) */
   @media (orientation: portrait) {
-    .rmd__route { grid-template-columns: minmax(0, 540px); grid-auto-rows: 104px; padding: 18px 0; }
+    .rmd__body { align-items: flex-start; gap: 20px; }
+    .rmd__route { grid-template-columns: minmax(0, 520px); grid-auto-rows: 104px; padding: 4px 0; }
+    .rmd__ex { flex-basis: 200px; padding-top: 4px; }
     .rmd__col {
       display: grid; grid-template-columns: 56px minmax(0, 1fr); grid-template-rows: auto auto 1fr;
       column-gap: 14px; align-items: start; justify-items: start; text-align: left; padding: 0;
@@ -4184,83 +4196,83 @@ const RMAP = {
   // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
   // dept = 상세 화면의 '커리큘럼 보기'로 열 학과(COURSES id). 이름 속 \u200b = 칸이 좁을 때만 꺾이는 자리
   left: [
-    { id: 'l9', color: '#a16207', dept: 'd01', label: '9 디자인자격증', st: [
+    { id: 'l9', color: '#a16207', dept: 'd01', label: '디자인자격증', st: [
       ['ACP', 'Adobe 국제공인 자격취득', 'g'],
       ['GTQ, GTQi', '포토샵·일러스트 국가공인', 'g'],
       ['국가기술자격증', '컴퓨터그래픽 · 컬러리스트 · 웹', 'p'],
       ['AI자격증', 'AI-pot · 생성형AI 활용능력', 'x', '+ AI자격'] ] },
-    { id: 'l6', color: '#c26d27', dept: 'd08', label: '6 사무자격증', st: [
+    { id: 'l6', color: '#c26d27', dept: 'd08', label: '사무자격증', st: [
       ['ITQ', '한글 · 파워포인트 · 엑셀', 'g'],
       ['MOS', 'MS 오피스 국제공인 자격', 'g'],
       ['엑셀실무\u200b(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
       ['컴퓨터활용\u200b능력1급', '엑셀·액세스 고급 국가기술', 'g'],
       ['세무2급, 회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
       ['AI업무\u200b자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
-    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '경의 유튜브', st: [
+    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '유튜브', st: [
       ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
       ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
       ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
       ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
-    { id: 'l1', color: '#0052a4', dept: 'd07', label: '1 프로그래밍', st: [
+    { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
       ['Python', '데이터 분석 · AI 스크립팅', 'g'],
       ['Web Total', '풀스택 웹 · 바이브 코딩', 'a'],
       ['웹프로젝트', '프론트·백엔드 협업 포폴', 'p'] ] },
-    { id: 'lsb', color: '#d4003b', dept: 'd05', label: '신분당 웹디자인', st: [
-      ['웹디자인', 'UI 레이아웃 · 반응형 웹 기초', 'g'],
-      ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
-      ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
-      ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
-      ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
-    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '2-2 기계/제품', st: [
+    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '기계/제품', st: [
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
   ],
   right: [
-    // 2-1 아트웍: 순환선 → 아트파운데이션(4호선 첫 역) → 위로 올라가 이어짐
-    { id: 'l21', color: '#16a34a', dept: 'd06', label: '2-1 아트웍', from: ['l4', 0], st: [
+    // 아트웍: 순환선 → 아트파운데이션(웹툰 노선 첫 역) → 위로 올라가 이어짐
+    { id: 'l21', color: '#16a34a', dept: 'd06', label: '아트웍', from: ['l4', 0], st: [
       ['디지털 드로잉 기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
       ['디지털 드로잉 심화', '채색·라이팅 · 일러스트 제작', 'g'],
       ['AI디지털\u200b드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
       ['디지털\u200b드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
-    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '4 웹툰(드로잉)', st: [
+    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '웹툰(드로잉)', st: [
       ['아트\u200b파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
       ['웹툰기초', '웹툰 작화 · 선화·표현 기초', 'g'],
       ['웹툰심화', '스토리·콘티 기획 · 칸 연출', 'g'],
       ['AI웹툰', 'AI 배경·채색 · 생성형 웹툰', 'a'],
       ['웹툰PO', '연재 투고 · 완결형 포폴', 'p'] ] },
-    { id: 'l3', color: '#ef7c1c', dept: 'd01', label: '3 시각편집', st: [
+    { id: 'l3', color: '#ef7c1c', dept: 'd01', label: '시각편집', st: [
       ['인디자인', '타이포그래피 · 편집 그리드', 'g'],
       ['AI그래픽\u200b아트웍', 'AI 비주얼 합성 · 아트웍 심화', 'a'],
       ['AI브랜딩\u200b디자인', 'BI/BX 아이덴티티 · 패키지', 'a'],
       ['AI시각\u200b디자인', '생성형 디자인 자동화 실무', 'a'],
       ['시각\u200b디자인PO', '브랜드 실무 취업 포트폴리오', 'p'],
       ['AI디자인 수익화', 'AI 굿즈·스톡 · 외주 창업 수익', 'r', '+ 수익화'] ] },
-    { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '5 모션/영상', st: [
+    { id: 'lsb', color: '#d4003b', dept: 'd05', label: '웹디자인', st: [
+      ['웹디자인', 'UI 레이아웃 · 반응형 웹 기초', 'g'],
+      ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
+      ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
+      ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
+      ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
+    { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '모션/영상', st: [
       ['AI프리미어\u200b프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
       ['AI에펙', '모션그래픽 · 키프레임 · 합성', 'a'],
       ['AI블렌더', '3D 에셋 모델링 · 스타일 씬', 'a'],
       ['시포디', 'Cinema4D 다이내믹 · 옥테인', 'g'],
       ['AI모션/\u200bCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
       ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'] ] },
-    { id: 'l8', color: '#e6186c', dept: 'd02', label: '8 마야/CG', st: [
+    { id: 'l8', color: '#e6186c', dept: 'd02', label: '마야/CG', st: [
       ['AI프리미어\u200b프로', '영상 편집 · 사운드 · 색보정', 'a'],
       ['AI에펙', '실사 합성 · 트래킹 · VFX 기초', 'a'],
       ['AI블렌더', '3D 크리처 · 하드서페이스', 'a'],
       ['AI마야', 'MAYA 모델링 · 리깅 · 애니', 'a'],
       ['AI모션/\u200bCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
       ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'] ] },
-    { id: 'l7', color: '#65830d', dept: 'd04a', label: '7 인테리어', st: [
+    { id: 'l7', color: '#65830d', dept: 'd04a', label: '인테리어', st: [
       ['실내건축\u200b기초', '공간설계 이론 · 수작업 제도', 'g'],
       ['AI캐드', 'AutoCAD 도면 설계', 't'],
       ['AI스케치업', '3D 공간 모델링 · 투시도', 'a'],
       ['맥스', '3dsMax 하이폴리곤 · 라이팅', 'g'],
       ['AI인테리어', '생성형 공간 시안 · AI 렌더링', 'a'],
       ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'] ] },
-    // 수인선: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
-    { id: 'lsu', color: '#d97706', dept: 'd04a', label: '수인 실내건축자격 · BIM', from: ['l7', 1], st: [
+    // 실내건축자격·BIM: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
+    { id: 'lsu', color: '#d97706', dept: 'd04a', label: '실내건축자격 · BIM', from: ['l7', 1], st: [
       ['실내건축\u200b자격', '기능사·산업기사·기사', 'g'],
       ['전산응용\u200b건축', '건축제도 실기 작도', 'g'],
       ['AI BIM(레빗)', '3D BIM · 물량·도면화', 'p'],
@@ -4273,6 +4285,23 @@ const RMAP = {
             ['wrtn.', '생성형 AI 활용능력', '#7c3aed']],
     brand: 'SBS ACADEMY COMPUTER AIX', branch: 'CHEONAN ASAN',
   },
+};
+// 노선 상세 오른쪽 '결과물 예시' 사진: images/roadmap-ex/ (Unsplash 무료 라이선스, 출처는 그 폴더의 출처.md)
+// 학원 수강생 작품이 아닌 참고 사진 — 실제 결과물로 바꿀 땐 같은 파일 이름으로 덮어쓰기
+const RMAP_EX = {
+  l9: [['l9-1.webp', "2H Media"], ['l9-2.webp', "Balázs Kétyi"]],
+  l6: [['l6-1.webp', "Gorilla ROI Data Connector"], ['l6-2.webp', "Carlos Muza"]],
+  lkg: [['lkg-1.webp', "Jakob Owens"], ['lkg-2.webp', "Sanjeev Nagaraj"]],
+  l1: [['l1-1.webp', "Christopher Gower"], ['l1-2.webp', "Juanjo Jaramillo"]],
+  lsb: [['lsb-1.webp', "Balázs Kétyi"], ['lsb-2.webp', "UX Indonesia"]],
+  l22: [['l22-1.webp', "EnCata PD"], ['l22-2.webp', "Kevin Shek"]],
+  l21: [['l21-1.webp', "YongGuang Tian"], ['l21-2.webp', "Balázs Kétyi"]],
+  l4: [['l4-1.webp', "Irene Strong"], ['l4-2.webp', "Mona Miller"]],
+  l3: [['l3-1.webp', "MK +2"], ['l3-2.webp', "Tarah Dane"]],
+  l5: [['l5-1.webp', "Sebastian Svenson"], ['l5-2.webp', "Andri Aeschlimann"]],
+  l8: [['l8-1.webp', "Anshita Nair"], ['l8-2.webp', "Kristina Skoreva"]],
+  l7: [['l7-1.webp', "Clay Banks"], ['l7-2.webp', "Spacejoy"]],
+  lsu: [['lsu-1.webp', "Brian Zajac"], ['lsu-2.webp', "Daniel McCullough"]]
 };
 const RMAP_DEFAULT = {};   // 글씨 번호 → 기본 글씨(그릴 때 채움)
 
@@ -4328,7 +4357,7 @@ function renderRoadmapMap() {
   const W = RMAP_W, H = RMAP_H, cx = W / 2;
   const ROW_TOP = 70, ROW_BOT = H - 166;  // 첫 줄·마지막 줄 노선 높이(제목은 가운데 위, 범례는 가운데 아래)
   // 가운데 순환선 = 모서리가 둥근 사각형. 옆면 높이 안에 있는 노선은 옆면에 바로 수평으로 붙음
-  const HW = 150, LT = 150, LB = 676, RC = 28;   // 가운데에서 옆면까지, 위·아래 변 높이, 모서리 반지름
+  const HW = 150, LT = 150, LB = 680, RC = 28;   // 가운데에서 옆면까지, 위·아래 변 높이, 모서리 반지름
   const cy = (LT + LB) / 2;
   const EDGE_X = HW - RC - 16;            // 옆면 높이 밖의 노선은 위·아래 변(가운데에서 이 거리)에서 나와 꺾임
   const COL_IN = 940, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
@@ -4339,9 +4368,15 @@ function renderRoadmapMap() {
   const rows = {};
   const place = (list, s) => {
     const xin = s > 0 ? COL_IN : W - COL_IN, xout = s > 0 ? COL_OUT : W - COL_OUT;
+    // 줄 높이: 맨 위·맨 아래가 갈라져 나온 줄이면 그 줄은 맨 끝에, 나머지는 순환선 옆면 높이 안에 고르게
+    // (→ 순환선에 붙는 줄은 모두 옆면에 곧게 붙음). 아니면 위에서 아래까지 고르게
+    const n0 = list[0].from ? 1 : 0, n1 = list[list.length - 1].from ? 1 : 0;
+    const top = n0 ? LT + RC + 6 : ROW_TOP, bot = n1 ? LB - RC - 6 : ROW_BOT, mid = list.length - n0 - n1;
     list.forEach((row, k) => {
       row._s = s;
-      row._y = ROW_TOP + (ROW_BOT - ROW_TOP) * k / (list.length - 1);
+      if (n0 && k === 0) row._y = ROW_TOP;
+      else if (n1 && k === list.length - 1) row._y = ROW_BOT;
+      else row._y = mid > 1 ? top + (bot - top) * (k - n0) / (mid - 1) : (top + bot) / 2;
       rows[row.id] = row;
     });
     // 갈라져 나온 줄(from)은 부모 줄 역 위치를 쓰므로 나중에
@@ -4507,10 +4542,14 @@ function renderRoadmapDetail() {
           dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
       }));
   }
+  const ex = row ? (RMAP_EX[row.id] || []) : [];
+  const exHtml = ex.length ? `<aside class="rmd__ex">${T('ex_title', '결과물 예시', 'rmd__ex-h')}`
+    + ex.map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt="" loading="lazy" decoding="async">`
+      + `<figcaption>참고 사진 · ${rmEsc(by)} / Unsplash</figcaption></figure>`).join('') + `</aside>` : '';
   box.innerHTML = `<div class="rmd" style="--c:${color}">`
     + `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`
     + `<div class="rmd__head">${head}</div>`
-    + `<div class="rmd__route" style="--n:${cols.length}">${cols.join('')}</div>`
+    + `<div class="rmd__body"><div class="rmd__route" data-n="${cols.length}" style="--n:${cols.length}">${cols.join('')}</div>${exHtml}</div>`
     + `<div class="rmd__legend">` + RMAP.legend.map(([t, label], i) =>
         `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i><span class="rm-lg__t">${rmEsc(rmText('lg' + i, label))}</span></div>`).join('') + `</div>`
     + `</div>`;
