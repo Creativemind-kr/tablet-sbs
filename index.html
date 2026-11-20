@@ -1436,22 +1436,103 @@
   .rmap__view.is-dragging { cursor: grabbing; }
   .rmap__stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .rmap__stage.is-anim { transition: transform 280ms var(--ease); }
-  .rmap__img { display: block; width: 100%; height: 100%; max-width: none; pointer-events: none; -webkit-user-drag: none; }
-  .rmap__texts { position: absolute; inset: 0; }
-  .rmt {
-    position: absolute; margin: 0; white-space: pre; word-break: keep-all; line-height: normal;
-    font-family: 'Pretendard Variable', Pretendard, var(--font);
-    font-kerning: normal; pointer-events: none; text-shadow: none;
+  .rmap__svg { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  .rmap__texts {
+    position: absolute; inset: 0; color: #0f172a; word-break: keep-all; text-shadow: none;
+    font-family: 'Pretendard Variable', Pretendard, var(--font); font-kerning: normal;
   }
-  /* 전체 보기에선 노선·역 이름만, 확대하면 과목 세부 글씨가 나타남(편집 모드는 항상 보임) */
-  .rmt--d { transition: opacity 180ms, visibility 180ms; }
-  .rmap__view:not(.is-detail) .rmt--d { opacity: 0; visibility: hidden; }
-  .app.admin-edit .rmap__view .rmt--d { opacity: 1; visibility: visible; }
-  .rmt--pl { font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); }
-  .rmt--c { transform: translateX(-50%); }
-  .rmt--r { transform: translateX(-100%); }
-  .app.admin-edit .rmt { pointer-events: auto; cursor: text; user-select: text; -webkit-user-select: text; outline: 4px dashed rgba(59,130,246,.5); outline-offset: 4px; border-radius: 6px; min-width: 24px; }
-  .app.admin-edit .rmt:focus { outline: 6px solid #3B82F6; background: rgba(255,255,255,.85); z-index: 1; }
+  .rmap__texts > div { position: absolute; pointer-events: none; }
+  .rmap__texts div { margin: 0; }
+  .rm-pl, .rm-title, .rm-hnum, .rm-hname, .rm-cert__n, .rm-brand__n { font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); }
+  /* 역 이름(전체 보기에서도 보임) + 과목 설명(확대하면 보임) */
+  .rm-st { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+  .rm-st--up { flex-direction: column-reverse; }
+  .rm-n { font-size: 15.5px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; white-space: pre-line; }
+  .rm-st--x .rm-n { color: #065f46; }
+  .rm-st--r .rm-n { color: #5b21b6; }
+  .rm-d { font-size: 10px; font-weight: 500; line-height: 1.28; color: #64748b; white-space: pre-line; letter-spacing: -0.01em; }
+  /* 전체 보기에선 노선·역 이름만, 확대하면 과목 설명이 나타남(편집 모드는 항상 보임) */
+  .rm-d { transition: opacity 180ms, visibility 180ms; }
+  .rmap__view:not(.is-detail) .rm-d { opacity: 0; visibility: hidden; }
+  .app.admin-edit .rmap__view .rm-d { opacity: 1; visibility: visible; }
+  .rm-badge {
+    transform: translate(-50%, -100%); font-size: 10px; font-weight: 800; line-height: 1; letter-spacing: -0.01em;
+    padding: 4px 7px 3.5px; border-radius: 999px; color: #fff; white-space: nowrap;
+  }
+  .rm-badge--po { background: #0f172a; }
+  .rm-badge--ai { background: #059669; }
+  .rm-badge--rv { background: #7c3aed; }
+  .rm-badge--l { transform: translate(-100%, -100%); }
+  .rm-pill {
+    transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12.5px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; color: var(--c);
+    background: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 4px 10px 4px 8px; white-space: nowrap;
+  }
+  .rm-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+  /* 가운데 순환선 */
+  .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 28px; line-height: 1; color: #fff; }
+  .rm-htag, .rm-loop {
+    transform: translate(-50%, -50%); font-weight: 800; color: #fff; background: #15803d;
+    border-radius: 999px; white-space: nowrap; line-height: 1.1;
+  }
+  .rm-htag { font-size: 10.5px; padding: 3px 9px; }
+  .rm-loop { font-size: 9.5px; padding: 2px 6px; border: 1.5px solid #fff; }
+  .rm-hname { transform: translateX(-50%); font-weight: 800; font-size: 20px; line-height: 1.1; white-space: nowrap; }
+  .rm-hdesc { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .rm-hdesc .rm-d { font-size: 9.5px; font-weight: 600; color: #475569; white-space: nowrap; }
+  .rm-core {
+    transform: translateX(-50%); box-sizing: border-box; padding: 12px 8px 8px; background: #fff;
+    border: 2.5px solid #16a34a; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center;
+  }
+  .rm-core__tag {
+    position: absolute; left: 50%; top: 0; transform: translate(-50%, -55%); font-size: 9.5px; font-weight: 800; line-height: 1.1;
+    color: #fff; background: #16a34a; border-radius: 999px; padding: 2.5px 8px; white-space: nowrap;
+  }
+  .rm-core__name { font-size: 15px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.02em; }
+  .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
+  .rmap__view:not(.is-detail) .rm-core__desc { display: none; }
+  .app.admin-edit .rmap__view .rm-core__desc { display: block; }
+  /* 머리말(가운데 위)·범례(가운데 아래) */
+  .rm-bar { left: 24px; right: 24px; top: 12px; height: 5px; border-radius: 3px; background: #00a84d; }
+  .rm-head { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+  .rm-title { font-weight: 900; font-size: 27px; line-height: 1.02; white-space: pre-line; }
+  .rm-sub { font-size: 12.5px; font-weight: 700; line-height: 1.35; color: #475569; white-space: pre-line; }
+  .rm-legend {
+    transform: translate(-50%, -50%); display: grid; grid-template-columns: auto auto; gap: 9px 18px;
+    padding: 12px 16px; background: #f8fafc; border: 1.2px solid #e2e8f0; border-radius: 12px;
+  }
+  .rm-lg { display: flex; align-items: center; gap: 6px; }
+  .rm-lg__t { font-size: 11.5px; font-weight: 700; color: #334155; white-space: nowrap; }
+  .rm-lg__dot { width: 15px; height: 15px; border-radius: 50%; box-sizing: border-box; flex-shrink: 0; border: 3px solid; }
+  .rm-lg__dot--g { border-color: #94a3b8; background: #fff; }
+  .rm-lg__dot--a { border-color: #16a34a; background: radial-gradient(circle, #059669 0 2.6px, #ecfdf5 3px); }
+  .rm-lg__dot--p { border-color: #64748b; background: radial-gradient(circle, #fff 0 1.8px, #0f172a 2.2px); }
+  .rm-lg__dot--r { border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 2.6px, #f5f3ff 3px); }
+  /* 아래 자격시험 칸 */
+  .rm-foot {
+    left: 24px; right: 24px; bottom: 14px; height: 66px; box-sizing: border-box; display: flex; align-items: center; gap: 10px;
+    padding: 0 8px 0 14px; background: #f8fafc; border: 1.2px solid #e2e8f0; border-radius: 14px;
+  }
+  .rm-foot__pill { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #fff; background: #0f172a; border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+  .rm-cert {
+    flex: 1; min-width: 0; height: 46px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; justify-content: center; gap: 2px;
+    padding: 0 10px 0 16px; background: #fff; border: 1.2px solid #e2e8f0; border-radius: 10px;
+  }
+  .rm-cert::before { content: ''; position: absolute; left: 7px; top: 9px; bottom: 9px; width: 3.5px; border-radius: 2px; background: var(--c); }
+  .rm-cert__n { font-weight: 800; font-size: 16px; line-height: 1.1; color: var(--c); white-space: nowrap; }
+  .rm-cert__d { font-size: 10.5px; font-weight: 600; color: #475569; white-space: nowrap; }
+  .rm-brand {
+    flex: 0 0 290px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    background: #0f172a; border-radius: 11px;
+  }
+  .rm-brand__n { font-weight: 800; font-size: 16px; line-height: 1.1; color: #fff; white-space: nowrap; }
+  .rm-brand__b { font-size: 11px; font-weight: 700; color: #4ade80; letter-spacing: .06em; white-space: nowrap; }
+  /* 편집 모드: 고칠 수 있는 글씨 표시 */
+  .app.admin-edit .rmap__texts [contenteditable] {
+    pointer-events: auto; cursor: text; user-select: text; -webkit-user-select: text;
+    outline: 1.5px dashed rgba(59,130,246,.6); outline-offset: 2px; border-radius: 3px; min-width: 12px;
+  }
+  .app.admin-edit .rmap__texts [contenteditable]:focus { outline: 2.5px solid #3B82F6; background: rgba(255,255,255,.9); }
   @font-face { font-family: 'RM Paperlogy'; font-weight: 800; font-display: swap; src: url('fonts/paperlogy-800-rmap.woff2') format('woff2'); }
   @font-face { font-family: 'RM Paperlogy'; font-weight: 900; font-display: swap; src: url('fonts/paperlogy-900-rmap.woff2') format('woff2'); }
   /* 확대·축소 버튼: 노선도 오른쪽 아래에 세로로(전체 보기일 때 지도 옆 빈 곳에 놓임) */
@@ -1543,13 +1624,12 @@
             사전테스트 바로가기
           </a>
         </div>
-        <!-- AI 커리큘럼 로드맵(2호선 노선도): 배경 그림(글씨 없음) + 글씨는 실제 텍스트(편집 모드에서 수정)
-             만드는 법: python -I tools/roadmap_from_pdf.py "PDF경로" -->
+        <!-- AI 커리큘럼 로드맵(2호선 노선도): 선은 SVG, 글씨는 실제 텍스트(편집 모드에서 수정)
+             노선·역 구조는 스크립트의 RMAP, 그리기는 renderRoadmapMap() -->
         <div class="rmap" id="rmap">
           <div class="rmap__view" id="rmap-view">
             <div class="rmap__stage" id="rmap-stage">
-              <img class="rmap__img" src="images/roadmap/ai-roadmap-line2-bg.webp?v=20261120b"
-                   alt="" draggable="false" decoding="async">
+              <svg class="rmap__svg" id="rmap-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
               <div class="rmap__texts" id="rmap-texts" aria-label="AI 커리큘럼 로드맵 — 2호선 순환노선형 노선도"></div>
             </div>
           </div>
@@ -3992,217 +4072,125 @@ function addSwipeNav(viewsId, navId) {
 }
 
 /* ══════════════════════════════════════════════════
-   RENDER: 학과별 로드맵 = 2호선 노선도 글씨
-   - 기본 글씨는 RMAP_TEXTS(원본 PDF에서 뽑음), 편집 모드에서 고친 글씨만 UI_DATA.roadmapMap 에 저장
+   RENDER: 학과별 로드맵 = 2호선 노선도 (코드로 그림)
+   - 원본: AI커리큘럼_로드맵_2호선 (1).pdf 의 노선·역·색을 그대로 옮기고, 배치만 태블릿 가로 화면(약 1.6:1)에 맞게 다시 짬
+   - 선·역 점은 SVG, 글씨는 HTML → 편집 모드에서 바로 고침(바꾼 글씨만 UI_DATA.roadmapMap 에 저장)
+   - 역 이름 줄바꿈은 글씨 안의 줄바꿈(\n) 그대로
 ══════════════════════════════════════════════════ */
-/* RMAP_TEXTS:BEGIN — tools/roadmap_from_pdf.py 가 자동 생성. 직접 고치지 말고 사이트 편집 모드로 고치기 */
-const RMAP_BOX = [1928, 1358];  // 노선도 크기(pt)
-// [번호, 글씨, 기준x, 바닥선y, 글자크기, 굵기, 색, 맞춤(l/c/r), 글꼴(pre/pl), PDF폭, 자간, 세부(1=확대 시에만)] — 단위: PDF pt
-const RMAP_TEXTS = [
-  ["t000", "순환 ↻", 1092.0, 512.55, 8.0, 800, "#ffffff", "c", "pre", 22.8, -0.082, 0],
-  ["t001", "↻ 순환", 964.0, 819.55, 8.0, 800, "#ffffff", "c", "pre", 22.8, -0.082, 0],
-  ["t002", "순환 ↻", 836.0, 512.55, 8.0, 800, "#ffffff", "c", "pre", 22.8, -0.082, 0],
-  ["t003", "CORE 01", 964.01, 344.42, 7.6, 800, "#ffffff", "c", "pre", 30.8, -0.08, 0],
-  ["t004", "CORE 02", 1064.0, 856.42, 7.6, 800, "#ffffff", "c", "pre", 31.9, -0.074, 0],
-  ["t005", "CORE 03", 864.0, 856.42, 7.6, 800, "#ffffff", "c", "pre", 32.1, -0.076, 0],
-  ["t006", "● 2-1  아트웍 ▶", 1529.0, 130.87, 9.0, 800, "#16a34a", "c", "pre", 60.4, -0.14, 0],
-  ["t007", "● 4  웹툰(드로잉) ▶", 1529.0, 279.87, 9.0, 800, "#00a4e3", "c", "pre", 75.1, -0.135, 0],
-  ["t008", "● 3  시각편집 ▶", 1339.0, 430.87, 9.0, 800, "#ef7c1c", "c", "pre", 60.2, -0.137, 0],
-  ["t009", "● 5  모션/영상 ▶", 1339.0, 585.87, 9.0, 800, "#8b5cf6", "c", "pre", 63.4, -0.14, 0],
-  ["t010", "● 8  마야/CG ▶", 1339.0, 740.87, 9.0, 800, "#e6186c", "c", "pre", 61.3, -0.138, 0],
-  ["t011", "● 7  인테리어 ▶", 1339.0, 900.87, 9.0, 800, "#65830d", "c", "pre", 59.6, -0.14, 0],
-  ["t012", "● 수인  실내건축자격 · BIM ▶", 1649.0, 1065.87, 9.0, 800, "#d97706", "c", "pre", 107.2, -0.137, 0],
-  ["t013", "● 9  ◀ 디자인자격증", 414.0, 130.87, 9.0, 800, "#a16207", "c", "pre", 75.5, -0.141, 0],
-  ["t014", "● 6  ◀ 사무자격증", 529.0, 320.87, 9.0, 800, "#c26d27", "c", "pre", 67.9, -0.138, 0],
-  ["t015", "● 경의  ◀ 유튜브", 529.0, 510.87, 9.0, 800, "#0284c7", "c", "pre", 62.1, -0.144, 0],
-  ["t016", "● 1  ◀ 프로그래밍", 544.0, 700.87, 9.0, 800, "#0052a4", "c", "pre", 66.3, -0.14, 0],
-  ["t017", "● 신분당  ◀ 웹디자인", 494.0, 900.87, 9.0, 800, "#d4003b", "c", "pre", 77.4, -0.141, 0],
-  ["t018", "● 2-2  ◀ 기계/제품", 379.0, 1065.87, 9.0, 800, "#0d9488", "c", "pre", 72.5, -0.138, 0],
-  ["t019", "+ 파운데이션", 1289.0, 288.33, 7.3, 800, "#ffffff", "c", "pre", 37.6, -0.07, 0],
-  ["t020", "PO·완성", 1874.0, 140.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t021", "PO·완성", 1874.0, 289.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t022", "PO·완성", 1755.0, 440.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t023", "+ 수익화", 1874.0, 439.33, 7.3, 800, "#ffffff", "c", "pre", 25.1, -0.076, 0],
-  ["t024", "PO·완성", 1874.0, 595.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t025", "PO·완성", 1874.0, 750.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t026", "PO·완성", 1874.0, 910.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t027", "PO·완성", 1782.0, 1075.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t028", "+ AI렌더", 1874.0, 1074.33, 7.3, 800, "#ffffff", "c", "pre", 26.1, -0.082, 0],
-  ["t029", "PO·완성", 196.0, 140.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t030", "+ AI자격", 54.0, 139.33, 7.3, 800, "#ffffff", "c", "pre", 26.1, -0.082, 0],
-  ["t031", "PO·완성", 162.0, 330.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t032", "+ AI자동화", 54.0, 329.33, 7.3, 800, "#ffffff", "c", "pre", 32.4, -0.069, 0],
-  ["t033", "PO·완성", 234.0, 520.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t034", "+ 수익화", 54.0, 519.33, 7.3, 800, "#ffffff", "c", "pre", 25.1, -0.076, 0],
-  ["t035", "PO·완성", 54.0, 710.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t036", "PO·완성", 54.0, 910.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t037", "PO·완성", 54.0, 1075.23, 7.0, 800, "#ffffff", "c", "pre", 23.6, -0.07, 0],
-  ["t038", "2", 964.01, 591.87, 28.0, 900, "#ffffff", "c", "pl", 18.7, 0, 0],
-  ["t039", "내부 공통 순환형", 964.0, 627.8, 8.8, 800, "#ffffff", "c", "pre", 56.5, -0.086, 0],
-  ["t040", "공통기초 순환선", 964.0, 666.89, 20.0, 800, "#0f172a", "c", "pl", 124.8, -0.4, 0],
-  ["t041", "AI아키텍처 → AI포토샵 → AI일러스트", 963.98, 690.04, 9.5, 600, "#475569", "c", "pre", 140.8, -0.143, 0],
-  ["t042", "기초 코어 순환 후 희망 학과 노선 환승", 963.97, 704.04, 9.5, 600, "#475569", "c", "pre", 135.9, -0.146, 0],
-  ["t043", "전공 일반역", 776.99, 1031.89, 9.0, 700, "#0f172a", "c", "pre", 40.3, -0.135, 0],
-  ["t044", "AI 융합역", 877.0, 1031.89, 9.0, 700, "#0f172a", "c", "pre", 33.6, -0.134, 0],
-  ["t045", "PO·완성 종착역", 976.99, 1031.89, 9.0, 700, "#0f172a", "c", "pre", 54.8, -0.137, 0],
-  ["t046", "+ 추가·수익화 특화역", 1091.98, 1031.89, 9.0, 700, "#0f172a", "c", "pre", 73.3, -0.137, 0],
-  ["t047", "AI CURRICULUM ROAD MAP", 21.1, 60.99, 38.0, 900, "#0f172a", "l", "pl", 557.2, -0.195, 0],
-  ["t048", "실무 맞춤형 AI 교육과정 기초부터 취업, 창업, 수익까지!!", 616.0, 60.28, 15.0, 700, "#475569", "l", "pre", 320.5, -0.231, 0],
-  ["t049", "자체시험센터 운영", 98.99, 1313.35, 10.5, 800, "#ffffff", "c", "pre", 74.1, -0.107, 0],
-  ["t050", "ITQ", 207.0, 1305.08, 13.5, 800, "#1d4ed8", "l", "pl", 23.5, -0.334, 0],
-  ["t051", "국가공인 정보기술자격", 207.0, 1321.09, 8.5, 600, "#475569", "l", "pre", 74.2, -0.128, 1],
-  ["t052", "GTQ · GTQi", 437.0, 1305.08, 13.5, 800, "#047857", "l", "pl", 73.0, -0.266, 0],
-  ["t053", "국가공인 그래픽기술자격", 437.0, 1321.09, 8.5, 600, "#475569", "l", "pre", 81.4, -0.13, 1],
-  ["t054", "AI-pot", 677.36, 1305.08, 13.5, 800, "#0f172a", "l", "pl", 43.9, -0.211, 0],
-  ["t055", "AI 프롬프트 활용능력", 677.0, 1321.09, 8.5, 600, "#475569", "l", "pre", 69.5, -0.128, 1],
-  ["t056", "Adobe ACP", 917.36, 1305.08, 13.5, 800, "#dc2626", "l", "pl", 78.5, -0.273, 0],
-  ["t057", "국제공인 자격시험센터", 917.0, 1321.09, 8.5, 600, "#475569", "l", "pre", 74.2, -0.128, 1],
-  ["t058", "wrtn.", 1157.13, 1305.08, 13.5, 800, "#7c3aed", "l", "pl", 38.1, -0.037, 0],
-  ["t059", "생성형 AI 활용능력", 1157.0, 1321.09, 8.5, 600, "#475569", "l", "pre", 62.3, -0.127, 1],
-  ["t060", "SBS ACADEMY COMPUTER AIX", 1703.89, 1304.86, 15.5, 800, "#ffffff", "c", "pl", 251.4, 0.062, 0],
-  ["t061", "CHEONAN ASAN", 1704.0, 1326.47, 11.0, 700, "#4ade80", "c", "pre", 89.9, 0.277, 0],
-  ["t062", "생성형 AI 구조 이해 · 프롬프트 설계", 963.98, 385.71, 8.1, 500, "#475569", "c", "pre", 109.9, -0.122, 1],
-  ["t063", "툴 기초·레이어 · AI 이미지 합성", 1063.99, 897.71, 8.1, 500, "#475569", "c", "pre", 96.3, -0.122, 1],
-  ["t064", "벡터 드로잉 · 로고·캐릭터 그래픽", 863.99, 897.71, 8.1, 500, "#475569", "c", "pre", 101.0, -0.121, 1],
-  ["t065", "기초 조형 · 드로잉 · 색채", 1288.99, 347.71, 8.1, 500, "#64748b", "c", "pre", 75.3, -0.124, 1],
-  ["t066", "타블렛 훈련 · 캐릭터 기초", 1473.99, 198.71, 8.1, 500, "#64748b", "c", "pre", 78.3, -0.125, 1],
-  ["t067", "채색·라이팅 · 일러스트 제작", 1606.99, 198.71, 8.1, 500, "#64748b", "c", "pre", 85.4, -0.12, 1],
-  ["t068", "생성형 이미지 · 프롬프트 아트", 1740.98, 198.71, 8.1, 500, "#64748b", "c", "pre", 92.1, -0.122, 1],
-  ["t069", "컨셉아트 · 일러스트 포폴", 1873.99, 198.71, 8.1, 500, "#64748b", "c", "pre", 76.5, -0.121, 1],
-  ["t070", "웹툰 작화 · 선화·표현 기초", 1473.99, 347.71, 8.1, 500, "#64748b", "c", "pre", 80.3, -0.125, 1],
-  ["t071", "스토리·콘티 기획 · 칸 연출", 1606.99, 347.71, 8.1, 500, "#64748b", "c", "pre", 80.3, -0.125, 1],
-  ["t072", "AI 배경·채색 · 생성형 웹툰", 1740.99, 347.71, 8.1, 500, "#64748b", "c", "pre", 80.7, -0.121, 1],
-  ["t073", "연재 투고 · 완결형 포폴", 1873.99, 347.71, 8.1, 500, "#64748b", "c", "pre", 71.5, -0.119, 1],
-  ["t074", "타이포그래피 · 편집 그리드", 1278.98, 498.71, 8.1, 500, "#64748b", "c", "pre", 83.3, -0.126, 1],
-  ["t075", "AI 비주얼 합성 · 아트웍 심화", 1397.98, 498.71, 8.1, 500, "#64748b", "c", "pre", 87.4, -0.123, 1],
-  ["t076", "BI/BX 아이덴티티 · 패키지", 1516.99, 498.71, 8.1, 500, "#64748b", "c", "pre", 82.2, -0.125, 1],
-  ["t077", "생성형 디자인 자동화 실무", 1635.99, 498.71, 8.1, 500, "#64748b", "c", "pre", 81.3, -0.126, 1],
-  ["t078", "브랜드 실무 취업 포트폴리오", 1754.99, 498.71, 8.1, 500, "#64748b", "c", "pre", 88.2, -0.124, 1],
-  ["t079", "AI 굿즈·스톡 · 외주 창업 수익", 1873.99, 498.71, 8.1, 500, "#64748b", "c", "pre", 89.4, -0.123, 1],
-  ["t080", "AI 컷편집 · 자막 · 색보정", 1278.99, 653.71, 8.1, 500, "#64748b", "c", "pre", 75.7, -0.12, 1],
-  ["t081", "모션그래픽 · 키프레임 · 합성", 1397.99, 653.71, 8.1, 500, "#64748b", "c", "pre", 87.2, -0.124, 1],
-  ["t082", "3D 에셋 모델링 · 스타일 씬", 1516.98, 653.71, 8.1, 500, "#64748b", "c", "pre", 83.7, -0.124, 1],
-  ["t083", "Cinema4D 다이내믹 · 옥테인", 1635.99, 653.71, 8.1, 500, "#64748b", "c", "pre", 93.6, -0.123, 1],
-  ["t084", "생성형 비디오 · AI 영상 합성", 1754.99, 653.71, 8.1, 500, "#64748b", "c", "pre", 87.4, -0.123, 1],
-  ["t085", "하이엔드 모션 쇼릴 완성", 1873.99, 653.71, 8.1, 500, "#64748b", "c", "pre", 74.5, -0.12, 1],
-  ["t086", "영상 편집 · 사운드 · 색보정", 1278.99, 808.71, 8.1, 500, "#64748b", "c", "pre", 82.2, -0.122, 1],
-  ["t087", "실사 합성 · 트래킹 · VFX 기초", 1398.0, 808.71, 8.1, 500, "#64748b", "c", "pre", 91.9, -0.123, 1],
-  ["t088", "3D 크리처 · 하드서페이스", 1516.99, 808.71, 8.1, 500, "#64748b", "c", "pre", 80.0, -0.123, 1],
-  ["t089", "MAYA 모델링 · 리깅 · 애니", 1636.0, 808.71, 8.1, 500, "#64748b", "c", "pre", 83.0, -0.125, 1],
-  ["t090", "FX 시뮬레이션 · AI 실사 VFX", 1755.0, 808.71, 8.1, 500, "#64748b", "c", "pre", 90.9, -0.125, 1],
-  ["t091", "3D/VFX 데모릴 포트폴리오", 1874.0, 808.71, 8.1, 500, "#64748b", "c", "pre", 86.4, -0.123, 1],
-  ["t092", "공간설계 이론 · 수작업 제도", 1278.99, 968.71, 8.1, 500, "#64748b", "c", "pre", 85.2, -0.123, 1],
-  ["t093", "AutoCAD 도면 설계", 1398.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 64.6, -0.125, 1],
-  ["t094", "3D 공간 모델링 · 투시도", 1517.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 75.0, -0.122, 1],
-  ["t095", "3dsMax 하이폴리곤 · 라이팅", 1636.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 91.7, -0.12, 1],
-  ["t096", "생성형 공간 시안 · AI 렌더링", 1755.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 87.4, -0.123, 1],
-  ["t097", "주거·상업공간 취업 포트폴리오", 1874.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 95.2, -0.126, 1],
-  ["t098", "기능사·산업기사·기사", 1599.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 66.0, -0.127, 1],
-  ["t099", "건축제도 실기 작도", 1691.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 58.8, -0.129, 1],
-  ["t100", "3D BIM · 물량·도면화", 1782.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 68.2, -0.125, 1],
-  ["t101", "D5 실시간 AI 렌더링", 1874.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 64.4, -0.126, 1],
-  ["t102", "Adobe 국제공인 자격취득", 479.0, 198.71, 8.1, 500, "#64748b", "c", "pre", 82.5, -0.121, 1],
-  ["t103", "포토샵·일러스트 국가공인", 337.0, 198.71, 8.1, 500, "#64748b", "c", "pre", 79.6, -0.126, 1],
-  ["t104", "컴퓨터그래픽 · 컬러리스트 · 웹", 196.0, 198.71, 8.1, 500, "#64748b", "c", "pre", 94.1, -0.122, 1],
-  ["t105", "AI-pot · 생성형AI 활용능력", 54.01, 198.71, 8.1, 500, "#64748b", "c", "pre", 85.6, -0.122, 1],
-  ["t106", "한글 · 파워포인트 · 엑셀", 594.01, 388.71, 8.1, 500, "#64748b", "c", "pre", 73.5, -0.12, 1],
-  ["t107", "MS 오피스 국제공인 자격", 486.0, 388.71, 8.1, 500, "#64748b", "c", "pre", 79.3, -0.124, 1],
-  ["t108", "실무 핵심 함수 · 데이터 관리", 378.0, 388.71, 8.1, 500, "#64748b", "c", "pre", 87.1, -0.12, 1],
-  ["t109", "엑셀·액세스 고급 국가기술", 270.0, 388.71, 8.1, 500, "#64748b", "c", "pre", 81.5, -0.123, 1],
-  ["t110", "케이렙(KcLep) 전산세무회계", 162.0, 388.71, 8.1, 500, "#64748b", "c", "pre", 91.6, -0.128, 1],
-  ["t111", "엑셀·문서·보고서 AI 자동화", 54.0, 388.71, 8.1, 500, "#64748b", "c", "pre", 83.8, -0.126, 1],
-  ["t112", "AI 대본 · 보이스 · 숏폼 제작", 594.0, 578.71, 8.1, 500, "#64748b", "c", "pre", 84.4, -0.122, 1],
-  ["t113", "채널 브랜딩 · 촬영 · 기획", 413.99, 578.71, 8.1, 500, "#64748b", "c", "pre", 75.3, -0.124, 1],
-  ["t114", "고급 컷편집 · 모션 · 색보정", 233.99, 578.71, 8.1, 500, "#64748b", "c", "pre", 82.2, -0.122, 1],
-  ["t115", "SNS·유튜브 알고리즘 수익화", 53.99, 578.71, 8.1, 500, "#64748b", "c", "pre", 90.0, -0.123, 1],
-  ["t116", "프로그래밍 문법 · 자료구조", 614.0, 768.72, 8.1, 500, "#64748b", "c", "pre", 83.3, -0.126, 1],
-  ["t117", "객체지향 · JVM · 백엔드 기초", 474.0, 768.72, 8.1, 500, "#64748b", "c", "pre", 91.6, -0.124, 1],
-  ["t118", "데이터 분석 · AI 스크립팅", 334.0, 768.72, 8.1, 500, "#64748b", "c", "pre", 78.7, -0.121, 1],
-  ["t119", "풀스택 웹 · 바이브 코딩", 194.0, 768.72, 8.1, 500, "#64748b", "c", "pre", 71.5, -0.119, 1],
-  ["t120", "프론트·백엔드 협업 포폴", 54.0, 768.72, 8.1, 500, "#64748b", "c", "pre", 74.6, -0.124, 1],
-  ["t121", "UI 레이아웃 · 반응형 웹 기초", 554.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 87.7, -0.122, 1],
-  ["t122", "HTML · CSS · 인터랙션 구현", 429.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 91.6, -0.124, 1],
-  ["t123", "Figma 설계 · 디자인 시스템", 304.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 86.4, -0.123, 1],
-  ["t124", "AI 웹 시안 · 노코드·자동화", 179.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 80.7, -0.121, 1],
-  ["t125", "실무 반응형 웹·앱 포트폴리오", 54.0, 968.71, 8.1, 500, "#64748b", "c", "pre", 90.2, -0.125, 1],
-  ["t126", "2D 기계제도 · KS 도면 설계", 454.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 86.5, -0.12, 1],
-  ["t127", "3D 부품 모델링 · 어셈블리", 254.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 81.9, -0.12, 1],
-  ["t128", "국가기술자격 실기 도면 완성", 54.0, 1133.71, 8.1, 500, "#64748b", "c", "pre", 88.2, -0.124, 1],
-  ["t129", "AI아키텍처", 963.99, 370.18, 12.8, 800, "#0f172a", "c", "pre", 56.3, -0.19, 0],
-  ["t130", "AI포토샵 올인원", 1063.99, 882.18, 12.8, 800, "#0f172a", "c", "pre", 80.7, -0.194, 0],
-  ["t131", "AI일러스트 올인원", 863.98, 882.18, 12.8, 800, "#0f172a", "c", "pre", 91.5, -0.201, 0],
-  ["t132", "아트파운데이션", 1288.99, 332.85, 11.4, 800, "#0f172a", "c", "pre", 67.6, -0.228, 0],
-  ["t133", "디지털 드로잉 기초", 1473.99, 183.85, 11.4, 800, "#0f172a", "c", "pre", 81.9, -0.227, 0],
-  ["t134", "디지털 드로잉 심화", 1606.99, 183.85, 11.4, 800, "#0f172a", "c", "pre", 81.9, -0.227, 0],
-  ["t135", "AI디지털드로잉", 1740.98, 183.85, 11.4, 800, "#0f172a", "c", "pre", 69.1, -0.228, 0],
-  ["t136", "디지털드로잉PO", 1873.99, 183.85, 11.4, 800, "#0f172a", "c", "pre", 73.4, -0.225, 0],
-  ["t137", "웹툰기초", 1473.99, 332.85, 11.4, 800, "#0f172a", "c", "pre", 38.7, -0.237, 0],
-  ["t138", "웹툰심화", 1606.99, 332.85, 11.4, 800, "#0f172a", "c", "pre", 38.7, -0.237, 0],
-  ["t139", "AI웹툰", 1740.99, 332.85, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t140", "웹툰PO", 1874.0, 332.85, 11.4, 800, "#0f172a", "c", "pre", 34.9, -0.222, 0],
-  ["t141", "인디자인", 1279.0, 483.85, 11.4, 800, "#0f172a", "c", "pre", 38.7, -0.237, 0],
-  ["t142", "AI그래픽아트웍", 1398.0, 483.85, 11.4, 800, "#0f172a", "c", "pre", 69.1, -0.228, 0],
-  ["t143", "AI브랜딩디자인", 1517.01, 483.85, 11.4, 800, "#0f172a", "c", "pre", 69.1, -0.228, 0],
-  ["t144", "AI시각디자인", 1636.01, 483.85, 11.4, 800, "#0f172a", "c", "pre", 59.5, -0.224, 0],
-  ["t145", "시각디자인PO", 1755.02, 483.85, 11.4, 800, "#0f172a", "c", "pre", 63.7, -0.237, 0],
-  ["t146", "AI디자인 수익화", 1874.02, 483.85, 11.4, 800, "#5b21b6", "c", "pre", 71.4, -0.232, 0],
-  ["t147", "AI프리미어프로", 1279.02, 638.86, 11.4, 800, "#0f172a", "c", "pre", 69.1, -0.228, 0],
-  ["t148", "AI에펙", 1398.03, 638.86, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t149", "AI블렌더", 1517.02, 638.86, 11.4, 800, "#0f172a", "c", "pre", 40.2, -0.234, 0],
-  ["t150", "시포디", 1636.02, 638.86, 11.4, 800, "#0f172a", "c", "pre", 29.1, -0.229, 0],
-  ["t151", "AI모션/CG/영상", 1755.01, 638.86, 11.4, 800, "#0f172a", "c", "pre", 74.5, -0.229, 0],
-  ["t152", "모션PO", 1874.02, 638.86, 11.4, 800, "#0f172a", "c", "pre", 34.9, -0.222, 0],
-  ["t153", "AI프리미어프로", 1279.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 69.1, -0.228, 0],
-  ["t154", "AI에펙", 1398.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t155", "AI블렌더", 1517.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 40.2, -0.234, 0],
-  ["t156", "AI마야", 1636.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t157", "AI모션/CG/영상", 1755.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 74.5, -0.229, 0],
-  ["t158", "마야PO", 1874.0, 793.85, 11.4, 800, "#0f172a", "c", "pre", 34.9, -0.222, 0],
-  ["t159", "실내건축기초", 1278.99, 953.85, 11.4, 800, "#0f172a", "c", "pre", 58.0, -0.223, 0],
-  ["t160", "AI캐드", 1397.99, 953.85, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t161", "AI스케치업", 1516.98, 953.85, 11.4, 800, "#0f172a", "c", "pre", 49.8, -0.238, 0],
-  ["t162", "맥스", 1635.99, 953.85, 11.4, 800, "#0f172a", "c", "pre", 19.5, -0.207, 0],
-  ["t163", "AI인테리어", 1754.98, 953.85, 11.4, 800, "#0f172a", "c", "pre", 49.8, -0.238, 0],
-  ["t164", "인테리어PO", 1873.99, 953.85, 11.4, 800, "#0f172a", "c", "pre", 54.1, -0.234, 0],
-  ["t165", "실내건축자격", 1598.99, 1118.86, 11.4, 800, "#0f172a", "c", "pre", 58.0, -0.223, 0],
-  ["t166", "전산응용건축", 1690.99, 1118.86, 11.4, 800, "#0f172a", "c", "pre", 58.0, -0.223, 0],
-  ["t167", "AI BIM(레빗)", 1781.99, 1118.86, 11.4, 800, "#0f172a", "c", "pre", 61.6, -0.236, 0],
-  ["t168", "AI인테리어D5", 1873.99, 1118.86, 11.4, 800, "#065f46", "c", "pre", 64.7, -0.229, 0],
-  ["t169", "ACP", 478.99, 183.85, 11.4, 800, "#0f172a", "c", "pre", 23.2, -0.212, 0],
-  ["t170", "GTQ, GTQi", 337.0, 183.85, 11.4, 800, "#0f172a", "c", "pre", 54.0, -0.225, 0],
-  ["t171", "국가기술자격증", 195.98, 183.85, 11.4, 800, "#0f172a", "c", "pre", 67.6, -0.228, 0],
-  ["t172", "AI자격증", 53.99, 183.85, 11.4, 800, "#065f46", "c", "pre", 40.2, -0.234, 0],
-  ["t173", "ITQ", 594.0, 373.85, 11.4, 800, "#0f172a", "c", "pre", 18.4, -0.249, 0],
-  ["t174", "MOS", 486.0, 373.85, 11.4, 800, "#0f172a", "c", "pre", 25.7, -0.218, 0],
-  ["t175", "엑셀실무(컴활2급)", 377.98, 373.85, 11.4, 800, "#0f172a", "c", "pre", 83.2, -0.232, 0],
-  ["t176", "컴퓨터활용능력1급", 269.98, 373.85, 11.4, 800, "#0f172a", "c", "pre", 82.4, -0.235, 0],
-  ["t177", "세무2급, 회계1급", 161.98, 373.85, 11.4, 800, "#0f172a", "c", "pre", 75.0, -0.233, 0],
-  ["t178", "AI업무자동화", 53.98, 373.85, 11.4, 800, "#065f46", "c", "pre", 59.5, -0.224, 0],
-  ["t179", "AI크리에이터 유튜브", 593.97, 563.86, 11.4, 800, "#0f172a", "c", "pre", 90.6, -0.236, 0],
-  ["t180", "1인크리에이터", 413.97, 563.86, 11.4, 800, "#0f172a", "c", "pre", 63.2, -0.23, 0],
-  ["t181", "영상편집 심화 실무", 233.98, 563.86, 11.4, 800, "#0f172a", "c", "pre", 81.9, -0.227, 0],
-  ["t182", "AI마케팅 수익화", 53.98, 563.86, 11.4, 800, "#5b21b6", "c", "pre", 71.4, -0.232, 0],
-  ["t183", "C언어", 613.98, 753.86, 11.4, 800, "#0f172a", "c", "pre", 27.6, -0.237, 0],
-  ["t184", "JAVA", 473.99, 753.86, 11.4, 800, "#0f172a", "c", "pre", 28.8, -0.239, 0],
-  ["t185", "Python", 333.99, 753.86, 11.4, 800, "#0f172a", "c", "pre", 37.8, -0.231, 0],
-  ["t186", "Web Total", 194.0, 753.86, 11.4, 800, "#0f172a", "c", "pre", 52.7, -0.225, 0],
-  ["t187", "웹프로젝트", 53.99, 753.86, 11.4, 800, "#0f172a", "c", "pre", 48.3, -0.241, 0],
-  ["t188", "웹디자인", 554.0, 953.86, 11.4, 800, "#0f172a", "c", "pre", 38.7, -0.237, 0],
-  ["t189", "웹퍼블리싱", 429.0, 953.86, 11.4, 800, "#0f172a", "c", "pre", 48.3, -0.241, 0],
-  ["t190", "UIUX", 304.0, 953.86, 11.4, 800, "#0f172a", "c", "pre", 26.6, -0.213, 0],
-  ["t191", "AI웹디자인", 179.0, 953.86, 11.4, 800, "#0f172a", "c", "pre", 49.8, -0.238, 0],
-  ["t192", "웹디자인PO", 54.01, 953.86, 11.4, 800, "#0f172a", "c", "pre", 54.1, -0.234, 0],
-  ["t193", "AI캐드", 454.0, 1118.87, 11.4, 800, "#0f172a", "c", "pre", 30.6, -0.228, 0],
-  ["t194", "인벤터", 254.01, 1118.87, 11.4, 800, "#0f172a", "c", "pre", 29.1, -0.229, 0],
-  ["t195", "전산응용기계제도기능사", 53.99, 1118.87, 11.4, 800, "#0f172a", "c", "pre", 106.1, -0.228, 0]
-];
-/* RMAP_TEXTS:END */
-const RMAP_DEFAULT = Object.fromEntries(RMAP_TEXTS.map(r => [r[0], r[1]]));
-const RMAP_UNIT = 4;   // 노선도 배치 배율(2000pt → 8000px)
+const RMAP_W = 1440, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 화면에 맞춰 줄이거나 키움
+// 역 종류: g 전공 일반역, a AI 융합역, p PO·완성 종착역, x +AI 특화역, r +수익화 특화역, t 환승역
+const RMAP = {
+  title: 'AI CURRICULUM\nROAD MAP',
+  sub: '실무 맞춤형 AI 교육과정\n기초부터 취업, 창업, 수익까지!!',
+  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화 특화역']],
+  hub: {
+    num: '2', tag: '내부 공통 순환형', name: '공통기초 순환선',
+    d1: 'AI아키텍처 → AI포토샵 → AI일러스트', d2: '기초 코어 순환 후 희망 학과 노선 환승',
+    loop: '순환 ↻',
+    cores: [
+      { k: 'c1', tag: 'CORE 01', name: 'AI아키텍처', desc: '생성형 AI 구조 이해 · 프롬프트 설계' },
+      { k: 'c3', tag: 'CORE 03', name: 'AI일러스트 올인원', desc: '벡터 드로잉 · 로고·캐릭터 그래픽' },
+      { k: 'c2', tag: 'CORE 02', name: 'AI포토샵 올인원', desc: '툴 기초·레이어 · AI 이미지 합성' },
+    ],
+  },
+  // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
+  left: [
+    { id: 'l9', color: '#a16207', label: '9 ◀ 디자인자격증', st: [
+      ['ACP', 'Adobe 국제공인 자격취득', 'g'],
+      ['GTQ, GTQi', '포토샵·일러스트 국가공인', 'g'],
+      ['국가기술자격증', '컴퓨터그래픽 · 컬러리스트 · 웹', 'p'],
+      ['AI자격증', 'AI-pot · 생성형AI 활용능력', 'x', '+ AI자격'] ] },
+    { id: 'l6', color: '#c26d27', label: '6 ◀ 사무자격증', st: [
+      ['ITQ', '한글 · 파워포인트 · 엑셀', 'g'],
+      ['MOS', 'MS 오피스 국제공인 자격', 'g'],
+      ['엑셀실무\n(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
+      ['컴퓨터활용\n능력1급', '엑셀·액세스 고급 국가기술', 'g'],
+      ['세무2급,\n회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
+      ['AI업무\n자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
+    { id: 'lkg', color: '#0284c7', label: '경의 ◀ 유튜브', st: [
+      ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
+      ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
+      ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
+      ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
+    { id: 'l1', color: '#0052a4', label: '1 ◀ 프로그래밍', st: [
+      ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
+      ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
+      ['Python', '데이터 분석 · AI 스크립팅', 'g'],
+      ['Web Total', '풀스택 웹 · 바이브 코딩', 'a'],
+      ['웹프로젝트', '프론트·백엔드 협업 포폴', 'p'] ] },
+    { id: 'lsb', color: '#d4003b', label: '신분당 ◀ 웹디자인', st: [
+      ['웹디자인', 'UI 레이아웃 · 반응형 웹 기초', 'g'],
+      ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
+      ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
+      ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
+      ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
+    { id: 'l22', color: '#0d9488', label: '2-2 ◀ 기계/제품', st: [
+      ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
+      ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
+      ['전산응용기계\n제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
+  ],
+  right: [
+    // 2-1 아트웍: 순환선 → 아트파운데이션(4호선 첫 역) → 위로 올라가 이어짐
+    { id: 'l21', color: '#16a34a', label: '2-1 아트웍 ▶', from: ['l4', 0], st: [
+      ['디지털 드로잉\n기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
+      ['디지털 드로잉\n심화', '채색·라이팅 · 일러스트 제작', 'g'],
+      ['AI디지털\n드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
+      ['디지털\n드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
+    { id: 'l4', color: '#00a4e3', feed: '#16a34a', label: '4 웹툰(드로잉) ▶', pill: 1, st: [
+      ['아트\n파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
+      ['웹툰기초', '웹툰 작화 · 선화·표현 기초', 'g'],
+      ['웹툰심화', '스토리·콘티 기획 · 칸 연출', 'g'],
+      ['AI웹툰', 'AI 배경·채색 · 생성형 웹툰', 'a'],
+      ['웹툰PO', '연재 투고 · 완결형 포폴', 'p'] ] },
+    { id: 'l3', color: '#ef7c1c', label: '3 시각편집 ▶', st: [
+      ['인디자인', '타이포그래피 · 편집 그리드', 'g'],
+      ['AI그래픽\n아트웍', 'AI 비주얼 합성 · 아트웍 심화', 'a'],
+      ['AI브랜딩\n디자인', 'BI/BX 아이덴티티 · 패키지', 'a'],
+      ['AI시각\n디자인', '생성형 디자인 자동화 실무', 'a'],
+      ['시각\n디자인PO', '브랜드 실무 취업 포트폴리오', 'p'],
+      ['AI디자인\n수익화', 'AI 굿즈·스톡 · 외주 창업 수익', 'r', '+ 수익화'] ] },
+    { id: 'l5', color: '#8b5cf6', label: '5 모션/영상 ▶', st: [
+      ['AI프리미어\n프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
+      ['AI에펙', '모션그래픽 · 키프레임 · 합성', 'a'],
+      ['AI블렌더', '3D 에셋 모델링 · 스타일 씬', 'a'],
+      ['시포디', 'Cinema4D 다이내믹 · 옥테인', 'g'],
+      ['AI모션/\nCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
+      ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'] ] },
+    { id: 'l8', color: '#e6186c', label: '8 마야/CG ▶', st: [
+      ['AI프리미어\n프로', '영상 편집 · 사운드 · 색보정', 'a'],
+      ['AI에펙', '실사 합성 · 트래킹 · VFX 기초', 'a'],
+      ['AI블렌더', '3D 크리처 · 하드서페이스', 'a'],
+      ['AI마야', 'MAYA 모델링 · 리깅 · 애니', 'a'],
+      ['AI모션/\nCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
+      ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'] ] },
+    { id: 'l7', color: '#65830d', label: '7 인테리어 ▶', pill: 2, st: [
+      ['실내건축\n기초', '공간설계 이론 · 수작업 제도', 'g'],
+      ['AI캐드', 'AutoCAD 도면 설계', 't'],
+      ['AI스케치업', '3D 공간 모델링 · 투시도', 'a'],
+      ['맥스', '3dsMax 하이폴리곤 · 라이팅', 'g'],
+      ['AI인테리어', '생성형 공간 시안 · AI 렌더링', 'a'],
+      ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'] ] },
+    // 수인선: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
+    { id: 'lsu', color: '#d97706', label: '수인 실내건축자격 · BIM ▶', from: ['l7', 1], st: [
+      ['실내건축\n자격', '기능사·산업기사·기사', 'g'],
+      ['전산응용\n건축', '건축제도 실기 작도', 'g'],
+      ['AI BIM\n(레빗)', '3D BIM · 물량·도면화', 'p'],
+      ['AI인테리어\nD5', 'D5 실시간 AI 렌더링', 'x', '+ AI렌더'] ] },
+  ],
+  foot: {
+    center: '자체시험센터 운영',
+    certs: [['ITQ', '국가공인 정보기술자격', '#1d4ed8'], ['GTQ · GTQi', '국가공인 그래픽기술자격', '#047857'],
+            ['AI-pot', 'AI 프롬프트 활용능력', '#0f172a'], ['Adobe ACP', '국제공인 자격시험센터', '#dc2626'],
+            ['wrtn.', '생성형 AI 활용능력', '#7c3aed']],
+    brand: 'SBS ACADEMY COMPUTER AIX', branch: 'CHEONAN ASAN',
+  },
+};
+const RMAP_DEFAULT = {};   // 글씨 번호 → 기본 글씨(그릴 때 채움)
 
 // 기본 글씨와 같으면 저장하지 않음(바꾼 글씨만 남김)
 function setRoadmapText(k, v) {
   if (!(k in RMAP_DEFAULT)) return;
+  v = v.replace(/\u00a0/g, ' ');   // 화면용 붙는 공백은 저장하지 않음
   const map = UI_DATA.roadmapMap;
   if (v === RMAP_DEFAULT[k]) {
     if (map && k in map) { delete map[k]; if (!Object.keys(map).length) delete UI_DATA.roadmapMap; }
@@ -4211,20 +4199,189 @@ function setRoadmapText(k, v) {
   (UI_DATA.roadmapMap ||= {})[k] = v;
 }
 
+// 꺾이는 곳을 둥글게 이은 선
+function rmPath(pts, r) {
+  const p = pts.filter((q, i) => i === 0 || Math.hypot(q[0] - pts[i - 1][0], q[1] - pts[i - 1][1]) > 0.5);
+  const f = v => Math.round(v * 10) / 10;
+  let d = `M${f(p[0][0])},${f(p[0][1])}`;
+  for (let i = 1; i < p.length - 1; i++) {
+    const [x0, y0] = p[i - 1], [x1, y1] = p[i], [x2, y2] = p[i + 1];
+    const l1 = Math.hypot(x1 - x0, y1 - y0), l2 = Math.hypot(x2 - x1, y2 - y1);
+    const rr = Math.min(r, l1 / 2, l2 / 2);
+    d += `L${f(x1 + (x0 - x1) / l1 * rr)},${f(y1 + (y0 - y1) / l1 * rr)}`
+       + `Q${f(x1)},${f(y1)} ${f(x1 + (x2 - x1) / l2 * rr)},${f(y1 + (y2 - y1) / l2 * rr)}`;
+  }
+  const e = p[p.length - 1];
+  return d + `L${f(e[0])},${f(e[1])}`;
+}
+
 function renderRoadmapMap() {
-  const box = document.getElementById('rmap-texts');
-  if (!box) return;
+  const box = document.getElementById('rmap-texts'), svgBox = document.getElementById('rmap-svg');
+  if (!box || !svgBox) return;
   const map = UI_DATA.roadmapMap || {};
-  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // 4배 크게 배치(크롬이 글자 바닥선을 정수 px로 맞추는 오차를 1/4로 줄임) → 보기 배율은 뷰어가 맞춤
-  const U = RMAP_UNIT, A = { pre: 1950 / 2048, pl: 880 / 900 };   // 글꼴 ascent(Pretendard / Paperlogy)
-  const r2 = v => Math.round(v * 100) / 100;
-  box.innerHTML = RMAP_TEXTS.map(([k, def, x, by, size, w, color, al, fam, , ls, det]) => {
-    const t = k in map ? map[k] : def;
-    const st = `left:${r2(x * U)}px;top:${r2((by - A[fam] * size) * U)}px;font-size:${r2(size * U)}px;font-weight:${w};color:${color}` + (ls ? `;letter-spacing:${r2(ls * U)}px` : '');
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // 글씨 한 칸: 번호(k)로 편집·저장
+  const T = (k, def, cls, style = '') => {
+    RMAP_DEFAULT[k] = def;
+    let t = k in map ? map[k] : def;
+    if (cls.includes('rm-d')) t = t.replace(/ · /g, '\u00a0· ');
     const ed = isEditMode ? ` contenteditable="true" spellcheck="false" data-path="ui.roadmapMap.${k}"` : '';
-    return `<p class="rmt rmt--${al}${fam === 'pl' ? ' rmt--pl' : ''}${det ? ' rmt--d' : ''}" style="${st}"${ed}>${esc(t)}</p>`;
-  }).join('');
+    return `<div class="${cls}"${style ? ` style="${style}"` : ''}${ed}>${esc(t)}</div>`;
+  };
+  const W = RMAP_W, H = RMAP_H, cx = W / 2;
+  const R = 104;                          // 순환선 반지름
+  const ROW_TOP = 70, ROW_BOT = H - 166;  // 첫 줄·마지막 줄 노선 높이(제목은 가운데 위, 범례는 가운데 아래)
+  const cy = (ROW_TOP + ROW_BOT) / 2;
+  // 순환선에서 나와 위·아래 줄로 꺾어 가는 선 자리(가운데에서 거리). 아래쪽은 CORE 상자를 비켜 더 바깥
+  const LANE_UP = 140, LANE0 = 166, LANE_GAP = 14;
+  const COL_IN = 958, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
+  const CORNER = 20;
+  const svg = [], html = [];
+  const lines = [], dots = [], loopDots = [];
+
+  const rows = {};
+  const place = (list, s) => {
+    const xin = s > 0 ? COL_IN : W - COL_IN, xout = s > 0 ? COL_OUT : W - COL_OUT;
+    list.forEach((row, k) => {
+      row._s = s;
+      row._y = ROW_TOP + (ROW_BOT - ROW_TOP) * k / (list.length - 1);
+      rows[row.id] = row;
+    });
+    // 갈라져 나온 줄(from)은 부모 줄 역 위치를 쓰므로 나중에
+    [...list.filter(r => !r.from), ...list.filter(r => r.from)].forEach(row => {
+      const n = row.st.length;
+      if (row.from) {
+        const par = rows[row.from[0]], px = par._x;
+        const start = row.from[1] + 1;
+        row._x = row.st.map((_, i) => px[start + i] ?? (px[start] + (xout - px[start]) * i / (n - 1)));
+      } else {
+        row._x = row.st.map((_, i) => xin + (xout - xin) * i / (n - 1));
+      }
+    });
+    // 순환선에서 나오는 선: 위·아래 줄로 꺾어 가는 자리(안쪽부터)
+    const conns = list.filter(r => !r.from);
+    const step = 26;
+    conns.forEach((row, i) => {
+      const dy = (i - (conns.length - 1) / 2) * step;
+      row._ay = cy + dy; row._ax = cx + s * Math.sqrt(R * R - dy * dy);
+    });
+    const up = conns.filter(r => r._y < r._ay - 1).sort((a, b) => a._ay - b._ay);
+    const dn = conns.filter(r => r._y > r._ay + 1).sort((a, b) => b._ay - a._ay);
+    up.forEach((row, k) => { row._lx = cx + s * (LANE_UP + k * LANE_GAP); });
+    dn.forEach((row, k) => { row._lx = cx + s * (LANE0 + k * LANE_GAP); });
+  };
+  place(RMAP.left, -1);
+  place(RMAP.right, 1);
+
+  const all = [...RMAP.left, ...RMAP.right];
+  // 1) 선
+  all.forEach(row => {
+    const y = row._y, xs = row._x, s = row._s;
+    if (!row.from) {
+      const pts = [[row._ax, row._ay]];
+      if (row._lx != null) pts.push([row._lx, row._ay], [row._lx, y]);
+      else pts.push([row._ax + s * 30, y]);
+      pts.push([xs[0], y]);
+      lines.push({ d: rmPath(pts, CORNER), c: row.feed || row.color });
+      loopDots.push([row._ax, row._ay]);
+    } else {
+      const par = rows[row.from[0]], px = par._x[row.from[1]], py = par._y;
+      lines.push({ d: rmPath([[px, py], [px, y], [xs[0], y]], CORNER), c: row.color });
+    }
+    for (let i = 1; i < xs.length; i++) {
+      const dash = 'xr'.includes(row.st[i][2]);
+      lines.push({ d: `M${xs[i - 1]},${y}L${xs[i]},${y}`, c: row.color, dash });
+    }
+  });
+  // 2) 역 점
+  const dot = (x, y, t, c, inner) => {
+    const f = v => Math.round(v * 10) / 10;
+    x = f(x); y = f(y);
+    if (t === 'g') return `<circle cx="${x}" cy="${y}" r="8" fill="#fff" stroke="${c}" stroke-width="4"/>`;
+    if (t === 'a') return `<circle cx="${x}" cy="${y}" r="10" fill="#ecfdf5" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.2" fill="#059669"/>`;
+    if (t === 'p') return `<circle cx="${x}" cy="${y}" r="11" fill="#0f172a" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="3.6" fill="#fff"/>`;
+    if (t === 'x') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#ecfdf5" stroke="#059669" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#059669"/>`;
+    if (t === 'r') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#7c3aed"/>`;
+    return `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="4.5"/><circle cx="${x}" cy="${y}" r="6" fill="${inner}"/>`;
+  };
+  // 3) 역 글씨·배지·노선 이름
+  const kids = {};   // 갈라지는 줄이 아래로 가는 역 → 이름을 점 위에
+  all.forEach(row => { if (row.from) (kids[row.from[0] + '_' + row.from[1]] ||= []).push(row); });
+  all.forEach(row => {
+    const y = row._y, xs = row._x, s = row._s;
+    row.st.forEach(([name, desc, t, badge], i) => {
+      const x = xs[i], key = `${row.id}_${i}`;
+      const inner = (i === 0 && row.feed) ? row.feed : row.color;
+      dots.push(dot(x, y, t, row.color, inner));
+      // 이름 칸 폭: 이웃 역까지 거리 안에서
+      const gap = Math.min(i > 0 ? Math.abs(xs[i] - xs[i - 1]) : 999, i < xs.length - 1 ? Math.abs(xs[i + 1] - xs[i]) : 999);
+      const edge = s > 0 ? W - 14 - x : x - 14;
+      const lane = row._lx != null ? Math.abs(x - row._lx) - 12 : 999;   // 첫 역 이름이 자기 꺾이는 선에 닿지 않게
+      const w = Math.round(Math.min(gap - 8, 190, (i === xs.length - 1 ? edge : 999) * 2, (i === 0 && !row.from ? lane : 999) * 2));
+      const down = (kids[key] || []).some(k => k._y > y);
+      // 점 위에 쓰는 이름(아래로 갈라지는 환승역)은 위쪽이 비어 있어 칸을 조금 넓게
+      const st = `left:${x}px;top:${down ? y - 14 : y + 14}px;width:${down ? Math.round(Math.min(gap * 1.4, 130)) : w}px` + (down ? ';transform:translate(-50%,-100%)' : '');
+      html.push(`<div class="rm-st rm-st--${t}${down ? ' rm-st--up' : ''}" style="${st}">`
+        + T(key + '_n', name, 'rm-n') + T(key + '_d', desc, 'rm-d') + `</div>`);
+      const b = badge || (t === 'p' ? 'PO·완성' : '');
+      if (b) {
+        const bc = t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai';
+        const left = t === 't';   // 환승역 배지: 위로 올라가는 선을 피해 왼쪽 위
+        html.push(T(key + '_b', b, `rm-badge rm-badge--${bc}${left ? ' rm-badge--l' : ''}`,
+          `left:${left ? x - 16 : x}px;top:${y - 15}px`));
+      }
+    });
+    const pi = row.pill || 0;
+    const px = (xs[pi] + xs[Math.min(pi + 1, xs.length - 1)]) / 2;
+    html.push(T(row.id + '_label', row.label, 'rm-pill', `left:${px}px;top:${y - 13}px;--c:${row.color}`));
+  });
+
+  // 4) 가운데 순환선
+  const hub = RMAP.hub;
+  const coreA = 46 * Math.PI / 180;     // 아래 CORE 역 위치(아래쪽에서 좌우 46도)
+  const cores = [[cx, cy - R], [cx - R * Math.sin(coreA), cy + R * Math.cos(coreA)], [cx + R * Math.sin(coreA), cy + R * Math.cos(coreA)]];
+  const boxW = 146, boxH = 58, topBoxY = cy - R - 30 - boxH, botBoxY = cy + R + 34;
+  const boxX = [cx, cx - 80, cx + 80], boxY = [topBoxY, botBoxY, botBoxY];
+  const hubSvg = [
+    `<circle cx="${cx}" cy="${cy}" r="${R + 22}" fill="#f0fdf4" stroke="#86efac" stroke-width="1.6" stroke-dasharray="5 6"/>`,
+    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#fff" stroke="#16a34a" stroke-width="18"/>`,
+    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="9 9" opacity=".9"/>`,
+    // CORE 연결 점선
+    `<path d="M${cx},${topBoxY + boxH}V${cy - R - 12}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`,
+    ...[1, 2].map(i => `<path d="M${cores[i][0]},${cores[i][1] + 12}L${boxX[i]},${botBoxY}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`),
+    `<circle cx="${cx}" cy="${cy - 42}" r="23" fill="#16a34a"/>`,
+  ];
+  loopDots.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="5.2" fill="#fff" stroke="#0f172a" stroke-width="2.6"/>`));
+  cores.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="5"/><circle cx="${x}" cy="${y}" r="6" fill="#16a34a"/>`));
+  html.push(T('hub_num', hub.num, 'rm-hnum', `left:${cx}px;top:${cy - 42}px`));
+  html.push(T('hub_tag', hub.tag, 'rm-htag', `left:${cx}px;top:${cy - 7}px`));
+  html.push(T('hub_name', hub.name, 'rm-hname', `left:${cx}px;top:${cy + 4}px`));
+  html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 32}px">` + T('hub_d1', hub.d1, 'rm-d') + T('hub_d2', hub.d2, 'rm-d') + `</div>`);
+  const la = 58 * Math.PI / 180;   // '순환' 표시: 위 좌우 + 아래
+  [[cx - R * Math.cos(la), cy - R * Math.sin(la)], [cx + R * Math.cos(la), cy - R * Math.sin(la)], [cx, cy + R]]
+    .forEach(([x, y], i) => html.push(T('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
+  hub.cores.forEach((c, i) => {
+    html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${boxW}px;height:${boxH}px">`
+      + T(c.k + '_tag', c.tag, 'rm-core__tag') + T(c.k + '_name', c.name, 'rm-core__name') + T(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
+  });
+
+  // 5) 머리말·범례·아래 칸
+  html.push(`<div class="rm-bar"></div>`);
+  html.push(`<div class="rm-head" style="left:${cx}px;top:34px">` + T('title', RMAP.title, 'rm-title') + T('sub', RMAP.sub, 'rm-sub') + `</div>`);
+  html.push(`<div class="rm-legend" style="left:${cx}px;top:${(botBoxY + boxH + H - 80) / 2}px">` + RMAP.legend.map(([t, label], i) =>
+    `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i>${T('lg' + i, label, 'rm-lg__t')}</div>`).join('') + `</div>`);
+  const f = RMAP.foot;
+  html.push(`<div class="rm-foot">` + T('f_center', f.center, 'rm-foot__pill')
+    + f.certs.map(([n, d, c], i) => `<div class="rm-cert" style="--c:${c}">` + T(`f${i}_n`, n, 'rm-cert__n') + T(`f${i}_d`, d, 'rm-cert__d') + `</div>`).join('')
+    + `<div class="rm-brand">` + T('f_brand', f.brand, 'rm-brand__n') + T('f_branch', f.branch, 'rm-brand__b') + `</div></div>`);
+
+  svgBox.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svgBox.setAttribute('width', W); svgBox.setAttribute('height', H);
+  svgBox.innerHTML =
+    lines.filter(l => l.dash).map(l => `<path d="${l.d}" stroke="${l.c}" stroke-width="6" stroke-dasharray="1 11" stroke-linecap="round" fill="none"/>`).join('')
+    + lines.filter(l => !l.dash).map(l => `<path d="${l.d}" stroke="${l.c}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join('')
+    + hubSvg.join('') + dots.join('');
+  box.innerHTML = html.join('');
 }
 
 /* ══════════════════════════════════════════════════
@@ -6295,8 +6452,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const frame = document.getElementById('rmap-view');   // 확대·이동되는 영역
   const stage = document.getElementById('rmap-stage');
   if (!wrap || !frame || !stage) return;
-  // 노선도 배치 크기 = PDF 크기(pt, RMAP_BOX) × RMAP_UNIT
-  const W = RMAP_BOX[0] * RMAP_UNIT, H = RMAP_BOX[1] * RMAP_UNIT;
+  // 노선도 판 크기(renderRoadmapMap 과 같은 값)
+  const W = RMAP_W, H = RMAP_H;
   stage.style.width = W + 'px'; stage.style.height = H + 'px';
   const btnIn = wrap.querySelector('[data-rmap="in"]'), btnOut = wrap.querySelector('[data-rmap="out"]');
   let s = 1, x = 0, y = 0, fit = 1, maxS = 3;
@@ -6333,7 +6490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     return f;
   }
-  const DETAIL_S = 0.21;   // 이 배율부터 과목 세부 글씨 표시(8.3pt 글씨가 화면에서 약 7px)
+  const DETAIL_S = 0.95;   // 이 배율부터 과목 설명 표시(10px 글씨가 화면에서 9.5px 이상)
   function apply(anim) {
     clamp();
     frame.classList.toggle('is-detail', s >= DETAIL_S);
@@ -6352,7 +6509,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!fw() || !fh()) return;
     measureTools();
     fit = calcFit();
-    maxS = Math.max(fit * 6, 0.6);
+    maxS = Math.max(fit * 5, 2.4);
     s = fit; x = 0; y = 0;
     apply(anim);
   }
@@ -6406,7 +6563,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!pts.size && !moved && e.type === 'pointerup') {
       const now = Date.now();
       if (now - lastTap < 320 && Math.hypot(pt.x - tapX, pt.y - tapY) < 30) {
-        if (s > fit * 1.6) toFit(true); else zoomAt(Math.max(fit * 3, DETAIL_S * 1.4), pt.x, pt.y, true);
+        if (s > fit * 1.6) toFit(true); else zoomAt(Math.max(fit * 1.75, DETAIL_S * 1.1), pt.x, pt.y, true);
         lastTap = 0;
       } else { lastTap = now; tapX = pt.x; tapY = pt.y; }
     }
@@ -6453,7 +6610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const oldFit = fit;
     measureTools();
     fit = calcFit() || oldFit;
-    maxS = Math.max(fit * 6, 0.6);
+    maxS = Math.max(fit * 5, 2.4);
     if (wasFit || s < fit) toFit(false); else apply(false);
   }).observe(frame);
   toFit(false);
