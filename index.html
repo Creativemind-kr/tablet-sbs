@@ -1432,7 +1432,7 @@
     border: 1px solid var(--c-border); border-radius: 16px; background: #fff;
     user-select: none; -webkit-user-select: none;
   }
-  .rmap__view { position: absolute; inset: 0; overflow: hidden; touch-action: none; cursor: grab; }
+  .rmap__view { position: absolute; inset: 0; overflow: hidden; touch-action: manipulation; }
   .rmap__view.is-dragging { cursor: grabbing; }
   .rmap__stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .rmap__stage.is-anim { transition: transform 280ms var(--ease); }
@@ -1469,8 +1469,106 @@
     background: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 4px 10px 4px 8px; white-space: nowrap;
   }
   .rm-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
-  .rmap__texts > .rm-pill--link { pointer-events: auto; cursor: pointer; box-shadow: 0 1px 4px rgba(15,23,42,.12); transition: transform 120ms, background 120ms; }
-  .rm-pill--link.is-press { background: color-mix(in srgb, var(--c) 14%, #fff); transform: translate(-50%, -100%) scale(.96); }
+  /* 전체 노선도: 노선 이름표·둘레 칸을 누르면 상세 */
+  .rmap__texts > .rm-hit { pointer-events: auto; cursor: pointer; border-radius: 16px; -webkit-tap-highlight-color: transparent; transition: background 120ms; }
+  .rmap__texts > .rm-hit:active { background: rgba(15,23,42,.05); }
+  .rmap__texts > .rm-hit--hub { border-radius: 40px; }
+  .rmap__texts > .rm-pill {
+    pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    font-size: 17px; gap: 7px; padding: 6px 10px 6px 11px; border-width: 2.5px; box-shadow: 0 2px 8px rgba(15,23,42,.10);
+    transition: background 120ms;
+  }
+  .rmap__texts > .rm-pill::before { width: 10px; height: 10px; }
+  .rmap__texts > .rm-pill::after { content: '›'; font-size: 1.45em; line-height: .55; margin-left: 1px; }
+  .rmap__texts > .rm-pill:active { background: color-mix(in srgb, var(--c) 12%, #fff); }
+  /* 노선 상세(전체 노선도 위에 겹쳐 열림) */
+  /* 상세가 열리면 전체 노선도는 아예 숨김(편집 모드 저장 때 가려진 글씨가 빈칸으로 들어가지 않게) */
+  .rmap.is-open .rmap__view { display: none; }
+  .rmap__detail { position: absolute; inset: 0; z-index: 1; overflow: auto; background: #fff; }
+  .rmap__detail[hidden] { display: none; }
+  .rmd {
+    min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; padding: 18px 24px 20px;
+    animation: rmdIn 220ms var(--ease);
+  }
+  @keyframes rmdIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .rmd__bar { display: flex; align-items: center; gap: 10px; }
+  .rmd__back, .rmd__go {
+    display: inline-flex; align-items: center; gap: 6px; height: 46px; border-radius: 12px; font: inherit;
+    font-size: var(--t-sm); font-weight: 800; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  }
+  .rmd__back { padding: 0 16px 0 12px; border: 1px solid var(--c-border); background: #fff; color: var(--c-text); }
+  .rmd__go { margin-left: auto; padding: 0 14px 0 18px; border: 0; background: var(--c); color: #fff; }
+  .rmd__back span, .rmd__go span { font-size: 24px; line-height: 1; margin-top: -3px; }
+  .rmd__back:active { background: var(--c-bg-2); }
+  .rmd__go:active { filter: brightness(.92); }
+  .rmd__head { margin-top: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .rmd__title { display: flex; align-items: center; gap: 12px; }
+  .rmd__name {
+    display: inline-flex; align-items: center; gap: 12px; font-size: 32px; font-weight: 900; line-height: 1.15;
+    letter-spacing: -0.02em; color: var(--c); word-break: keep-all;
+  }
+  .rmd__name::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+  .rmd__num + .rmd__name::before { display: none; }
+  .rmd__num {
+    width: 42px; height: 42px; border-radius: 50%; background: #16a34a; color: #fff; display: grid; place-items: center;
+    font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); font-weight: 900; font-size: 24px; line-height: 1;
+  }
+  .rmd__sub { font-size: 17px; font-weight: 600; color: #475569; word-break: keep-all; }
+  .rmd__route {
+    margin: auto 0; padding: 24px 0 16px; display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 200px)); justify-content: center;
+  }
+  .rmd__col { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; min-width: 0; }
+  .rmd__slot { height: 32px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; box-sizing: border-box; }
+  .rmd__mark { height: 40px; display: grid; place-items: center; position: relative; z-index: 1; }
+  /* 앞 역에서 이 역까지 이어지는 선(앞 칸 가운데 → 이 칸 가운데) */
+  .rmd__seg { position: absolute; left: -50%; width: 100%; top: 47px; height: 10px; background: var(--sc); }
+  .rmd__seg--dash { top: 48px; height: 8px; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--sc) 0 10px, transparent 10px 18px); }
+  .rmd__dot { display: block; box-sizing: border-box; border-radius: 50%; border: 5px solid var(--lc); background: #fff; }
+  .rmd__dot--g { width: 26px; height: 26px; }
+  .rmd__dot--a { width: 32px; height: 32px; background: radial-gradient(circle, #059669 0 5.5px, #ecfdf5 6px); }
+  .rmd__dot--p { width: 34px; height: 34px; background: radial-gradient(circle, #fff 0 4.5px, #0f172a 5px); }
+  .rmd__dot--x { width: 32px; height: 32px; border-color: #059669; background: radial-gradient(circle, #059669 0 6px, #ecfdf5 6.5px); }
+  .rmd__dot--r { width: 32px; height: 32px; border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 6px, #f5f3ff 6.5px); }
+  .rmd__dot--t { width: 38px; height: 38px; border: 6px solid #0f172a; background: radial-gradient(circle, var(--in) 0 7.5px, #fff 8px); }
+  .rmd__hub {
+    width: 56px; height: 40px; box-sizing: border-box; border-radius: 13px; border: 6px solid #16a34a; background: #fff;
+    display: grid; place-items: center; color: #16a34a; line-height: 1;
+    font-family: 'RM Paperlogy', 'Pretendard Variable', Pretendard, var(--font); font-weight: 900; font-size: 18px;
+  }
+  .rmd__n {
+    margin-top: 12px; font-size: 21px; font-weight: 800; line-height: 1.22; letter-spacing: -0.02em;
+    color: #0f172a; white-space: pre-line; word-break: keep-all; overflow-wrap: anywhere;
+  }
+  .rmd__d { margin-top: 7px; font-size: 15px; font-weight: 500; line-height: 1.42; color: #64748b; white-space: pre-line; word-break: keep-all; }
+  .rmd__badge { font-size: 12px; font-weight: 800; line-height: 1; color: #fff; border-radius: 999px; padding: 4.5px 9px; white-space: nowrap; }
+  .rmd__badge--po { background: #0f172a; }
+  .rmd__badge--ai, .rmd__badge--core { background: #059669; }
+  .rmd__badge--core { background: #16a34a; }
+  .rmd__badge--rv { background: #7c3aed; }
+  .rmd__legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 80px 0 0; border-top: 1px solid #eef2f7; }
+  .rmd__legend .rm-lg__t { font-size: 13px; }
+  @media (max-width: 820px) {
+    .rmd { padding: 14px 16px 16px; }
+    .rmd__name { font-size: 24px; }
+    .rmd__n { font-size: 17px; }
+    .rmd__d { font-size: 13px; }
+  }
+  /* 세로 화면: 역이 위에서 아래로 내려가는 세로 노선(칸 높이 고정 → 앞 역 점에서 이 역 점까지 선을 이음) */
+  @media (orientation: portrait) {
+    .rmd__route { grid-template-columns: minmax(0, 540px); grid-auto-rows: 104px; padding: 18px 0; }
+    .rmd__col {
+      display: grid; grid-template-columns: 56px minmax(0, 1fr); grid-template-rows: auto auto 1fr;
+      column-gap: 14px; align-items: start; justify-items: start; text-align: left; padding: 0;
+    }
+    .rmd__mark { grid-column: 1; grid-row: 1 / 4; height: 44px; justify-self: stretch; }
+    .rmd__slot { grid-column: 2; grid-row: 1; height: auto; padding: 0 0 5px; justify-content: flex-start; }
+    .rmd__slot:empty { display: none; }
+    .rmd__n { grid-column: 2; grid-row: 2; margin-top: 0; font-size: 19px; }
+    .rmd__d { grid-column: 2; grid-row: 3; margin-top: 3px; font-size: 14px; }
+    .rmd__seg { left: 23px; width: 10px; top: -82px; height: 104px; }
+    .rmd__seg--dash { left: 24px; width: 8px; top: -82px; height: 104px; background: repeating-linear-gradient(180deg, var(--sc) 0 10px, transparent 10px 18px); }
+  }
   /* 가운데 순환선 */
   .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 40px; line-height: 1; color: #fff; }
   .rm-htag, .rm-loop {
@@ -1493,7 +1591,6 @@
   .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.03em; }
   .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
   .rmap__view:not(.is-detail) .rm-core__desc { display: none; }
-  .app.admin-edit .rmap__view .rm-core__desc { display: block; }
   /* 머리말(가운데 위)·범례(가운데 아래) */
   .rm-bar { left: 24px; right: 24px; top: 12px; height: 5px; border-radius: 3px; background: #00a84d; }
   .rm-head { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
@@ -1618,8 +1715,8 @@
         <div class="page-label-row">
           <div class="rmap__head">
             <p class="page-label">학과별 로드맵</p>
-            <p class="rmap__hint rmap__hint--view">노선 이름표를 누르면 학과 커리큘럼으로 · 두 번 탭하면 확대</p>
-            <p class="rmap__hint rmap__hint--edit">편집: 확대한 뒤 글씨를 눌러 바로 고치기 → 저장</p>
+            <p class="rmap__hint rmap__hint--view">노선이나 가운데 순환선을 누르면 과목과 설명이 크게 보여요</p>
+            <p class="rmap__hint rmap__hint--edit">편집: 노선을 눌러 상세 화면에서 글씨를 바로 고치기 → 저장</p>
           </div>
           <a href="https://aix-level-test.vercel.app/" target="_blank" rel="noopener" class="pretest-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -1635,20 +1732,9 @@
               <div class="rmap__texts" id="rmap-texts" aria-label="AI 커리큘럼 로드맵 — 2호선 순환노선형 노선도"></div>
             </div>
           </div>
+          <div class="rmap__detail" id="rmap-detail" hidden></div>
           <div class="rmap__tools">
             <div class="rmap__group">
-              <button type="button" class="rmap__btn" data-rmap="in" aria-label="확대">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-              </button>
-              <button type="button" class="rmap__btn" data-rmap="out" aria-label="축소">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg>
-              </button>
-            </div>
-            <div class="rmap__group">
-              <button type="button" class="rmap__btn rmap__btn--lbl" data-rmap="fit" aria-label="전체 보기">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>
-                <span>전체</span>
-              </button>
               <button type="button" class="rmap__btn rmap__btn--lbl" data-rmap="full" id="rmap-full" aria-label="크게 보기">
                 <svg class="ic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
                 <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
@@ -4096,89 +4182,89 @@ const RMAP = {
     ],
   },
   // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
-  // dept = 노선 이름표를 누르면 열 커리큘럼 학과(COURSES id)
+  // dept = 상세 화면의 '커리큘럼 보기'로 열 학과(COURSES id). 이름 속 \u200b = 칸이 좁을 때만 꺾이는 자리
   left: [
-    { id: 'l9', color: '#a16207', dept: 'd01', label: '9 ◀ 디자인자격증', st: [
+    { id: 'l9', color: '#a16207', dept: 'd01', label: '9 디자인자격증', st: [
       ['ACP', 'Adobe 국제공인 자격취득', 'g'],
       ['GTQ, GTQi', '포토샵·일러스트 국가공인', 'g'],
       ['국가기술자격증', '컴퓨터그래픽 · 컬러리스트 · 웹', 'p'],
       ['AI자격증', 'AI-pot · 생성형AI 활용능력', 'x', '+ AI자격'] ] },
-    { id: 'l6', color: '#c26d27', dept: 'd08', label: '6 ◀ 사무자격증', st: [
+    { id: 'l6', color: '#c26d27', dept: 'd08', label: '6 사무자격증', st: [
       ['ITQ', '한글 · 파워포인트 · 엑셀', 'g'],
       ['MOS', 'MS 오피스 국제공인 자격', 'g'],
-      ['엑셀실무\n(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
-      ['컴퓨터활용\n능력1급', '엑셀·액세스 고급 국가기술', 'g'],
-      ['세무2급,\n회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
-      ['AI업무\n자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
-    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '경의 ◀ 유튜브', st: [
+      ['엑셀실무\u200b(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
+      ['컴퓨터활용\u200b능력1급', '엑셀·액세스 고급 국가기술', 'g'],
+      ['세무2급, 회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
+      ['AI업무\u200b자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
+    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '경의 유튜브', st: [
       ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
       ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
       ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
       ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
-    { id: 'l1', color: '#0052a4', dept: 'd07', label: '1 ◀ 프로그래밍', st: [
+    { id: 'l1', color: '#0052a4', dept: 'd07', label: '1 프로그래밍', st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
       ['Python', '데이터 분석 · AI 스크립팅', 'g'],
       ['Web Total', '풀스택 웹 · 바이브 코딩', 'a'],
       ['웹프로젝트', '프론트·백엔드 협업 포폴', 'p'] ] },
-    { id: 'lsb', color: '#d4003b', dept: 'd05', label: '신분당 ◀ 웹디자인', st: [
+    { id: 'lsb', color: '#d4003b', dept: 'd05', label: '신분당 웹디자인', st: [
       ['웹디자인', 'UI 레이아웃 · 반응형 웹 기초', 'g'],
       ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
       ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
       ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
       ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
-    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '2-2 ◀ 기계/제품', st: [
+    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '2-2 기계/제품', st: [
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
-      ['전산응용기계\n제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
+      ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
   ],
   right: [
     // 2-1 아트웍: 순환선 → 아트파운데이션(4호선 첫 역) → 위로 올라가 이어짐
-    { id: 'l21', color: '#16a34a', dept: 'd06', label: '2-1 아트웍 ▶', from: ['l4', 0], st: [
-      ['디지털 드로잉\n기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
-      ['디지털 드로잉\n심화', '채색·라이팅 · 일러스트 제작', 'g'],
-      ['AI디지털\n드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
-      ['디지털\n드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
-    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '4 웹툰(드로잉) ▶', pill: 1, st: [
-      ['아트\n파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
+    { id: 'l21', color: '#16a34a', dept: 'd06', label: '2-1 아트웍', from: ['l4', 0], st: [
+      ['디지털 드로잉 기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
+      ['디지털 드로잉 심화', '채색·라이팅 · 일러스트 제작', 'g'],
+      ['AI디지털\u200b드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
+      ['디지털\u200b드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
+    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '4 웹툰(드로잉)', st: [
+      ['아트\u200b파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
       ['웹툰기초', '웹툰 작화 · 선화·표현 기초', 'g'],
       ['웹툰심화', '스토리·콘티 기획 · 칸 연출', 'g'],
       ['AI웹툰', 'AI 배경·채색 · 생성형 웹툰', 'a'],
       ['웹툰PO', '연재 투고 · 완결형 포폴', 'p'] ] },
-    { id: 'l3', color: '#ef7c1c', dept: 'd01', label: '3 시각편집 ▶', st: [
+    { id: 'l3', color: '#ef7c1c', dept: 'd01', label: '3 시각편집', st: [
       ['인디자인', '타이포그래피 · 편집 그리드', 'g'],
-      ['AI그래픽\n아트웍', 'AI 비주얼 합성 · 아트웍 심화', 'a'],
-      ['AI브랜딩\n디자인', 'BI/BX 아이덴티티 · 패키지', 'a'],
-      ['AI시각\n디자인', '생성형 디자인 자동화 실무', 'a'],
-      ['시각\n디자인PO', '브랜드 실무 취업 포트폴리오', 'p'],
-      ['AI디자인\n수익화', 'AI 굿즈·스톡 · 외주 창업 수익', 'r', '+ 수익화'] ] },
-    { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '5 모션/영상 ▶', st: [
-      ['AI프리미어\n프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
+      ['AI그래픽\u200b아트웍', 'AI 비주얼 합성 · 아트웍 심화', 'a'],
+      ['AI브랜딩\u200b디자인', 'BI/BX 아이덴티티 · 패키지', 'a'],
+      ['AI시각\u200b디자인', '생성형 디자인 자동화 실무', 'a'],
+      ['시각\u200b디자인PO', '브랜드 실무 취업 포트폴리오', 'p'],
+      ['AI디자인 수익화', 'AI 굿즈·스톡 · 외주 창업 수익', 'r', '+ 수익화'] ] },
+    { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '5 모션/영상', st: [
+      ['AI프리미어\u200b프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
       ['AI에펙', '모션그래픽 · 키프레임 · 합성', 'a'],
       ['AI블렌더', '3D 에셋 모델링 · 스타일 씬', 'a'],
       ['시포디', 'Cinema4D 다이내믹 · 옥테인', 'g'],
-      ['AI모션/\nCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
+      ['AI모션/\u200bCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
       ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'] ] },
-    { id: 'l8', color: '#e6186c', dept: 'd02', label: '8 마야/CG ▶', st: [
-      ['AI프리미어\n프로', '영상 편집 · 사운드 · 색보정', 'a'],
+    { id: 'l8', color: '#e6186c', dept: 'd02', label: '8 마야/CG', st: [
+      ['AI프리미어\u200b프로', '영상 편집 · 사운드 · 색보정', 'a'],
       ['AI에펙', '실사 합성 · 트래킹 · VFX 기초', 'a'],
       ['AI블렌더', '3D 크리처 · 하드서페이스', 'a'],
       ['AI마야', 'MAYA 모델링 · 리깅 · 애니', 'a'],
-      ['AI모션/\nCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
+      ['AI모션/\u200bCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
       ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'] ] },
-    { id: 'l7', color: '#65830d', dept: 'd04a', label: '7 인테리어 ▶', pill: 2, st: [
-      ['실내건축\n기초', '공간설계 이론 · 수작업 제도', 'g'],
+    { id: 'l7', color: '#65830d', dept: 'd04a', label: '7 인테리어', st: [
+      ['실내건축\u200b기초', '공간설계 이론 · 수작업 제도', 'g'],
       ['AI캐드', 'AutoCAD 도면 설계', 't'],
       ['AI스케치업', '3D 공간 모델링 · 투시도', 'a'],
       ['맥스', '3dsMax 하이폴리곤 · 라이팅', 'g'],
       ['AI인테리어', '생성형 공간 시안 · AI 렌더링', 'a'],
       ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'] ] },
     // 수인선: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
-    { id: 'lsu', color: '#d97706', dept: 'd04a', label: '수인 실내건축자격 · BIM ▶', from: ['l7', 1], st: [
-      ['실내건축\n자격', '기능사·산업기사·기사', 'g'],
-      ['전산응용\n건축', '건축제도 실기 작도', 'g'],
-      ['AI BIM\n(레빗)', '3D BIM · 물량·도면화', 'p'],
-      ['AI인테리어\nD5', 'D5 실시간 AI 렌더링', 'x', '+ AI렌더'] ] },
+    { id: 'lsu', color: '#d97706', dept: 'd04a', label: '수인 실내건축자격 · BIM', from: ['l7', 1], st: [
+      ['실내건축\u200b자격', '기능사·산업기사·기사', 'g'],
+      ['전산응용\u200b건축', '건축제도 실기 작도', 'g'],
+      ['AI BIM(레빗)', '3D BIM · 물량·도면화', 'p'],
+      ['AI인테리어\u200bD5', 'D5 실시간 AI 렌더링', 'x', '+ AI렌더'] ] },
   ],
   foot: {
     center: '자체시험센터 운영',
@@ -4218,19 +4304,27 @@ function rmPath(pts, r) {
   return d + `L${f(e[0])},${f(e[1])}`;
 }
 
+const rmEsc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// 글씨 번호(k)의 지금 글씨(고친 글씨가 있으면 그것)
+function rmText(k, def) {
+  RMAP_DEFAULT[k] = def;
+  const map = UI_DATA.roadmapMap || {};
+  return k in map ? map[k] : def;
+}
+// 글씨 한 칸: editable 이면 편집 모드에서 바로 고침
+function rmT(k, def, cls, style = '', attrs = '', editable = true) {
+  let t = rmText(k, def);
+  if (/\b(rm-d|rmd__d)\b/.test(cls)) t = t.replace(/ · /g, '\u00a0· ');   // 줄이 바뀌어도 '·'는 줄 끝에
+  const ed = editable && isEditMode ? ` contenteditable="true" spellcheck="false" data-path="ui.roadmapMap.${k}"` : '';
+  return `<div class="${cls}"${style ? ` style="${style}"` : ''}${attrs}${ed}>${rmEsc(t)}</div>`;
+}
+
 function renderRoadmapMap() {
   const box = document.getElementById('rmap-texts'), svgBox = document.getElementById('rmap-svg');
   if (!box || !svgBox) return;
-  const map = UI_DATA.roadmapMap || {};
-  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  // 글씨 한 칸: 번호(k)로 편집·저장
-  const T = (k, def, cls, style = '', attrs = '') => {
-    RMAP_DEFAULT[k] = def;
-    let t = k in map ? map[k] : def;
-    if (cls.includes('rm-d')) t = t.replace(/ · /g, '\u00a0· ');
-    const ed = isEditMode ? ` contenteditable="true" spellcheck="false" data-path="ui.roadmapMap.${k}"` : '';
-    return `<div class="${cls}"${style ? ` style="${style}"` : ''}${attrs}${ed}>${esc(t)}</div>`;
-  };
+  const esc = rmEsc;
+  const T = (k, def, cls, style = '', attrs = '') => rmT(k, def, cls, style, attrs, true);    // 제목·범례·아래 칸
+  const V = (k, def, cls, style = '', attrs = '') => rmT(k, def, cls, style, attrs, false);   // 노선·순환선(상세 화면에서 고침)
   const W = RMAP_W, H = RMAP_H, cx = W / 2;
   const ROW_TOP = 70, ROW_BOT = H - 166;  // 첫 줄·마지막 줄 노선 높이(제목은 가운데 위, 범례는 가운데 아래)
   // 가운데 순환선 = 모서리가 둥근 사각형. 옆면 높이 안에 있는 노선은 옆면에 바로 수평으로 붙음
@@ -4301,39 +4395,14 @@ function renderRoadmapMap() {
     if (t === 'r') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#7c3aed"/>`;
     return `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="4.5"/><circle cx="${x}" cy="${y}" r="6" fill="${inner}"/>`;
   };
-  // 3) 역 글씨·배지·노선 이름
-  const kids = {};   // 갈라지는 줄이 아래로 가는 역 → 이름을 점 위에
-  all.forEach(row => { if (row.from) (kids[row.from[0] + '_' + row.from[1]] ||= []).push(row); });
+  // 3) 역 점 + 노선 이름표(누르면 그 노선 상세). 이름표 둘레 넓은 칸도 누르면 열림
   all.forEach(row => {
-    const y = row._y, xs = row._x, s = row._s;
-    row.st.forEach(([name, desc, t, badge], i) => {
-      const x = xs[i], key = `${row.id}_${i}`;
-      const inner = (i === 0 && row.feed) ? row.feed : row.color;
-      dots.push(dot(x, y, t, row.color, inner));
-      // 이름 칸 폭: 이웃 역까지 거리 안에서
-      const gap = Math.min(i > 0 ? Math.abs(xs[i] - xs[i - 1]) : 999, i < xs.length - 1 ? Math.abs(xs[i + 1] - xs[i]) : 999);
-      const edge = s > 0 ? W - 14 - x : x - 14;
-      // 첫 역 이름이 자기 꺾이는 선·순환선(바깥 연한 띠 포함)에 닿지 않게
-      const lane = row._lx != null ? Math.abs(x - row._lx) - 12 : Math.abs(x - cx) - (HW + 16) - 6;
-      const w = Math.round(Math.min(gap - 8, 190, (i === xs.length - 1 ? edge : 999) * 2, (i === 0 && !row.from ? lane : 999) * 2));
-      const down = (kids[key] || []).some(k => k._y > y);
-      // 점 위에 쓰는 이름(아래로 갈라지는 환승역)은 위쪽이 비어 있어 칸을 조금 넓게
-      const st = `left:${x}px;top:${down ? y - 14 : y + 14}px;width:${down ? Math.round(Math.min(gap * 1.4, 130)) : w}px` + (down ? ';transform:translate(-50%,-100%)' : '');
-      html.push(`<div class="rm-st rm-st--${t}${down ? ' rm-st--up' : ''}" style="${st}">`
-        + T(key + '_n', name, 'rm-n') + T(key + '_d', desc, 'rm-d') + `</div>`);
-      const b = badge || (t === 'p' ? 'PO·완성' : '');
-      if (b) {
-        const bc = t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai';
-        const side = t === 't';   // 환승역 배지: 위로 올라가는 선을 피해 오른쪽 위
-        html.push(T(key + '_b', b, `rm-badge rm-badge--${bc}${side ? ' rm-badge--r' : ''}`,
-          `left:${side ? x + 16 : x}px;top:${y - 15}px`));
-      }
-    });
-    const pi = row.pill || 0;
-    const px = (xs[pi] + xs[Math.min(pi + 1, xs.length - 1)]) / 2;
-    // 이름표를 누르면 커리큘럼의 해당 학과로(편집 모드에선 글씨 고치기)
-    const link = !isEditMode && row.dept && COURSES[row.dept] ? ` data-dept="${row.dept}" role="link" aria-label="${esc(COURSES[row.dept].label || '')} 커리큘럼 보기"` : '';
-    html.push(T(row.id + '_label', row.label, 'rm-pill' + (link ? ' rm-pill--link' : ''), `left:${px}px;top:${y - 13}px;--c:${row.color}`, link));
+    const y = row._y, xs = row._x;
+    xs.forEach((x, i) => dots.push(dot(x, y, row.st[i][2], row.color, (i === 0 && row.feed) ? row.feed : row.color)));
+    const x0 = Math.min(...xs), x1 = Math.max(...xs);
+    html.push(`<div class="rm-hit" data-line="${row.id}" style="left:${x0 - 24}px;top:${y - 56}px;width:${x1 - x0 + 48}px;height:78px"></div>`);
+    html.push(V(row.id + '_label', row.label, 'rm-pill', `left:${(x0 + x1) / 2}px;top:${y - 17}px;--c:${row.color}`,
+      ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
   // 4) 가운데 순환선(모서리가 둥근 사각형) — CORE 상자 3개는 사각형 안쪽
@@ -4354,17 +4423,18 @@ function renderRoadmapMap() {
   ];
   loopDots.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="5.2" fill="#fff" stroke="#0f172a" stroke-width="2.6"/>`));
   cores.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="5"/><circle cx="${x}" cy="${y}" r="6" fill="#16a34a"/>`));
-  html.push(T('hub_num', hub.num, 'rm-hnum', `left:${cx}px;top:${cy - 58}px`));
-  html.push(T('hub_tag', hub.tag, 'rm-htag', `left:${cx}px;top:${cy - 6}px`));
-  html.push(T('hub_name', hub.name, 'rm-hname', `left:${cx}px;top:${cy + 10}px`));
+  html.push(`<div class="rm-hit rm-hit--hub" data-line="hub" role="button" tabindex="0" aria-label="공통기초 순환선 자세히 보기" style="left:${cx - HW - 9}px;top:${LT - 9}px;width:${2 * HW + 18}px;height:${LB - LT + 18}px"></div>`);
+  html.push(V('hub_num', hub.num, 'rm-hnum', `left:${cx}px;top:${cy - 58}px`));
+  html.push(V('hub_tag', hub.tag, 'rm-htag', `left:${cx}px;top:${cy - 6}px`));
+  html.push(V('hub_name', hub.name, 'rm-hname', `left:${cx}px;top:${cy + 10}px`));
   // 순환선 설명은 사각형 안이 넉넉해서 전체 보기에서도 보이게
-  html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 50}px">` + T('hub_d1', hub.d1, 'rm-hd') + T('hub_d2', hub.d2, 'rm-hd') + `</div>`);
+  html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 50}px">` + V('hub_d1', hub.d1, 'rm-hd') + V('hub_d2', hub.d2, 'rm-hd') + `</div>`);
   // '순환' 표시: 위 변 좌우 + 아래 변 가운데
   [[cx - 64, LT], [cx + 64, LT], [cx, LB]]
-    .forEach(([x, y], i) => html.push(T('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
+    .forEach(([x, y], i) => html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
   hub.cores.forEach((c, i) => {
     html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${boxW}px;height:${boxH}px">`
-      + T(c.k + '_tag', c.tag, 'rm-core__tag') + T(c.k + '_name', c.name, 'rm-core__name') + T(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
+      + V(c.k + '_tag', c.tag, 'rm-core__tag') + V(c.k + '_name', c.name, 'rm-core__name') + V(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
   });
   const legendY = (LB + 16 + H - 80) / 2;   // 범례: 순환선 아래와 자격시험 칸 사이 가운데
 
@@ -4385,7 +4455,71 @@ function renderRoadmapMap() {
     + lines.filter(l => !l.dash).map(l => `<path d="${l.d}" stroke="${l.c}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join('')
     + hubSvg.join('') + dots.join('');
   box.innerHTML = html.join('');
+  renderRoadmapDetail();
 }
+
+/* 노선 상세: 노선(또는 가운데 순환선)을 누르면 그 노선만 큰 글씨로 — 순환선에서 출발해 역 순서대로 */
+let rmapOpen = null;   // 열려 있는 상세: 노선 id 또는 'hub'
+const rmRows = () => [...RMAP.left, ...RMAP.right];
+// 순환선에서 이 노선 끝까지 지나는 역(갈라져 나온 노선은 갈라지는 역까지 부모 노선을 지남)
+function rmRoute(id) {
+  const row = rmRows().find(r => r.id === id);
+  if (!row) return [];
+  let route = [];
+  if (row.from) {
+    const pr = rmRoute(row.from[0]);
+    route = pr.slice(0, pr.findIndex(s => s.row.id === row.from[0] && s.i === row.from[1]) + 1);
+  }
+  row.st.forEach((st, i) => route.push({ row, i, st, color: (i === 0 && !row.from) ? (row.feed || row.color) : row.color, dash: 'xr'.includes(st[2]) }));
+  return route;
+}
+function renderRoadmapDetail() {
+  const wrap = document.getElementById('rmap'), box = document.getElementById('rmap-detail');
+  if (!wrap || !box) return;
+  const hub = RMAP.hub, row = rmRows().find(r => r.id === rmapOpen);
+  if (rmapOpen !== 'hub' && !row) rmapOpen = null;
+  wrap.classList.toggle('is-open', !!rmapOpen);
+  box.hidden = !rmapOpen;
+  if (!rmapOpen) { box.innerHTML = ''; return; }
+  const T = rmT;
+  const seg = (c, dash) => `<span class="rmd__seg${dash ? ' rmd__seg--dash' : ''}" style="--sc:${c}"></span>`;
+  const col = (line, top, mark, name, desc) =>
+    `<div class="rmd__col">${line}<div class="rmd__slot">${top}</div><div class="rmd__mark">${mark}</div>${name}${desc}</div>`;
+  const dot = (t, lc, inner) => `<span class="rmd__dot rmd__dot--${t}" style="--lc:${lc};--in:${inner}"></span>`;
+  let head, cols, color, go = '';
+  if (rmapOpen === 'hub') {
+    color = '#16a34a';
+    head = `<div class="rmd__title"><span class="rmd__num">${rmEsc(rmText('hub_num', hub.num))}</span>${T('hub_name', hub.name, 'rmd__name')}</div>`
+      + T('hub_d2', hub.d2, 'rmd__sub');
+    cols = ['c1', 'c2', 'c3'].map(k => hub.cores.find(c => c.k === k)).map((c, i) =>
+      col(i ? seg(color) : '', T(c.k + '_tag', c.tag, 'rmd__badge rmd__badge--core'), dot('t', '#0f172a', '#16a34a'),
+        T(c.k + '_name', c.name, 'rmd__n'), T(c.k + '_desc', c.desc, 'rmd__d')));
+  } else {
+    color = row.color;
+    const dept = row.dept && COURSES[row.dept] ? row.dept : '';
+    if (dept) go = `<button type="button" class="rmd__go" data-dept="${dept}">${rmEsc(COURSES[dept].label || '')} 커리큘럼 보기<span aria-hidden="true">›</span></button>`;
+    head = `<div class="rmd__title">${T(row.id + '_label', row.label, 'rmd__name')}</div>`;
+    cols = [col('', '', `<span class="rmd__hub">${rmEsc(rmText('hub_num', hub.num))}</span>`,
+      T('hub_name', hub.name, 'rmd__n'), T('hub_d1', hub.d1, 'rmd__d'))]
+      .concat(rmRoute(row.id).map(({ row: r, i, st: [name, desc, t, badge], color: c, dash }) => {
+        const key = `${r.id}_${i}`, b = badge || (t === 'p' ? 'PO·완성' : '');
+        return col(seg(c, dash), b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai'}`) : '',
+          dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
+      }));
+  }
+  box.innerHTML = `<div class="rmd" style="--c:${color}">`
+    + `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`
+    + `<div class="rmd__head">${head}</div>`
+    + `<div class="rmd__route" style="--n:${cols.length}">${cols.join('')}</div>`
+    + `<div class="rmd__legend">` + RMAP.legend.map(([t, label], i) =>
+        `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i><span class="rm-lg__t">${rmEsc(rmText('lg' + i, label))}</span></div>`).join('') + `</div>`
+    + `</div>`;
+}
+function openRoadmapLine(id) {
+  rmapOpen = id; renderRoadmapDetail();
+  const b = document.getElementById('rmap-detail'); if (b) b.scrollTop = 0;
+}
+function closeRoadmapLine() { rmapOpen = null; renderRoadmapMap(); }
 
 /* ══════════════════════════════════════════════════
    RENDER: 로드맵 패널 (1개)
@@ -6447,25 +6581,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 </script>
 <script>
 /* ══════════════════════════════════════════════════
-   학과별 로드맵 — 2호선 노선도 확대·이동 뷰어
-   (두 손가락 확대, 한 손가락 끌기, 두 번 탭, 마우스 휠, 버튼)
+   학과별 로드맵 — 2호선 노선도: 화면에 맞춰 보여주기 + 누르면 노선 상세
 ══════════════════════════════════════════════════ */
 (function () {
-  const wrap  = document.getElementById('rmap');        // 노선도 판 + 버튼
-  const frame = document.getElementById('rmap-view');   // 확대·이동되는 영역
+  const wrap  = document.getElementById('rmap');        // 노선도 판 + 상세 + 버튼
+  const frame = document.getElementById('rmap-view');   // 전체 노선도 영역
   const stage = document.getElementById('rmap-stage');
   if (!wrap || !frame || !stage) return;
-  // 노선도 판 크기(renderRoadmapMap 과 같은 값)
-  const W = RMAP_W, H = RMAP_H;
+  const W = RMAP_W, H = RMAP_H;   // 노선도 판 크기(renderRoadmapMap 과 같은 값)
   stage.style.width = W + 'px'; stage.style.height = H + 'px';
-  const btnIn = wrap.querySelector('[data-rmap="in"]'), btnOut = wrap.querySelector('[data-rmap="out"]');
-  let s = 1, x = 0, y = 0, fit = 1, maxS = 3;
-  const pts = new Map();
-  let g = null;                         // 진행 중인 제스처 시작 상태
-  let lastTap = 0, tapX = 0, tapY = 0, moved = false;
-
   const fw = () => frame.clientWidth, fh = () => frame.clientHeight;
-  // 오른쪽 아래 버튼이 차지하는 폭·높이(+여유 8px) — 전체 보기에서 지도를 가리지 않게 비켜 두는 데 씀
+  // 오른쪽 아래 버튼이 차지하는 폭·높이(+여유 8px) — 노선도를 가리지 않게 비켜 두는 데 씀
   const tools = wrap.querySelector('.rmap__tools');
   let TW = 0, TH = 0;
   function measureTools() {
@@ -6473,162 +6599,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!tools.offsetWidth || !fw()) return;
     TW = fw() - tools.offsetLeft + 8; TH = fh() - tools.offsetTop + 8;
   }
-  function clamp() {
-    const sw = W * s, sh = H * s;
-    const freeX = Math.abs(fw() - sw) < 0.5 ? 0 : fw() - sw, freeY = Math.abs(fh() - sh) < 0.5 ? 0 : fh() - sh;
-    x = freeX >= 0 ? freeX / 2 : Math.min(0, Math.max(freeX, x));
-    y = freeY >= 0 ? freeY / 2 : Math.min(0, Math.max(freeY, y));
-    // 지도 전체가 다 보일 때 버튼이 오른쪽 아래를 가리면 → 왼쪽(안 되면 위)으로 비켜 둠
-    if (freeX >= 0 && freeY >= 0 && freeX / 2 < TW && freeY / 2 < TH) {
-      if (freeX >= TW) x = freeX - TW;
-      else if (freeY >= TH) y = freeY - TH;
-    }
-  }
-  function calcFit() {
-    const fW = fw(), fH = fh();
-    let f = Math.min(fW / W, fH / H);
-    if (fW - W * f < TW && fH - H * f < TH) {
-      // 비켜 둘 자리가 없으면 버튼 폭(또는 높이)만큼 작게
-      f = Math.max(Math.min((fW - TW) / W, fH / H), Math.min(fW / W, (fH - TH) / H));
-    }
-    return f;
-  }
-  const DETAIL_S = 0.95;   // 이 배율부터 과목 설명 표시(10px 글씨가 화면에서 9.5px 이상)
-  function apply(anim) {
-    clamp();
-    frame.classList.toggle('is-detail', s >= DETAIL_S);
-    stage.classList.toggle('is-anim', !!anim);
-    stage.style.transform = `translate(${x}px,${y}px) scale(${s})`;
-    btnIn.disabled = s >= maxS - 1e-6;
-    btnOut.disabled = s <= fit + 1e-6;
-  }
-  function zoomAt(ns, cx, cy, anim) {
-    ns = Math.min(maxS, Math.max(fit, ns));
-    const px = (cx - x) / s, py = (cy - y) / s;   // 손가락 아래의 노선도 좌표 고정
-    s = ns; x = cx - px * s; y = cy - py * s;
-    apply(anim);
-  }
-  function toFit(anim) {
+  function fit() {
     if (!fw() || !fh()) return;
     measureTools();
-    fit = calcFit();
-    maxS = Math.max(fit * 5, 2.4);
-    s = fit; x = 0; y = 0;
-    apply(anim);
+    const fW = fw(), fH = fh();
+    let s = Math.min(fW / W, fH / H);
+    // 버튼이 노선도 오른쪽 아래를 가리면 → 왼쪽(안 되면 위)으로 비켜 두고, 자리가 없으면 그만큼 작게
+    if (fW - W * s < TW && fH - H * s < TH) s = Math.max(Math.min((fW - TW) / W, fH / H), Math.min(fW / W, (fH - TH) / H));
+    const freeX = Math.max(0, fW - W * s), freeY = Math.max(0, fH - H * s);
+    let x = freeX / 2, y = freeY / 2;
+    if (freeX / 2 < TW && freeY / 2 < TH) { if (freeX >= TW - 0.5) x = freeX - TW; else if (freeY >= TH - 0.5) y = freeY - TH; }
+    stage.style.transform = `translate(${Math.max(0, x)}px,${Math.max(0, y)}px) scale(${s})`;
   }
-  function local(e) {
-    const r = frame.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
-  }
-  function startGesture() {
-    const p = [...pts.values()];
-    if (p.length >= 2) {
-      const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1;
-      g = { type: 'pinch', d, s0: s, mx: (p[0].x + p[1].x) / 2, my: (p[0].y + p[1].y) / 2, x0: x, y0: y };
-    } else if (p.length === 1) {
-      g = { type: 'pan', sx: p[0].x, sy: p[0].y, x0: x, y0: y };
-    } else g = null;
-  }
-
-  let linkEl = null;   // 누르기 시작한 노선 이름표(학과 바로가기)
-  function openDept(id) {
-    if (wrap.classList.contains('is-full')) setFull(false);
-    goToPage('curriculum');
-    activateCoursePanels(id);
-  }
-  frame.addEventListener('pointerdown', e => {
-    if (e.target.closest('[contenteditable="true"]')) return;   // 편집 모드: 글씨 클릭은 편집용
-    linkEl = pts.size ? null : e.target.closest('.rm-pill--link');
-    linkEl?.classList.add('is-press');
-    try { frame.setPointerCapture(e.pointerId); } catch (_) {}
-    pts.set(e.pointerId, local(e));
-    if (pts.size === 1) moved = false;
-    frame.classList.add('is-dragging');
-    startGesture();
-  });
-  frame.addEventListener('pointermove', e => {
-    if (!pts.has(e.pointerId) || !g) return;
-    pts.set(e.pointerId, local(e));
-    const p = [...pts.values()];
-    if (g.type === 'pinch' && p.length >= 2) {
-      const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1;
-      const mx = (p[0].x + p[1].x) / 2, my = (p[0].y + p[1].y) / 2;
-      const ns = Math.min(maxS, Math.max(fit, g.s0 * d / g.d));
-      const px = (g.mx - g.x0) / g.s0, py = (g.my - g.y0) / g.s0;
-      s = ns; x = mx - px * s; y = my - py * s;
-      moved = true;
-      apply(false);
-    } else if (g.type === 'pan') {
-      const dx = p[0].x - g.sx, dy = p[0].y - g.sy;
-      if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
-      x = g.x0 + dx; y = g.y0 + dy;
-      apply(false);
-    }
-  });
-  function end(e) {
-    if (!pts.has(e.pointerId)) return;
-    const pt = pts.get(e.pointerId);
-    pts.delete(e.pointerId);
-    if (!pts.size) frame.classList.remove('is-dragging');
-    if (linkEl) {
-      const el = linkEl; linkEl = null; el.classList.remove('is-press');
-      if (!pts.size && !moved && e.type === 'pointerup') { lastTap = 0; openDept(el.dataset.dept); return; }
-    }
-    // 두 번 탭: 확대 ↔ 전체 보기
-    if (!pts.size && !moved && e.type === 'pointerup') {
-      const now = Date.now();
-      if (now - lastTap < 320 && Math.hypot(pt.x - tapX, pt.y - tapY) < 30) {
-        if (s > fit * 1.6) toFit(true); else zoomAt(Math.max(fit * 1.75, DETAIL_S * 1.1), pt.x, pt.y, true);
-        lastTap = 0;
-      } else { lastTap = now; tapX = pt.x; tapY = pt.y; }
-    }
-    startGesture();
-  }
-  frame.addEventListener('pointerup', end);
-  frame.addEventListener('pointercancel', end);
-  frame.addEventListener('wheel', e => {
-    e.preventDefault();
-    const p = local(e);
-    zoomAt(s * Math.exp(-e.deltaY * 0.0015), p.x, p.y, false);
-  }, { passive: false });
-  // iOS 사파리의 화면 전체 확대 막기(노선도만 확대)
-  frame.addEventListener('gesturestart', e => e.preventDefault());
 
   const fullBtn = document.getElementById('rmap-full'), fullLbl = document.getElementById('rmap-full-lbl');
   function setFull(on) {
     wrap.classList.toggle('is-full', on);
     fullLbl.textContent = on ? '닫기' : '크게';
     fullBtn.setAttribute('aria-label', on ? '크게 보기 닫기' : '크게 보기');
-    requestAnimationFrame(() => toFit(false));
+    requestAnimationFrame(fit);
   }
-  wrap.querySelector('.rmap__tools').addEventListener('click', e => {
-    const b = e.target.closest('[data-rmap]');
-    if (!b) return;
-    const a = b.dataset.rmap;
-    if (a === 'in')  zoomAt(s * 1.6, fw() / 2, fh() / 2, true);
-    if (a === 'out') zoomAt(s / 1.6, fw() / 2, fh() / 2, true);
-    if (a === 'fit') toFit(true);
-    if (a === 'full') setFull(!wrap.classList.contains('is-full'));
+  tools.addEventListener('click', e => {
+    if (e.target.closest('[data-rmap="full"]')) setFull(!wrap.classList.contains('is-full'));
+  });
+  // 노선·순환선 누르면 상세 / 상세: 뒤로, 학과 커리큘럼 바로가기
+  wrap.addEventListener('click', e => {
+    if (e.target.closest('[contenteditable="true"]')) return;   // 편집 모드: 글씨 누르면 고치기
+    const ln = e.target.closest('[data-line]');
+    if (ln) { openRoadmapLine(ln.dataset.line); return; }
+    if (e.target.closest('.rmd__back')) { closeRoadmapLine(); return; }
+    const go = e.target.closest('.rmd__go');
+    if (go) {
+      if (wrap.classList.contains('is-full')) setFull(false);
+      goToPage('curriculum');
+      activateCoursePanels(go.dataset.dept);
+    }
+  });
+  wrap.addEventListener('keydown', e => {
+    const ln = e.target.closest && e.target.closest('[data-line]');
+    if (ln && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openRoadmapLine(ln.dataset.line); }
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && wrap.classList.contains('is-full')) setFull(false);
+    if (e.key !== 'Escape' || (e.target.closest && e.target.closest('[contenteditable="true"]'))) return;
+    if (rmapOpen) closeRoadmapLine();
+    else if (wrap.classList.contains('is-full')) setFull(false);
   });
   // 다른 메뉴로 넘어가면 크게 보기 닫기
   document.addEventListener('click', e => {
     if (e.target.closest('.main-nav__btn') && wrap.classList.contains('is-full')) setFull(false);
   });
-
-  // 화면 크기·방향이 바뀌면 전체 보기 다시 맞춤(확대 중이면 위치만 보정)
-  let wasFit = true;
-  new ResizeObserver(() => {
-    wasFit = Math.abs(s - fit) < 1e-3;
-    const oldFit = fit;
-    measureTools();
-    fit = calcFit() || oldFit;
-    maxS = Math.max(fit * 5, 2.4);
-    if (wasFit || s < fit) toFit(false); else apply(false);
-  }).observe(frame);
-  toFit(false);
+  new ResizeObserver(fit).observe(frame);
+  fit();
 })();
 </script>
 <script>
