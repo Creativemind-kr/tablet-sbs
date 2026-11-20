@@ -4624,11 +4624,22 @@ function rmDetailHtml(id, pdf) {
         `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i><span class="rm-lg__t">${rmEsc(rmText('lg' + i, label))}</span></div>`).join('') + `</div>`
     + `</div>`;
 }
+// 편집 모드: 노선도 글씨는 치는 즉시 저장 목록(UI_DATA.roadmapMap)에 반영 → 상세에서 고친 역 이름·노선 이름이
+// 전체 노선도·PDF에도 바로 같이 바뀜(같은 글씨 번호를 함께 씀). 화면 바꾸기 직전에도 한 번 더 반영
+function rmFlushEdits() {
+  document.querySelectorAll('#rmap [contenteditable="true"][data-path^="ui.roadmapMap."]')
+    .forEach(el => setByPath(el.dataset.path, el.innerText.trim()));
+}
+document.addEventListener('input', e => {
+  const el = e.target.closest && e.target.closest('[contenteditable="true"][data-path^="ui.roadmapMap."]');
+  if (el) setByPath(el.dataset.path, el.innerText.trim());
+});
 function openRoadmapLine(id) {
+  rmFlushEdits();
   rmapOpen = id; renderRoadmapDetail();
   const b = document.getElementById('rmap-detail'); if (b) b.scrollTop = 0;
 }
-function closeRoadmapLine() { rmapOpen = null; renderRoadmapMap(); }
+function closeRoadmapLine() { rmFlushEdits(); rmapOpen = null; renderRoadmapMap(); }
 
 /* ══════════════════════════════════════════════════
    RENDER: 로드맵 패널 (1개)
