@@ -1479,7 +1479,7 @@
   /* 역 이름(전체 보기에서도 보임) + 과목 설명(확대하면 보임) */
   .rm-st { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
   .rm-st--up { flex-direction: column-reverse; }
-  .rm-n { font-size: 15.5px; font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; white-space: pre-line; }
+  .rm-n { font-size: 14.5px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; white-space: pre-line; }
   .rm-st--x .rm-n { color: #065f46; }
   .rm-st--r .rm-n { color: #5b21b6; }
   .rm-d { font-size: 10px; font-weight: 500; line-height: 1.28; color: #64748b; white-space: pre-line; letter-spacing: -0.01em; }
@@ -1507,7 +1507,7 @@
   .rmap__texts > .rm-hit--hub { border-radius: 40px; }
   .rmap__texts > .rm-pill {
     pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent;
-    font-size: 17px; gap: 7px; padding: 6px 10px 6px 11px; border-width: 2.5px; box-shadow: 0 2px 8px rgba(15,23,42,.10);
+    font-size: 15px; gap: 6px; padding: 4px 8px 4px 10px; border-width: 2px; box-shadow: 0 2px 6px rgba(15,23,42,.10);
     transition: background 120ms;
   }
   .rmap__texts > .rm-pill::before { width: 10px; height: 10px; }
@@ -1642,18 +1642,18 @@
   .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.03em; }
   .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
   .rmap__view:not(.is-detail) .rm-core__desc { display: none; }
-  /* 머리말(가운데 위)·범례(가운데 아래) */
+  /* 머리줄: 제목(왼쪽 위)·범례(오른쪽 위, 가로) */
   .rm-bar { left: 24px; right: 24px; top: 12px; height: 5px; border-radius: 3px; background: #00a84d; }
-  .rm-head { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
-  .rm-title { font-weight: 900; font-size: 27px; line-height: 1.02; white-space: pre-line; }
-  .rm-sub { font-size: 12.5px; font-weight: 700; line-height: 1.35; color: #475569; white-space: pre-line; }
+  .rm-head { left: 32px; top: 28px; display: flex; flex-direction: column; gap: 7px; }
+  .rm-title { font-weight: 900; font-size: 27px; line-height: 1; white-space: nowrap; }
+  .rm-sub { font-size: 13.5px; font-weight: 700; line-height: 1.2; color: #475569; white-space: nowrap; }
   .rm-legend {
-    transform: translate(-50%, -50%); display: grid; grid-template-columns: auto; gap: 7px;
-    padding: 12px 16px; background: #f8fafc; border: 1.2px solid #e2e8f0; border-radius: 12px;
+    right: 28px; top: 30px; display: flex; align-items: center; gap: 20px;
+    padding: 9px 16px; background: #f8fafc; border: 1.2px solid #e2e8f0; border-radius: 12px;
   }
-  .rm-lg { display: flex; align-items: center; gap: 6px; }
-  .rm-lg__t { font-size: 11.5px; font-weight: 700; color: #334155; white-space: nowrap; }
-  .rm-lg__dot { width: 15px; height: 15px; border-radius: 50%; box-sizing: border-box; flex-shrink: 0; border: 3px solid; }
+  .rm-lg { display: flex; align-items: center; gap: 7px; }
+  .rm-lg__t { font-size: 14.5px; font-weight: 700; color: #334155; white-space: nowrap; }
+  .rm-lg__dot { width: 18px; height: 18px; border-radius: 50%; box-sizing: border-box; flex-shrink: 0; border: 3.5px solid; }
   .rm-lg__dot--g { border-color: #94a3b8; background: #fff; }
   .rm-lg__dot--a { border-color: #16a34a; background: radial-gradient(circle, #059669 0 2.6px, #ecfdf5 3px); }
   .rm-lg__dot--p { border-color: #64748b; background: radial-gradient(circle, #fff 0 1.8px, #0f172a 2.2px); }
@@ -4213,7 +4213,7 @@ function addSwipeNav(viewsId, navId) {
    - 선·역 점은 SVG, 글씨는 HTML → 편집 모드에서 바로 고침(바꾼 글씨만 UI_DATA.roadmapMap 에 저장)
    - 역 이름 줄바꿈은 글씨 안의 줄바꿈(\n) 그대로
 ══════════════════════════════════════════════════ */
-const RMAP_W = 1440, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 화면에 맞춰 줄이거나 키움
+const RMAP_W = 1600, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 화면에 맞춰 줄이거나 키움
 // 역 종류: g 전공 일반역, a AI 융합역, p PO·완성 종착역, x +AI 특화역, r +수익화 특화역, t 환승역
 const RMAP = {
   title: 'AI CURRICULUM\nROAD MAP',
@@ -4239,12 +4239,17 @@ const RMAP = {
       ['컴퓨터활용\u200b능력1급', '엑셀·액세스 고급 국가기술', 'g'],
       ['세무2급, 회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
       ['AI업무\u200b자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
-    { id: 'l9', color: '#a16207', dept: 'd01', label: '디자인자격증', st: [
+    { id: 'l9', color: '#a16207', dept: 'd01', label: '디자인자격증', align: ['l4'], st: [
       ['ACP', 'Adobe 국제공인 자격취득', 'g'],
       ['GTQ, GTQi', '포토샵·일러스트 국가공인', 'g'],
       ['국가기술자격증', '컴퓨터그래픽 · 컬러리스트 · 웹', 'p'],
       ['AI자격증', 'AI-pot · 생성형AI 활용능력', 'x', '+ AI자격'] ] },
-    // align = 맞은편(오른쪽) 노선 높이에 맞춤: 프로그래밍↔웹디자인, 유튜브↔모션/영상·마야/CG 사이, 기계/제품↔인테리어(캐드)
+    // AI학과: 디자인자격증 바로 아래(↔ 시각편집). 과목 설명은 커리큘럼 AI학과 'AI에이전트 — Claude Code 활용'에서
+    { id: 'lai', color: '#4338ca', dept: 'd10', label: 'AI학과', align: ['l3'], st: [
+      ['AI에이전트 1', '에이전트 기반 작업 방식 · 반복 업무 자동화', 'a'],
+      ['AI에이전트 2', '실무 제작 보조 · Claude Code 활용', 'a'] ] },
+    // align = 맞은편(오른쪽) 노선 높이에 맞춤: 디자인자격증↔웹툰, AI학과↔시각편집, 프로그래밍↔웹디자인,
+    //         유튜브↔모션/영상·마야/CG 사이, 기계/제품↔인테리어(캐드)
     { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', align: ['lsb'], st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
@@ -4260,10 +4265,6 @@ const RMAP = {
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
-    // AI학과: 왼쪽 맨 아래. 과목 설명은 커리큘럼 AI학과 'AI에이전트 — Claude Code 활용'에서
-    { id: 'lai', color: '#4338ca', dept: 'd10', label: 'AI학과', st: [
-      ['AI에이전트 1', '에이전트 기반 작업 방식 · 반복 업무 자동화', 'a'],
-      ['AI에이전트 2', '실무 제작 보조 · Claude Code 활용', 'a'] ] },
   ],
   right: [
     // 아트웍: 순환선 → 아트파운데이션(웹툰 노선 첫 역) → 위로 올라가 이어짐
@@ -4397,12 +4398,14 @@ function renderRoadmapMap() {
   const T = (k, def, cls, style = '', attrs = '') => rmT(k, def, cls, style, attrs, true);    // 제목·범례·아래 칸
   const V = (k, def, cls, style = '', attrs = '') => rmT(k, def, cls, style, attrs, false);   // 노선·순환선(상세 화면에서 고침)
   const W = RMAP_W, H = RMAP_H, cx = W / 2;
-  const ROW_TOP = 70, ROW_BOT = H - 166;  // 첫 줄·마지막 줄 노선 높이(제목은 가운데 위, 범례는 가운데 아래)
-  // 가운데 순환선 = 모서리가 둥근 사각형. 옆면 높이 안에 있는 노선은 옆면에 바로 수평으로 붙음
-  const HW = 150, LT = 150, LB = 680, RC = 28;   // 가운데에서 옆면까지, 위·아래 변 높이, 모서리 반지름
+  const ROW_TOP = 128, ROW_BOT = H - 134;  // 첫 줄·마지막 줄 노선 높이(제목은 왼쪽 위, 범례는 오른쪽 위 머리줄)
+  const CONN_TOP = 226, CONN_BOT = 690;     // 순환선에 붙는 오른쪽 줄들이 고르게 놓이는 높이(갈라진 줄은 맨 위·맨 아래)
+  // 가운데 순환선 = 모서리가 둥근 사각형. 맨 위 줄(ROW_TOP)까지 옆면이 닿게 → 모든 노선이 옆면에 바로 수평으로 붙음
+  const HW = 150, RC = 28;                   // 가운데에서 옆면까지, 모서리 반지름
+  const LT = ROW_TOP - RC - 6, LB = CONN_BOT + RC + 6;   // 위·아래 변 높이
   const cy = (LT + LB) / 2;
   const EDGE_X = HW - RC - 16;            // 옆면 높이 밖의 노선은 위·아래 변(가운데에서 이 거리)에서 나와 꺾임
-  const COL_IN = 940, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
+  const COL_IN = cx + 220, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
   // 역 사이 간격: 과정이 가장 많은 노선이 COL_IN~COL_OUT 를 꽉 채우는 간격(모든 노선 공통)
   const MAXN = Math.max(...[...RMAP.left, ...RMAP.right].filter(r => !r.from).map(r => r.st.length));
   const STEP = (COL_OUT - COL_IN) / Math.max(1, MAXN - 1);
@@ -4416,7 +4419,7 @@ function renderRoadmapMap() {
     // 줄 높이: 맨 위·맨 아래가 갈라져 나온 줄이면 그 줄은 맨 끝에, 나머지는 순환선 옆면 높이 안에 고르게
     // (→ 순환선에 붙는 줄은 모두 옆면에 곧게 붙음). 아니면 위에서 아래까지 고르게
     const n0 = list[0].from ? 1 : 0, n1 = list[list.length - 1].from ? 1 : 0;
-    const top = n0 ? LT + RC + 6 : ROW_TOP, bot = n1 ? LB - RC - 6 : ROW_BOT, mid = list.length - n0 - n1;
+    const top = n0 ? CONN_TOP : ROW_TOP, bot = n1 ? CONN_BOT : ROW_BOT, mid = list.length - n0 - n1;
     list.forEach((row, k) => {
       row._s = s;
       if (n0 && k === 0) row._y = ROW_TOP;
@@ -4486,13 +4489,22 @@ function renderRoadmapMap() {
     if (t === 'r') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#7c3aed"/>`;
     return `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="4.5"/><circle cx="${x}" cy="${y}" r="6" fill="${inner}"/>`;
   };
-  // 3) 역 점 + 노선 이름표(누르면 그 노선 상세). 이름표 둘레 넓은 칸도 누르면 열림
+  // 3) 역 점 + 점 아래 과정명 + 노선 이름표(누르면 그 노선 상세). 줄 둘레 넓은 칸도 누르면 열림
+  const LBL_W = Math.round(STEP - 6);
+  const kids = {};   // 아래로 갈라지는 역(인테리어 AI캐드) → 이름을 점 위에
+  all.forEach(row => { if (row.from) (kids[row.from[0] + '_' + row.from[1]] ||= []).push(row); });
   all.forEach(row => {
     const y = row._y, xs = row._x;
-    xs.forEach((x, i) => dots.push(dot(x, y, row.st[i][2], row.color, (i === 0 && row.feed) ? row.feed : row.color)));
+    xs.forEach((x, i) => {
+      const [name, , t] = row.st[i], key = `${row.id}_${i}`;
+      dots.push(dot(x, y, t, row.color, (i === 0 && row.feed) ? row.feed : row.color));
+      const up = (kids[key] || []).some(k => k._y > y);
+      html.push(`<div class="rm-st rm-st--${t}${up ? ' rm-st--up' : ''}" style="left:${x}px;top:${up ? y - 14 : y + 14}px;width:${LBL_W}px`
+        + (up ? ';transform:translate(-50%,-100%)' : '') + `">` + V(key + '_n', name, 'rm-n') + `</div>`);
+    });
     const x0 = Math.min(...xs), x1 = Math.max(...xs);
-    html.push(`<div class="rm-hit" data-line="${row.id}" style="left:${x0 - 24}px;top:${y - 56}px;width:${x1 - x0 + 48}px;height:78px"></div>`);
-    html.push(V(row.id + '_label', row.label, 'rm-pill', `left:${(x0 + x1) / 2}px;top:${y - 17}px;--c:${row.color}`,
+    html.push(`<div class="rm-hit" data-line="${row.id}" style="left:${x0 - LBL_W / 2}px;top:${y - 44}px;width:${x1 - x0 + LBL_W}px;height:92px"></div>`);
+    html.push(V(row.id + '_label', row.label, 'rm-pill', `left:${(x0 + x1) / 2}px;top:${y - 13}px;--c:${row.color}`,
       ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
@@ -4527,12 +4539,11 @@ function renderRoadmapMap() {
     html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${boxW}px;height:${boxH}px">`
       + V(c.k + '_tag', c.tag, 'rm-core__tag') + V(c.k + '_name', c.name, 'rm-core__name') + V(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
   });
-  const legendY = (LB + 16 + H - 80) / 2;   // 범례: 순환선 아래와 자격시험 칸 사이 가운데
 
   // 5) 머리말·범례·아래 칸
   html.push(`<div class="rm-bar"></div>`);
-  html.push(`<div class="rm-head" style="left:${cx}px;top:28px">` + T('title', RMAP.title, 'rm-title') + T('sub', RMAP.sub, 'rm-sub') + `</div>`);
-  html.push(`<div class="rm-legend" style="left:${cx}px;top:${legendY}px">` + RMAP.legend.map(([t, label], i) =>
+  html.push(`<div class="rm-head">` + T('title', RMAP.title, 'rm-title') + T('sub', RMAP.sub, 'rm-sub') + `</div>`);
+  html.push(`<div class="rm-legend">` + RMAP.legend.map(([t, label], i) =>
     `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i>${T('lg' + i, label, 'rm-lg__t')}</div>`).join('') + `</div>`);
   const f = RMAP.foot;
   html.push(`<div class="rm-foot">` + T('f_center', f.center, 'rm-foot__pill')
