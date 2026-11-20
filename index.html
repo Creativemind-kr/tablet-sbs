@@ -1462,33 +1462,35 @@
   .rm-badge--po { background: #0f172a; }
   .rm-badge--ai { background: #059669; }
   .rm-badge--rv { background: #7c3aed; }
-  .rm-badge--l { transform: translate(-100%, -100%); }
+  .rm-badge--r { transform: translate(0, -100%); }
   .rm-pill {
     transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 5px;
     font-size: 12.5px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; color: var(--c);
     background: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 4px 10px 4px 8px; white-space: nowrap;
   }
   .rm-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+  .rmap__texts > .rm-pill--link { pointer-events: auto; cursor: pointer; box-shadow: 0 1px 4px rgba(15,23,42,.12); transition: transform 120ms, background 120ms; }
+  .rm-pill--link.is-press { background: color-mix(in srgb, var(--c) 14%, #fff); transform: translate(-50%, -100%) scale(.96); }
   /* 가운데 순환선 */
-  .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 28px; line-height: 1; color: #fff; }
+  .rm-hnum { transform: translate(-50%, -50%); font-weight: 900; font-size: 40px; line-height: 1; color: #fff; }
   .rm-htag, .rm-loop {
     transform: translate(-50%, -50%); font-weight: 800; color: #fff; background: #15803d;
     border-radius: 999px; white-space: nowrap; line-height: 1.1;
   }
-  .rm-htag { font-size: 10.5px; padding: 3px 9px; }
+  .rm-htag { font-size: 12.5px; padding: 4px 11px; }
   .rm-loop { font-size: 9.5px; padding: 2px 6px; border: 1.5px solid #fff; }
-  .rm-hname { transform: translateX(-50%); font-weight: 800; font-size: 20px; line-height: 1.1; white-space: nowrap; }
+  .rm-hname { transform: translateX(-50%); font-weight: 800; font-size: 28px; line-height: 1.1; white-space: nowrap; }
   .rm-hdesc { transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 1px; }
-  .rm-hdesc .rm-d { font-size: 9.5px; font-weight: 600; color: #475569; white-space: nowrap; }
+  .rm-hd { font-size: 12px; font-weight: 600; line-height: 1.4; color: #475569; white-space: nowrap; }
   .rm-core {
-    transform: translateX(-50%); box-sizing: border-box; padding: 12px 8px 8px; background: #fff;
+    transform: translateX(-50%); box-sizing: border-box; padding: 12px 6px 8px; background: #fff;
     border: 2.5px solid #16a34a; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center;
   }
   .rm-core__tag {
     position: absolute; left: 50%; top: 0; transform: translate(-50%, -55%); font-size: 9.5px; font-weight: 800; line-height: 1.1;
     color: #fff; background: #16a34a; border-radius: 999px; padding: 2.5px 8px; white-space: nowrap;
   }
-  .rm-core__name { font-size: 15px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.02em; }
+  .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.03em; }
   .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
   .rmap__view:not(.is-detail) .rm-core__desc { display: none; }
   .app.admin-edit .rmap__view .rm-core__desc { display: block; }
@@ -1498,7 +1500,7 @@
   .rm-title { font-weight: 900; font-size: 27px; line-height: 1.02; white-space: pre-line; }
   .rm-sub { font-size: 12.5px; font-weight: 700; line-height: 1.35; color: #475569; white-space: pre-line; }
   .rm-legend {
-    transform: translate(-50%, -50%); display: grid; grid-template-columns: auto auto; gap: 9px 18px;
+    transform: translate(-50%, -50%); display: grid; grid-template-columns: auto; gap: 7px;
     padding: 12px 16px; background: #f8fafc; border: 1.2px solid #e2e8f0; border-radius: 12px;
   }
   .rm-lg { display: flex; align-items: center; gap: 6px; }
@@ -1616,7 +1618,7 @@
         <div class="page-label-row">
           <div class="rmap__head">
             <p class="page-label">학과별 로드맵</p>
-            <p class="rmap__hint rmap__hint--view">두 번 탭하거나 두 손가락으로 벌리면 과목 설명까지 보여요</p>
+            <p class="rmap__hint rmap__hint--view">노선 이름표를 누르면 학과 커리큘럼으로 · 두 번 탭하면 확대</p>
             <p class="rmap__hint rmap__hint--edit">편집: 확대한 뒤 글씨를 눌러 바로 고치기 → 저장</p>
           </div>
           <a href="https://aix-level-test.vercel.app/" target="_blank" rel="noopener" class="pretest-btn">
@@ -4094,76 +4096,77 @@ const RMAP = {
     ],
   },
   // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
+  // dept = 노선 이름표를 누르면 열 커리큘럼 학과(COURSES id)
   left: [
-    { id: 'l9', color: '#a16207', label: '9 ◀ 디자인자격증', st: [
+    { id: 'l9', color: '#a16207', dept: 'd01', label: '9 ◀ 디자인자격증', st: [
       ['ACP', 'Adobe 국제공인 자격취득', 'g'],
       ['GTQ, GTQi', '포토샵·일러스트 국가공인', 'g'],
       ['국가기술자격증', '컴퓨터그래픽 · 컬러리스트 · 웹', 'p'],
       ['AI자격증', 'AI-pot · 생성형AI 활용능력', 'x', '+ AI자격'] ] },
-    { id: 'l6', color: '#c26d27', label: '6 ◀ 사무자격증', st: [
+    { id: 'l6', color: '#c26d27', dept: 'd08', label: '6 ◀ 사무자격증', st: [
       ['ITQ', '한글 · 파워포인트 · 엑셀', 'g'],
       ['MOS', 'MS 오피스 국제공인 자격', 'g'],
       ['엑셀실무\n(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
       ['컴퓨터활용\n능력1급', '엑셀·액세스 고급 국가기술', 'g'],
       ['세무2급,\n회계1급', '케이렙(KcLep) 전산세무회계', 'p'],
       ['AI업무\n자동화', '엑셀·문서·보고서 AI 자동화', 'x', '+ AI자동화'] ] },
-    { id: 'lkg', color: '#0284c7', label: '경의 ◀ 유튜브', st: [
+    { id: 'lkg', color: '#0284c7', dept: 'd09', label: '경의 ◀ 유튜브', st: [
       ['AI크리에이터 유튜브', 'AI 대본 · 보이스 · 숏폼 제작', 'a'],
       ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
       ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
       ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
-    { id: 'l1', color: '#0052a4', label: '1 ◀ 프로그래밍', st: [
+    { id: 'l1', color: '#0052a4', dept: 'd07', label: '1 ◀ 프로그래밍', st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
       ['Python', '데이터 분석 · AI 스크립팅', 'g'],
       ['Web Total', '풀스택 웹 · 바이브 코딩', 'a'],
       ['웹프로젝트', '프론트·백엔드 협업 포폴', 'p'] ] },
-    { id: 'lsb', color: '#d4003b', label: '신분당 ◀ 웹디자인', st: [
+    { id: 'lsb', color: '#d4003b', dept: 'd05', label: '신분당 ◀ 웹디자인', st: [
       ['웹디자인', 'UI 레이아웃 · 반응형 웹 기초', 'g'],
       ['웹퍼블리싱', 'HTML · CSS · 인터랙션 구현', 'g'],
       ['UIUX', 'Figma 설계 · 디자인 시스템', 'g'],
       ['AI웹디자인', 'AI 웹 시안 · 노코드·자동화', 'a'],
       ['웹디자인PO', '실무 반응형 웹·앱 포트폴리오', 'p'] ] },
-    { id: 'l22', color: '#0d9488', label: '2-2 ◀ 기계/제품', st: [
+    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '2-2 ◀ 기계/제품', st: [
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\n제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
   ],
   right: [
     // 2-1 아트웍: 순환선 → 아트파운데이션(4호선 첫 역) → 위로 올라가 이어짐
-    { id: 'l21', color: '#16a34a', label: '2-1 아트웍 ▶', from: ['l4', 0], st: [
+    { id: 'l21', color: '#16a34a', dept: 'd06', label: '2-1 아트웍 ▶', from: ['l4', 0], st: [
       ['디지털 드로잉\n기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
       ['디지털 드로잉\n심화', '채색·라이팅 · 일러스트 제작', 'g'],
       ['AI디지털\n드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
       ['디지털\n드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
-    { id: 'l4', color: '#00a4e3', feed: '#16a34a', label: '4 웹툰(드로잉) ▶', pill: 1, st: [
+    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '4 웹툰(드로잉) ▶', pill: 1, st: [
       ['아트\n파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
       ['웹툰기초', '웹툰 작화 · 선화·표현 기초', 'g'],
       ['웹툰심화', '스토리·콘티 기획 · 칸 연출', 'g'],
       ['AI웹툰', 'AI 배경·채색 · 생성형 웹툰', 'a'],
       ['웹툰PO', '연재 투고 · 완결형 포폴', 'p'] ] },
-    { id: 'l3', color: '#ef7c1c', label: '3 시각편집 ▶', st: [
+    { id: 'l3', color: '#ef7c1c', dept: 'd01', label: '3 시각편집 ▶', st: [
       ['인디자인', '타이포그래피 · 편집 그리드', 'g'],
       ['AI그래픽\n아트웍', 'AI 비주얼 합성 · 아트웍 심화', 'a'],
       ['AI브랜딩\n디자인', 'BI/BX 아이덴티티 · 패키지', 'a'],
       ['AI시각\n디자인', '생성형 디자인 자동화 실무', 'a'],
       ['시각\n디자인PO', '브랜드 실무 취업 포트폴리오', 'p'],
       ['AI디자인\n수익화', 'AI 굿즈·스톡 · 외주 창업 수익', 'r', '+ 수익화'] ] },
-    { id: 'l5', color: '#8b5cf6', label: '5 모션/영상 ▶', st: [
+    { id: 'l5', color: '#8b5cf6', dept: 'd03', label: '5 모션/영상 ▶', st: [
       ['AI프리미어\n프로', 'AI 컷편집 · 자막 · 색보정', 'a'],
       ['AI에펙', '모션그래픽 · 키프레임 · 합성', 'a'],
       ['AI블렌더', '3D 에셋 모델링 · 스타일 씬', 'a'],
       ['시포디', 'Cinema4D 다이내믹 · 옥테인', 'g'],
       ['AI모션/\nCG/영상', '생성형 비디오 · AI 영상 합성', 'a'],
       ['모션PO', '하이엔드 모션 쇼릴 완성', 'p'] ] },
-    { id: 'l8', color: '#e6186c', label: '8 마야/CG ▶', st: [
+    { id: 'l8', color: '#e6186c', dept: 'd02', label: '8 마야/CG ▶', st: [
       ['AI프리미어\n프로', '영상 편집 · 사운드 · 색보정', 'a'],
       ['AI에펙', '실사 합성 · 트래킹 · VFX 기초', 'a'],
       ['AI블렌더', '3D 크리처 · 하드서페이스', 'a'],
       ['AI마야', 'MAYA 모델링 · 리깅 · 애니', 'a'],
       ['AI모션/\nCG/영상', 'FX 시뮬레이션 · AI 실사 VFX', 'a'],
       ['마야PO', '3D/VFX 데모릴 포트폴리오', 'p'] ] },
-    { id: 'l7', color: '#65830d', label: '7 인테리어 ▶', pill: 2, st: [
+    { id: 'l7', color: '#65830d', dept: 'd04a', label: '7 인테리어 ▶', pill: 2, st: [
       ['실내건축\n기초', '공간설계 이론 · 수작업 제도', 'g'],
       ['AI캐드', 'AutoCAD 도면 설계', 't'],
       ['AI스케치업', '3D 공간 모델링 · 투시도', 'a'],
@@ -4171,7 +4174,7 @@ const RMAP = {
       ['AI인테리어', '생성형 공간 시안 · AI 렌더링', 'a'],
       ['인테리어PO', '주거·상업공간 취업 포트폴리오', 'p'] ] },
     // 수인선: 인테리어 노선의 AI캐드에서 갈라져 아래 줄로
-    { id: 'lsu', color: '#d97706', label: '수인 실내건축자격 · BIM ▶', from: ['l7', 1], st: [
+    { id: 'lsu', color: '#d97706', dept: 'd04a', label: '수인 실내건축자격 · BIM ▶', from: ['l7', 1], st: [
       ['실내건축\n자격', '기능사·산업기사·기사', 'g'],
       ['전산응용\n건축', '건축제도 실기 작도', 'g'],
       ['AI BIM\n(레빗)', '3D BIM · 물량·도면화', 'p'],
@@ -4221,22 +4224,22 @@ function renderRoadmapMap() {
   const map = UI_DATA.roadmapMap || {};
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   // 글씨 한 칸: 번호(k)로 편집·저장
-  const T = (k, def, cls, style = '') => {
+  const T = (k, def, cls, style = '', attrs = '') => {
     RMAP_DEFAULT[k] = def;
     let t = k in map ? map[k] : def;
     if (cls.includes('rm-d')) t = t.replace(/ · /g, '\u00a0· ');
     const ed = isEditMode ? ` contenteditable="true" spellcheck="false" data-path="ui.roadmapMap.${k}"` : '';
-    return `<div class="${cls}"${style ? ` style="${style}"` : ''}${ed}>${esc(t)}</div>`;
+    return `<div class="${cls}"${style ? ` style="${style}"` : ''}${attrs}${ed}>${esc(t)}</div>`;
   };
   const W = RMAP_W, H = RMAP_H, cx = W / 2;
-  const R = 104;                          // 순환선 반지름
   const ROW_TOP = 70, ROW_BOT = H - 166;  // 첫 줄·마지막 줄 노선 높이(제목은 가운데 위, 범례는 가운데 아래)
-  const cy = (ROW_TOP + ROW_BOT) / 2;
-  // 순환선에서 나와 위·아래 줄로 꺾어 가는 선 자리(가운데에서 거리). 아래쪽은 CORE 상자를 비켜 더 바깥
-  const LANE_UP = 140, LANE0 = 166, LANE_GAP = 14;
-  const COL_IN = 958, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
+  // 가운데 순환선 = 모서리가 둥근 사각형. 옆면 높이 안에 있는 노선은 옆면에 바로 수평으로 붙음
+  const HW = 150, LT = 150, LB = 676, RC = 28;   // 가운데에서 옆면까지, 위·아래 변 높이, 모서리 반지름
+  const cy = (LT + LB) / 2;
+  const EDGE_X = HW - RC - 16;            // 옆면 높이 밖의 노선은 위·아래 변(가운데에서 이 거리)에서 나와 꺾임
+  const COL_IN = 940, COL_OUT = W - 74;   // 오른쪽 역 칸(왼쪽은 좌우 대칭)
   const CORNER = 20;
-  const svg = [], html = [];
+  const html = [];
   const lines = [], dots = [], loopDots = [];
 
   const rows = {};
@@ -4258,17 +4261,12 @@ function renderRoadmapMap() {
         row._x = row.st.map((_, i) => xin + (xout - xin) * i / (n - 1));
       }
     });
-    // 순환선에서 나오는 선: 위·아래 줄로 꺾어 가는 자리(안쪽부터)
-    const conns = list.filter(r => !r.from);
-    const step = 26;
-    conns.forEach((row, i) => {
-      const dy = (i - (conns.length - 1) / 2) * step;
-      row._ay = cy + dy; row._ax = cx + s * Math.sqrt(R * R - dy * dy);
+    // 순환선에 붙는 자리: 옆면(바로 수평) 또는 위·아래 변(꺾어서)
+    list.filter(r => !r.from).forEach(row => {
+      const y = row._y;
+      if (y >= LT + RC + 6 && y <= LB - RC - 6) { row._ax = cx + s * HW; row._ay = y; }
+      else { row._ax = row._lx = cx + s * EDGE_X; row._ay = y < cy ? LT : LB; }
     });
-    const up = conns.filter(r => r._y < r._ay - 1).sort((a, b) => a._ay - b._ay);
-    const dn = conns.filter(r => r._y > r._ay + 1).sort((a, b) => b._ay - a._ay);
-    up.forEach((row, k) => { row._lx = cx + s * (LANE_UP + k * LANE_GAP); });
-    dn.forEach((row, k) => { row._lx = cx + s * (LANE0 + k * LANE_GAP); });
   };
   place(RMAP.left, -1);
   place(RMAP.right, 1);
@@ -4276,11 +4274,10 @@ function renderRoadmapMap() {
   const all = [...RMAP.left, ...RMAP.right];
   // 1) 선
   all.forEach(row => {
-    const y = row._y, xs = row._x, s = row._s;
+    const y = row._y, xs = row._x;
     if (!row.from) {
       const pts = [[row._ax, row._ay]];
-      if (row._lx != null) pts.push([row._lx, row._ay], [row._lx, y]);
-      else pts.push([row._ax + s * 30, y]);
+      if (row._lx != null) pts.push([row._lx, y]);
       pts.push([xs[0], y]);
       lines.push({ d: rmPath(pts, CORNER), c: row.feed || row.color });
       loopDots.push([row._ax, row._ay]);
@@ -4316,7 +4313,8 @@ function renderRoadmapMap() {
       // 이름 칸 폭: 이웃 역까지 거리 안에서
       const gap = Math.min(i > 0 ? Math.abs(xs[i] - xs[i - 1]) : 999, i < xs.length - 1 ? Math.abs(xs[i + 1] - xs[i]) : 999);
       const edge = s > 0 ? W - 14 - x : x - 14;
-      const lane = row._lx != null ? Math.abs(x - row._lx) - 12 : 999;   // 첫 역 이름이 자기 꺾이는 선에 닿지 않게
+      // 첫 역 이름이 자기 꺾이는 선·순환선(바깥 연한 띠 포함)에 닿지 않게
+      const lane = row._lx != null ? Math.abs(x - row._lx) - 12 : Math.abs(x - cx) - (HW + 16) - 6;
       const w = Math.round(Math.min(gap - 8, 190, (i === xs.length - 1 ? edge : 999) * 2, (i === 0 && !row.from ? lane : 999) * 2));
       const down = (kids[key] || []).some(k => k._y > y);
       // 점 위에 쓰는 이름(아래로 갈라지는 환승역)은 위쪽이 비어 있어 칸을 조금 넓게
@@ -4326,49 +4324,54 @@ function renderRoadmapMap() {
       const b = badge || (t === 'p' ? 'PO·완성' : '');
       if (b) {
         const bc = t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai';
-        const left = t === 't';   // 환승역 배지: 위로 올라가는 선을 피해 왼쪽 위
-        html.push(T(key + '_b', b, `rm-badge rm-badge--${bc}${left ? ' rm-badge--l' : ''}`,
-          `left:${left ? x - 16 : x}px;top:${y - 15}px`));
+        const side = t === 't';   // 환승역 배지: 위로 올라가는 선을 피해 오른쪽 위
+        html.push(T(key + '_b', b, `rm-badge rm-badge--${bc}${side ? ' rm-badge--r' : ''}`,
+          `left:${side ? x + 16 : x}px;top:${y - 15}px`));
       }
     });
     const pi = row.pill || 0;
     const px = (xs[pi] + xs[Math.min(pi + 1, xs.length - 1)]) / 2;
-    html.push(T(row.id + '_label', row.label, 'rm-pill', `left:${px}px;top:${y - 13}px;--c:${row.color}`));
+    // 이름표를 누르면 커리큘럼의 해당 학과로(편집 모드에선 글씨 고치기)
+    const link = !isEditMode && row.dept && COURSES[row.dept] ? ` data-dept="${row.dept}" role="link" aria-label="${esc(COURSES[row.dept].label || '')} 커리큘럼 보기"` : '';
+    html.push(T(row.id + '_label', row.label, 'rm-pill' + (link ? ' rm-pill--link' : ''), `left:${px}px;top:${y - 13}px;--c:${row.color}`, link));
   });
 
-  // 4) 가운데 순환선
+  // 4) 가운데 순환선(모서리가 둥근 사각형) — CORE 상자 3개는 사각형 안쪽
   const hub = RMAP.hub;
-  const coreA = 46 * Math.PI / 180;     // 아래 CORE 역 위치(아래쪽에서 좌우 46도)
-  const cores = [[cx, cy - R], [cx - R * Math.sin(coreA), cy + R * Math.cos(coreA)], [cx + R * Math.sin(coreA), cy + R * Math.cos(coreA)]];
-  const boxW = 146, boxH = 58, topBoxY = cy - R - 30 - boxH, botBoxY = cy + R + 34;
-  const boxX = [cx, cx - 80, cx + 80], boxY = [topBoxY, botBoxY, botBoxY];
+  const boxW = 134, boxH = 56;
+  const cores = [[cx, LT], [cx - 70, LB], [cx + 70, LB]];
+  const boxX = [cx, cx - 70, cx + 70], boxY = [LT + 28, LB - 28 - boxH, LB - 28 - boxH];
+  const rr = pad => `x="${cx - HW - pad}" y="${LT - pad}" width="${2 * (HW + pad)}" height="${LB - LT + 2 * pad}" rx="${RC + pad}"`;
+  const dashLine = (x, y1, y2) => `<path d="M${x},${y1}V${y2}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`;
   const hubSvg = [
-    `<circle cx="${cx}" cy="${cy}" r="${R + 22}" fill="#f0fdf4" stroke="#86efac" stroke-width="1.6" stroke-dasharray="5 6"/>`,
-    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#fff" stroke="#16a34a" stroke-width="18"/>`,
-    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="9 9" opacity=".9"/>`,
-    // CORE 연결 점선
-    `<path d="M${cx},${topBoxY + boxH}V${cy - R - 12}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`,
-    ...[1, 2].map(i => `<path d="M${cores[i][0]},${cores[i][1] + 12}L${boxX[i]},${botBoxY}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`),
-    `<circle cx="${cx}" cy="${cy - 42}" r="23" fill="#16a34a"/>`,
+    `<rect ${rr(16)} fill="#f0fdf4" stroke="#86efac" stroke-width="1.6" stroke-dasharray="5 6"/>`,
+    `<rect ${rr(0)} fill="#fff" stroke="#16a34a" stroke-width="18"/>`,
+    `<rect ${rr(0)} fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="9 9" opacity=".9"/>`,
+    dashLine(cx, LT + 12, boxY[0]),
+    dashLine(cx - 70, LB - 12, boxY[1] + boxH),
+    dashLine(cx + 70, LB - 12, boxY[2] + boxH),
+    `<circle cx="${cx}" cy="${cy - 58}" r="32" fill="#16a34a"/>`,
   ];
   loopDots.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="5.2" fill="#fff" stroke="#0f172a" stroke-width="2.6"/>`));
   cores.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="5"/><circle cx="${x}" cy="${y}" r="6" fill="#16a34a"/>`));
-  html.push(T('hub_num', hub.num, 'rm-hnum', `left:${cx}px;top:${cy - 42}px`));
-  html.push(T('hub_tag', hub.tag, 'rm-htag', `left:${cx}px;top:${cy - 7}px`));
-  html.push(T('hub_name', hub.name, 'rm-hname', `left:${cx}px;top:${cy + 4}px`));
-  html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 32}px">` + T('hub_d1', hub.d1, 'rm-d') + T('hub_d2', hub.d2, 'rm-d') + `</div>`);
-  const la = 58 * Math.PI / 180;   // '순환' 표시: 위 좌우 + 아래
-  [[cx - R * Math.cos(la), cy - R * Math.sin(la)], [cx + R * Math.cos(la), cy - R * Math.sin(la)], [cx, cy + R]]
+  html.push(T('hub_num', hub.num, 'rm-hnum', `left:${cx}px;top:${cy - 58}px`));
+  html.push(T('hub_tag', hub.tag, 'rm-htag', `left:${cx}px;top:${cy - 6}px`));
+  html.push(T('hub_name', hub.name, 'rm-hname', `left:${cx}px;top:${cy + 10}px`));
+  // 순환선 설명은 사각형 안이 넉넉해서 전체 보기에서도 보이게
+  html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 50}px">` + T('hub_d1', hub.d1, 'rm-hd') + T('hub_d2', hub.d2, 'rm-hd') + `</div>`);
+  // '순환' 표시: 위 변 좌우 + 아래 변 가운데
+  [[cx - 64, LT], [cx + 64, LT], [cx, LB]]
     .forEach(([x, y], i) => html.push(T('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
   hub.cores.forEach((c, i) => {
     html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${boxW}px;height:${boxH}px">`
       + T(c.k + '_tag', c.tag, 'rm-core__tag') + T(c.k + '_name', c.name, 'rm-core__name') + T(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
   });
+  const legendY = (LB + 16 + H - 80) / 2;   // 범례: 순환선 아래와 자격시험 칸 사이 가운데
 
   // 5) 머리말·범례·아래 칸
   html.push(`<div class="rm-bar"></div>`);
-  html.push(`<div class="rm-head" style="left:${cx}px;top:34px">` + T('title', RMAP.title, 'rm-title') + T('sub', RMAP.sub, 'rm-sub') + `</div>`);
-  html.push(`<div class="rm-legend" style="left:${cx}px;top:${(botBoxY + boxH + H - 80) / 2}px">` + RMAP.legend.map(([t, label], i) =>
+  html.push(`<div class="rm-head" style="left:${cx}px;top:28px">` + T('title', RMAP.title, 'rm-title') + T('sub', RMAP.sub, 'rm-sub') + `</div>`);
+  html.push(`<div class="rm-legend" style="left:${cx}px;top:${legendY}px">` + RMAP.legend.map(([t, label], i) =>
     `<div class="rm-lg"><i class="rm-lg__dot rm-lg__dot--${t}"></i>${T('lg' + i, label, 'rm-lg__t')}</div>`).join('') + `</div>`);
   const f = RMAP.foot;
   html.push(`<div class="rm-foot">` + T('f_center', f.center, 'rm-foot__pill')
@@ -6527,8 +6530,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else g = null;
   }
 
+  let linkEl = null;   // 누르기 시작한 노선 이름표(학과 바로가기)
+  function openDept(id) {
+    if (wrap.classList.contains('is-full')) setFull(false);
+    goToPage('curriculum');
+    activateCoursePanels(id);
+  }
   frame.addEventListener('pointerdown', e => {
     if (e.target.closest('[contenteditable="true"]')) return;   // 편집 모드: 글씨 클릭은 편집용
+    linkEl = pts.size ? null : e.target.closest('.rm-pill--link');
+    linkEl?.classList.add('is-press');
     try { frame.setPointerCapture(e.pointerId); } catch (_) {}
     pts.set(e.pointerId, local(e));
     if (pts.size === 1) moved = false;
@@ -6559,6 +6570,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pt = pts.get(e.pointerId);
     pts.delete(e.pointerId);
     if (!pts.size) frame.classList.remove('is-dragging');
+    if (linkEl) {
+      const el = linkEl; linkEl = null; el.classList.remove('is-press');
+      if (!pts.size && !moved && e.type === 'pointerup') { lastTap = 0; openDept(el.dataset.dept); return; }
+    }
     // 두 번 탭: 확대 ↔ 전체 보기
     if (!pts.size && !moved && e.type === 'pointerup') {
       const now = Date.now();
