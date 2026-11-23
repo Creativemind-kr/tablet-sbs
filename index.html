@@ -6788,11 +6788,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 <script>
 /* ══════════════════════════════════════════════════
    PDF 받기 — 태블릿에 QR을 띄우고, 학생이 휴대폰으로 찍으면 그 휴대폰에서 PDF를 만들어 저장·공유
-   - QR 주소: /?pdf=학과id 또는 /?pdf=roadmap (태블릿에서 바로 저장도 가능)
-   - 커리큘럼(학과): 전체 노선도 + 그 학과 노선 상세 + 커리큘럼(주차까지 펼침)
-   - 로드맵: 노선 상세를 보고 있으면 그 학과, 전체 노선도면 전체 로드맵(순환선 + 모든 노선)
+   - QR 주소: /?pdf=학과id · /?pdf=line-노선id · /?pdf=roadmap (태블릿에서 바로 저장도 가능)
+   - 커리큘럼: 그 학과 커리큘럼(주차까지 펼침) + 포트폴리오
+   - 로드맵: 노선 상세를 보고 있으면 그 노선 한 장, 전체 노선도면 노선도 한 장
    - 화면을 그림으로 떠서 A4에 넣음(html2canvas + jsPDF, 누를 때만 불러옴)
-   - 커리큘럼 사진(Firebase 저장소)은 다른 주소라 그림으로 뜰 수 없어 PDF에서 빠짐
+   - 주차별 사진은 PDF에서 빠짐. 포트폴리오는 /_vercel/image 로 줄여 받음(vercel.json 허용 목록)
 ══════════════════════════════════════════════════ */
 (function () {
   const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
@@ -6917,10 +6917,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     head.innerHTML = `<p class="pdf-curr__org">${rmEsc(ORG)}</p><p class="pdf-curr__title">${rmEsc(c.label || '')} 커리큘럼</p>`
       + (meta ? `<p class="pdf-curr__meta">${rmEsc(meta)}</p>` : '');
     h.appendChild(head);
-    const blocks = [head];
+    const blocks = [head], inert = document.implementation.createHTMLDocument('');
     src.querySelectorAll('.curr-tab-panel:not([id^="ct-pf"]) > .accordion, .outcomes-section').forEach(n => {
-      const k = n.cloneNode(true);
-      // 사진은 PDF에 안 들어가므로 붙이기 전에 빼서 내려받지 않게
+      // 주차별 사진은 PDF에 안 들어가므로, 내려받기가 시작되지 않는 빈 문서에서 복제해 먼저 뺌
+      const k = inert.importNode(n, true);
       k.querySelectorAll('.img-gallery, .curr-inline-img, .curr-month-img-section, .curr-month-img-empty').forEach(x => x.remove());
       h.appendChild(k); blocks.push(k);
     });
@@ -6931,6 +6931,62 @@ document.addEventListener('DOMContentLoaded', async () => {
       await fontsFor(h);
       for (const b of blocks) add.flow(await shot(b, 1.7));
     } finally { h.remove(); }
+  }
+
+  // 포트폴리오: 원본(학과당 최대 70MB) 대신 서버에서 줄인 사진을 받아 A4에 2열로
+  const pfUrl = u => `/_vercel/image?url=${encodeURIComponent(u)}&w=960&q=72`;
+  function pfEntries(c) {
+    return (c?.portfolio || []).map(e => {
+      const raw = typeof e === 'string' ? e : e?.url;
+      if (!raw) return null;
+      if (raw.startsWith('youtube:')) {
+        const v = raw.slice(8);
+        return { src: pfUrl(`https://i.ytimg.com/vi/${encodeURIComponent(v)}/hqdefault.jpg`), link: `https://youtu.be/${encodeURIComponent(v)}`, video: true };
+      }
+      return { src: raw.startsWith('https://firebasestorage.googleapis.com/') ? pfUrl(raw) : raw };
+    }).filter(Boolean);
+  }
+  async function pfImage(it) {
+    const img = new Image();
+    await new Promise((ok, no) => {
+      const t = setTimeout(no, 25000);
+      img.onload = () => { clearTimeout(t); ok(); };
+      img.onerror = () => { clearTimeout(t); no(); };
+      img.src = it.src;
+    });
+    // 작품이 잘리지 않게 4:3 칸 안에 전체가 보이도록
+    const W = 800, H = 600, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    g.fillStyle = '#f1f5f9'; g.fillRect(0, 0, W, H);
+    const s = Math.min(W / img.naturalWidth, H / img.naturalHeight), w = img.naturalWidth * s, h = img.naturalHeight * s;
+    g.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    if (it.video) {   // 영상은 재생 표시(PDF에서 누르면 유튜브로 이동)
+      g.fillStyle = 'rgba(15,23,42,.72)'; g.beginPath(); g.arc(W / 2, H / 2, 58, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#fff'; g.beginPath(); g.moveTo(W / 2 - 18, H / 2 - 28); g.lineTo(W / 2 + 30, H / 2); g.lineTo(W / 2 - 18, H / 2 + 28); g.closePath(); g.fill();
+    }
+    const data = cv.toDataURL('image/jpeg', 0.82);
+    cv.width = 0; cv.height = 0; img.src = '';
+    return { data, link: it.link };
+  }
+  async function portfolio(id, items, add, tick) {
+    if (!items.length) return 0;
+    const out = new Array(items.length);
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(4, items.length) }, async () => {
+      while (next < items.length) {
+        const k = next++;
+        try { out[k] = await pfImage(items[k]); } catch (_) { out[k] = null; }
+        tick();
+      }
+    }));
+    const ok = out.filter(Boolean);
+    if (ok.length) {
+      const h = await host(820, 'pdf-curr');
+      h.innerHTML = `<div class="pdf-curr__head"><p class="pdf-curr__org">${rmEsc(ORG)}</p><p class="pdf-curr__title">${rmEsc(COURSES[id].label || '')} 포트폴리오</p></div>`;
+      try { await fontsFor(h); add.breakPage(); add.flow(await shot(h.firstChild, 1.7)); } finally { h.remove(); }
+      add.grid(ok);
+    }
+    return items.length - ok.length;
   }
 
   // A4에 넣기: 가로 페이지(노선도) / 세로로 이어 붙이기(커리큘럼)
@@ -6974,12 +7030,39 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         free(cv);
       },
+      breakPage() { y = Infinity; },
+      // 포트폴리오: 2열 격자(영상 칸은 누르면 유튜브로)
+      grid(items) {
+        const M = 12, CW = 210 - 2 * M, CH = 297 - 2 * M, GAP = 4;
+        const w = (CW - GAP) / 2, h = w * 3 / 4;
+        items.forEach((it, i) => {
+          const col = i % 2;
+          if (col === 0 && y + h > M + CH) { page(false); y = M; }
+          const x = M + col * (w + GAP);
+          pdf.addImage(it.data, 'JPEG', x, y, w, h);
+          if (it.link) pdf.link(x, y, w, h, { url: it.link });
+          if (col === 1 || i === items.length - 1) y += h + GAP;
+        });
+      },
       blob: () => pdf.output('blob'),
     };
   }
 
   const safe = s => String(s).replace(/[/:*?"<>|]/g, '_').trim();
   const IN_APP = /KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent);
+  // 찍은 화면만 PDF로: curr=학과 커리큘럼+포트폴리오 / line=노선 상세 한 장 / map=전체 노선도 한 장
+  function target(kind, id) {
+    if (kind === 'curr') {
+      const l = COURSES[id]?.label || '학과';
+      return { title: `${l} 커리큘럼`, param: encodeURIComponent(id), file: `${safe(l)}_커리큘럼.pdf` };
+    }
+    if (kind === 'line') {
+      const r = rmRows().find(x => x.id === id);
+      const l = r ? rmText(id + '_label', r.label) : rmText('hub_name', RMAP.hub.name);
+      return { title: `${l} 로드맵`, param: 'line-' + encodeURIComponent(id), file: `${safe(l)}_로드맵.pdf` };
+    }
+    return { title: '전체 로드맵', param: 'roadmap', file: 'AI커리큘럼_로드맵.pdf' };
+  }
   async function make(kind, id) {
     if (busy) return; busy = true;
     show('PDF 만드는 중…', '잠시만 기다려 주세요', [], true);
@@ -6987,22 +7070,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       await loadLibs();
       await document.fonts.ready;
       const add = assembler();
-      let name, done = 0, total = 0;
+      const name = target(kind, id).file;
+      let done = 0, total = 1, missed = 0;
       const step = () => { const s = sheet().querySelector('.pdfx__sub'); s.textContent = `${++done} / ${total}`; };
-      if (kind === 'dept') {
-        const c = COURSES[id];
-        const lines = rmRows().filter(r => r.dept === id);
-        name = `${safe(c?.label || '학과')}_커리큘럼_로드맵.pdf`;
-        total = 1 + lines.length + 1;
-        add.land(await overview()); step();
-        for (const r of lines) { add.land(await detail(r.id)); step(); }
+      if (kind === 'curr') {
+        const pf = pfEntries(COURSES[id]);
+        total = 1 + pf.length;
         await curriculum(id, add); step();
+        missed = await portfolio(id, pf, add, step);
+      } else if (kind === 'line') {
+        add.land(await detail(id)); step();
       } else {
-        const ids = ['hub', ...rmRows().map(r => r.id)];
-        name = 'AI커리큘럼_로드맵.pdf';
-        total = 1 + ids.length;
         add.land(await overview()); step();
-        for (const k of ids) { add.land(await detail(k)); step(); }
       }
       const blob = add.blob();
       const file = new File([blob], name, { type: 'application/pdf' });
@@ -7017,7 +7096,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         catch (e) { if (e && e.name !== 'AbortError') showToast('공유 창을 열지 못했어요. 저장하기를 눌러 주세요', 'error'); }
       };
       // 카카오톡 앱 등 안에서 QR을 열면 파일 저장이 막힐 수 있음
-      const hint = IN_APP ? "\n저장이 안 되면 메뉴에서 '다른 브라우저로 열기'를 눌러 주세요" : '';
+      const hint = (missed ? `\n사진 ${missed}장은 불러오지 못해 빠졌어요` : '')
+        + (IN_APP ? "\n저장이 안 되면 메뉴에서 '다른 브라우저로 열기'를 눌러 주세요" : '');
       show('PDF가 준비됐어요', `${name} · ${mb}MB${hint}`, [
         ...(canShare ? [['카카오톡 등으로 공유하기', share, true]] : []),
         ['기기에 저장하기', save, !canShare],
@@ -7032,8 +7112,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 태블릿: QR 띄우기(학생이 휴대폰으로 찍으면 그 휴대폰에서 PDF를 만듦)
   async function showQr(kind, id) {
-    const label = kind === 'dept' ? (COURSES[id]?.label || '학과') : '전체 로드맵';
-    const url = `${location.origin}/?pdf=${kind === 'dept' ? encodeURIComponent(id) : 'roadmap'}`;
+    const t = target(kind, id), label = t.title;
+    const url = `${location.origin}/?pdf=${t.param}`;
     const local = ['이 기기에 저장하기', () => make(kind, id)];
     show('QR 만드는 중…', '', [], true);
     try {
@@ -7055,19 +7135,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-pdf]');
     if (!b) return;
-    if (b.dataset.pdf === 'curr') showQr('dept', currentCourse);
-    else {
-      const row = typeof rmapOpen !== 'undefined' && rmapOpen && rmapOpen !== 'hub' ? rmRows().find(r => r.id === rmapOpen) : null;
-      if (row && row.dept && COURSES[row.dept]) showQr('dept', row.dept); else showQr('roadmap');
-    }
+    if (b.dataset.pdf === 'curr') showQr('curr', currentCourse);
+    else if (typeof rmapOpen !== 'undefined' && rmapOpen) showQr('line', rmapOpen);
+    else showQr('map');
   });
 
   // 학생 휴대폰: 데이터가 오면 바로 PDF 만들기
   if (PDF_PARAM) {
     show('PDF 만드는 중…', '잠시만 기다려 주세요', [], true);
     const go = () => {
-      if (PDF_PARAM === 'roadmap') make('roadmap');
-      else if (COURSES[PDF_PARAM]) make('dept', PDF_PARAM);
+      const line = PDF_PARAM.startsWith('line-') ? PDF_PARAM.slice(5) : '';
+      if (PDF_PARAM === 'roadmap') make('map');
+      else if (line && (line === 'hub' || rmRows().some(r => r.id === line))) make('line', line);
+      else if (COURSES[PDF_PARAM]) make('curr', PDF_PARAM);
       else location.replace('/');
     };
     if (window.__dataReady) go(); else window.addEventListener('app:data-ready', go, { once: true });
