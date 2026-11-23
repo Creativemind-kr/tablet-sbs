@@ -1492,6 +1492,7 @@
   .rm-n { font-size: 14.5px; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; white-space: pre-line; }
   .rm-st--x .rm-n { color: #065f46; }
   .rm-st--r .rm-n { color: #5b21b6; }
+  .rm-st--b .rm-n { color: #86198f; }
   .rm-d { font-size: 10px; font-weight: 500; line-height: 1.28; color: #64748b; white-space: pre-line; letter-spacing: -0.01em; }
   /* 전체 보기에선 노선·역 이름만, 확대하면 과목 설명이 나타남(편집 모드는 항상 보임) */
   .rm-d { transition: opacity 180ms, visibility 180ms; }
@@ -1584,6 +1585,7 @@
   .rmd__dot--p { width: 34px; height: 34px; background: radial-gradient(circle, #fff 0 4.5px, #0f172a 5px); }
   .rmd__dot--x { width: 32px; height: 32px; border-color: #059669; background: radial-gradient(circle, #059669 0 6px, #ecfdf5 6.5px); }
   .rmd__dot--r { width: 32px; height: 32px; border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 6px, #f5f3ff 6.5px); }
+  .rmd__dot--b { width: 32px; height: 32px; border-color: #a21caf; background: radial-gradient(circle, #fff 0 5.5px, #a21caf 6px); }
   .rmd__dot--t { width: 38px; height: 38px; border: 6px solid #0f172a; background: radial-gradient(circle, var(--in) 0 7.5px, #fff 8px); }
   .rmd__hub {
     width: 56px; height: 40px; box-sizing: border-box; border-radius: 13px; border: 6px solid #16a34a; background: #fff;
@@ -1600,6 +1602,7 @@
   .rmd__badge--ai, .rmd__badge--core { background: #059669; }
   .rmd__badge--core { background: #16a34a; }
   .rmd__badge--rv { background: #7c3aed; }
+  .rmd__badge--biz { background: #a21caf; }
   .rmd__badge--start { background: var(--c); }
   .rmd__legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 80px 0 0; border-top: 1px solid #eef2f7; }
   .rmd__legend .rm-lg__t { font-size: 13px; }
@@ -1675,6 +1678,7 @@
   .rm-lg__dot--a { border-color: #16a34a; background: radial-gradient(circle, #059669 0 2.6px, #ecfdf5 3px); }
   .rm-lg__dot--p { border-color: #64748b; background: radial-gradient(circle, #fff 0 1.8px, #0f172a 2.2px); }
   .rm-lg__dot--r { border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 2.6px, #f5f3ff 3px); }
+  .rm-lg__dot--b { border-color: #a21caf; background: radial-gradient(circle, #fff 0 2.4px, #a21caf 2.8px); }
   /* 아래 자격시험 칸 */
   .rm-foot {
     left: 24px; right: 24px; bottom: 14px; height: 66px; box-sizing: border-box; display: flex; align-items: center; gap: 10px;
@@ -4235,7 +4239,7 @@ const RMAP_W = 1600, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 �
 const RMAP = {
   title: 'AI CURRICULUM\nROAD MAP',
   sub: '실무 맞춤형 AI 교육과정\n기초부터 취업, 창업, 수익까지!!',
-  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화 특화역']],
+  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화 특화역'], ['b', '창업역']],
   soloTag: '바로 시작',   // solo: true 노선(공통기초 없이 시작)의 첫 역 표시
   hub: {
     num: '2', tag: '내부 공통 순환형', name: '공통기초 순환선',
@@ -4286,10 +4290,11 @@ const RMAP = {
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
     // 창업마스터: 기계/제품 아래. 순환선 아래 변에서 내려와 왼쪽으로(drop = 가운데에서 내려오는 자리, 연결된 학과 커리큘럼 없음)
-    { id: 'lbiz', color: '#a21caf', label: '창업마스터', drop: 42, st: [
-      ['창업', '창업 아이템 · 사업 기초', 't', '+ 창업'],
-      ['자영업/소상공인', '매장 운영 · 지역 마케팅', 'g'],
-      ['스타트업', '사업 계획 · 서비스 기획', 'g'],
+    // offset = 역을 바깥쪽으로 민 칸 수(왼쪽 빈 공간에 따로 놓임), y = 줄 높이 직접 지정
+    { id: 'lbiz', color: '#a21caf', label: '창업마스터', drop: 0, offset: 3, y: 760, st: [
+      ['창업', '창업 아이템 · 사업 기초', 'b', '+ 창업'],
+      ['자영업/소상공인', '매장 운영 · 지역 마케팅', 'b'],
+      ['스타트업', '사업 계획 · 서비스 기획', 'b'],
       ['AI 수익화', 'AI로 매출·수익 만들기', 'r', '+ 수익화'] ] },
   ],
   right: [
@@ -4458,7 +4463,7 @@ function renderRoadmapMap() {
     });
     // align 이 있는 줄: 맞은편 노선(들) 높이에 맞춤(여럿이면 그 가운데). 나머지 줄은 맞춘 줄 사이에 고르게
     if (list.some(r => r.align)) {
-      const fixed = list.map((r, k) => r.align ? r.align.reduce((a, id) => a + rows[id]._y, 0) / r.align.length
+      const fixed = list.map((r, k) => r.y != null ? r.y : r.align ? r.align.reduce((a, id) => a + rows[id]._y, 0) / r.align.length
         : k === 0 ? ROW_TOP : k === list.length - 1 ? ROW_BOT : null);
       list.forEach((r, k) => {
         if (fixed[k] != null) { r._y = fixed[k]; return; }
@@ -4475,7 +4480,7 @@ function renderRoadmapMap() {
         const px = rows[row.from[0]]._x, start = row.from[1] + 1, last = px.length - 1;
         row._x = row.st.map((_, i) => px[start + i] ?? px[last] + s * STEP * (start + i - last));
       } else {
-        row._x = row.st.map((_, i) => xin + s * STEP * i);
+        row._x = row.st.map((_, i) => xin + s * STEP * (i + (row.offset || 0)));
       }
     });
     // 순환선에 붙는 자리: 옆면(바로 수평) 또는 위·아래 변(꺾어서)
@@ -4517,6 +4522,7 @@ function renderRoadmapMap() {
     if (t === 'a') return `<circle cx="${x}" cy="${y}" r="10" fill="#ecfdf5" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.2" fill="#059669"/>`;
     if (t === 'p') return `<circle cx="${x}" cy="${y}" r="11" fill="#0f172a" stroke="${c}" stroke-width="4"/><circle cx="${x}" cy="${y}" r="3.6" fill="#fff"/>`;
     if (t === 'x') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#ecfdf5" stroke="#059669" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#059669"/>`;
+    if (t === 'b') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#a21caf" stroke="#a21caf" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.4" fill="#fff"/>`;
     if (t === 'r') return `<circle cx="${x}" cy="${y}" r="10.5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="4"/><circle cx="${x}" cy="${y}" r="4.6" fill="#7c3aed"/>`;
     return `<circle cx="${x}" cy="${y}" r="13" fill="#fff" stroke="#0f172a" stroke-width="4.5"/><circle cx="${x}" cy="${y}" r="6" fill="${inner}"/>`;
   };
@@ -4568,8 +4574,10 @@ function renderRoadmapMap() {
   // 순환선 설명은 사각형 안이 넉넉해서 전체 보기에서도 보이게
   html.push(`<div class="rm-hdesc" style="left:${cx}px;top:${cy + 50}px">` + V('hub_d1', hub.d1, 'rm-hd') + V('hub_d2', hub.d2, 'rm-hd') + `</div>`);
   // '순환' 표시: 위 변 좌우 + 아래 변 가운데
+  // (아래 변 가운데에서 노선이 나가면 그 자리는 비움)
+  const bottomMidUsed = all.some(r => r.drop === 0);
   [[cx - 64, LT], [cx + 64, LT], [cx, LB]]
-    .forEach(([x, y], i) => html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)));
+    .forEach(([x, y], i) => { if (!(i === 2 && bottomMidUsed)) html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)); });
   hub.cores.forEach((c, i) => {
     // 키워드(kw)가 있는 상자는 이름 아래에 키워드 줄 + 칸을 넓게(위 CORE 01은 혼자라 자리 넉넉)
     const w = c.kw ? 176 : boxW;
@@ -4649,7 +4657,7 @@ function rmDetailHtml(id, pdf) {
         const key = `${r.id}_${i}`, b = badge || (t === 'p' ? 'PO·완성' : '');
         const first = row.solo && n === 0;
         const top = first ? T('solo_tag', RMAP.soloTag, 'rmd__badge rmd__badge--start')
-          : b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai'}`) : '';
+          : b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : t === 'b' ? 'biz' : 'ai'}`) : '';
         return col(first ? '' : seg(c, dash), top,
           dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
       }));
