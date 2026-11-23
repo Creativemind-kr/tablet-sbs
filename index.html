@@ -4285,6 +4285,12 @@ const RMAP = {
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
+    // 창업마스터: 기계/제품 아래. 순환선 아래 변에서 내려와 왼쪽으로(drop = 가운데에서 내려오는 자리, 연결된 학과 커리큘럼 없음)
+    { id: 'lbiz', color: '#a21caf', label: '창업마스터', drop: 42, st: [
+      ['창업', '창업 아이템 · 사업 기초', 't', '+ 창업'],
+      ['자영업/소상공인', '매장 운영 · 지역 마케팅', 'g'],
+      ['스타트업', '사업 계획 · 서비스 기획', 'g'],
+      ['AI 수익화', 'AI로 매출·수익 만들기', 'r', '+ 수익화'] ] },
   ],
   right: [
     // 아트웍: 순환선 → 아트파운데이션(웹툰 노선 첫 역) → 위로 올라가 이어짐
@@ -4476,7 +4482,7 @@ function renderRoadmapMap() {
     list.filter(r => !r.from).forEach(row => {
       const y = row._y;
       if (y >= LT + RC + 6 && y <= LB - RC - 6) { row._ax = cx + s * HW; row._ay = y; }
-      else { row._ax = row._lx = cx + s * EDGE_X; row._ay = y < cy ? LT : LB; }
+      else { row._ax = row._lx = cx + s * (row.drop ?? EDGE_X); row._ay = y < cy ? LT : LB; }
     });
   };
   place(RMAP.right, 1);    // 오른쪽 먼저(왼쪽 줄이 오른쪽 높이에 맞추므로)
