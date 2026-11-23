@@ -1516,6 +1516,7 @@
   .rmap__texts > .rm-pill--l::before { content: '‹'; width: auto; height: auto; border-radius: 0; background: none; font-size: 1.45em; line-height: .55; margin-right: 1px; }
   .rmap__texts > .rm-pill--l::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; margin-left: 0; }
   .rmap__texts > .rm-pill:active { background: color-mix(in srgb, var(--c) 12%, #fff); }
+  .rm-solo { transform: translate(-50%, -100%); font-size: 13px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; color: var(--c); white-space: nowrap; pointer-events: none; }
   /* 노선 상세(전체 노선도 위에 겹쳐 열림) */
   /* 상세가 열리면 전체 노선도는 아예 숨김(편집 모드 저장 때 가려진 글씨가 빈칸으로 들어가지 않게) */
   .rmap.is-open .rmap__view { display: none; }
@@ -1589,6 +1590,7 @@
   .rmd__badge--ai, .rmd__badge--core { background: #059669; }
   .rmd__badge--core { background: #16a34a; }
   .rmd__badge--rv { background: #7c3aed; }
+  .rmd__badge--start { background: var(--c); }
   .rmd__legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 80px 0 0; border-top: 1px solid #eef2f7; }
   .rmd__legend .rm-lg__t { font-size: 13px; }
   @media (max-width: 820px) {
@@ -4224,6 +4226,7 @@ const RMAP = {
   title: 'AI CURRICULUM\nROAD MAP',
   sub: '실무 맞춤형 AI 교육과정\n기초부터 취업, 창업, 수익까지!!',
   legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화 특화역']],
+  soloTag: '바로 시작',   // solo: true 노선(공통기초 없이 시작)의 첫 역 표시
   hub: {
     num: '2', tag: '내부 공통 순환형', name: '공통기초 순환선',
     d1: 'AI아키텍처 → AI포토샵 → AI일러스트', d2: '기초 코어 순환 후 희망 학과 노선 환승',
@@ -4237,7 +4240,7 @@ const RMAP = {
   // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
   // dept = 상세 화면의 '커리큘럼 보기'로 열 학과(COURSES id). 이름 속 \u200b = 칸이 좁을 때만 꺾이는 자리
   left: [
-    { id: 'l6', color: '#c26d27', dept: 'd08', label: '사무자격증', st: [
+    { id: 'l6', color: '#c26d27', dept: 'd08', label: '사무자격증', solo: true, st: [
       ['ITQ', '한글 · 파워포인트 · 엑셀', 'g'],
       ['MOS', 'MS 오피스 국제공인 자격', 'g'],
       ['엑셀실무\u200b(컴활2급)', '실무 핵심 함수 · 데이터 관리', 'g'],
@@ -4257,7 +4260,7 @@ const RMAP = {
       ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
     // align = 맞은편(오른쪽) 노선 높이에 맞춤: 디자인자격증↔웹툰, AI학과↔시각편집, 프로그래밍↔웹디자인,
     //         유튜브↔모션/영상·마야/CG 사이, 기계/제품↔인테리어(캐드)
-    { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', align: ['lsb'], st: [
+    { id: 'l1', color: '#0052a4', dept: 'd07', label: '프로그래밍', solo: true, align: ['lsb'], st: [
       ['C언어', '프로그래밍 문법 · 자료구조', 'g'],
       ['JAVA', '객체지향 · JVM · 백엔드 기초', 'g'],
       ['Python', '데이터 분석 · AI 스크립팅', 'g'],
@@ -4268,7 +4271,7 @@ const RMAP = {
       ['1인크리에이터', '채널 브랜딩 · 촬영 · 기획', 'g'],
       ['영상편집 심화 실무', '고급 컷편집 · 모션 · 색보정', 'p'],
       ['AI마케팅 수익화', 'SNS·유튜브 알고리즘 수익화', 'r', '+ 수익화'] ] },
-    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '기계/제품', align: ['l7'], st: [
+    { id: 'l22', color: '#0d9488', dept: 'd04b', label: '기계/제품', solo: true, align: ['l7'], st: [
       ['AI캐드', '2D 기계제도 · KS 도면 설계', 'a'],
       ['인벤터', '3D 부품 모델링 · 어셈블리', 'g'],
       ['전산응용기계\u200b제도기능사', '국가기술자격 실기 도면 완성', 'p'] ] },
@@ -4473,7 +4476,9 @@ function renderRoadmapMap() {
   // 1) 선
   all.forEach(row => {
     const y = row._y, xs = row._x;
-    if (!row.from) {
+    if (row.solo) {
+      // 공통기초 없이 바로 시작하는 노선: 순환선에 잇지 않고 첫 역에서 출발
+    } else if (!row.from) {
       const pts = [[row._ax, row._ay]];
       if (row._lx != null) pts.push([row._lx, y]);
       pts.push([xs[0], y]);
@@ -4515,7 +4520,10 @@ function renderRoadmapMap() {
     const x0 = Math.min(...xs), x1 = Math.max(...xs);
     html.push(`<div class="rm-hit" data-line="${row.id}" style="left:${x0 - LBL_W / 2}px;top:${y - 44}px;width:${x1 - x0 + LBL_W}px;height:92px"></div>`);
     // 왼쪽 노선은 순환선에서 바깥(왼쪽)으로 뻗으므로 이름표도 '‹ 이름 ●'(화살표가 바깥, 점이 순환선 쪽)
-    html.push(V(row.id + '_label', row.label, 'rm-pill' + (row._s < 0 ? ' rm-pill--l' : ''), `left:${(x0 + x1) / 2}px;top:${y - 13}px;--c:${row.color}`,
+    // 바로 시작 노선: 첫 역 위에 표시 + 이름표는 그 표시를 피해 둘째 역~끝 가운데
+    const pillX = row.solo ? (xs[1] + xs[xs.length - 1]) / 2 : (x0 + x1) / 2;
+    if (row.solo) html.push(V('solo_tag', RMAP.soloTag, 'rm-solo', `left:${xs[0]}px;top:${y - 15}px;--c:${row.color}`));
+    html.push(V(row.id + '_label', row.label, 'rm-pill' + (row._s < 0 ? ' rm-pill--l' : ''), `left:${pillX}px;top:${y - 13}px;--c:${row.color}`,
       ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
@@ -4618,11 +4626,15 @@ function rmDetailHtml(id, pdf) {
     const dept = row.dept && COURSES[row.dept] ? row.dept : '';
     if (dept) go = `<button type="button" class="rmd__go" data-dept="${dept}" aria-label="${rmEsc(COURSES[dept].label || '')} 상세 커리큘럼 보기">상세 커리큘럼 보기<span aria-hidden="true">›</span></button>`;
     head = `<div class="rmd__title">${T(row.id + '_label', row.label, 'rmd__name')}</div>`;
-    cols = [col('', '', `<span class="rmd__hub">${rmEsc(rmText('hub_num', hub.num))}</span>`,
-      T('hub_name', hub.name, 'rmd__n'), T('hub_d1', hub.d1, 'rmd__d'))]
-      .concat(rmRoute(row.id).map(({ row: r, i, st: [name, desc, t, badge], color: c, dash }) => {
+    // 바로 시작 노선은 공통기초 칸 없이 첫 역부터
+    cols = (row.solo ? [] : [col('', '', `<span class="rmd__hub">${rmEsc(rmText('hub_num', hub.num))}</span>`,
+      T('hub_name', hub.name, 'rmd__n'), T('hub_d1', hub.d1, 'rmd__d'))])
+      .concat(rmRoute(row.id).map(({ row: r, i, st: [name, desc, t, badge], color: c, dash }, n) => {
         const key = `${r.id}_${i}`, b = badge || (t === 'p' ? 'PO·완성' : '');
-        return col(seg(c, dash), b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai'}`) : '',
+        const first = row.solo && n === 0;
+        const top = first ? T('solo_tag', RMAP.soloTag, 'rmd__badge rmd__badge--start')
+          : b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : 'ai'}`) : '';
+        return col(first ? '' : seg(c, dash), top,
           dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
       }));
   }
