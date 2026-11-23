@@ -6828,10 +6828,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       COLOR_PROPS.forEach(p => { const v = cs[p]; if (v && v.includes('color(')) el.style[p] = toRgba(v); });
     });
   }
-  const shot = (el, scale) => window.html2canvas(el, {
-    scale, backgroundColor: '#ffffff', useCORS: true, logging: false,
-    ignoreElements: n => n.tagName === 'IMG' && !sameOrigin(n),
-  });
+  // 그림을 뜰 때 사이트 전체(사진 100여 장 포함)를 복제하면 느림 → PDF용 칸만 복제
+  const shot = (el, scale) => {
+    const keep = el.closest('.pdf-host');
+    return window.html2canvas(el, {
+      scale, backgroundColor: '#ffffff', useCORS: true, logging: false,
+      ignoreElements: n => (n.parentNode === document.body && n !== keep) || (n.tagName === 'IMG' && !sameOrigin(n)),
+    });
+  };
 
   async function overview() {
     const st = document.getElementById('rmap-stage').cloneNode(true);
@@ -6857,10 +6861,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     h.appendChild(head);
     const blocks = [head];
     src.querySelectorAll('.curr-tab-panel:not([id^="ct-pf"]) > .accordion, .outcomes-section').forEach(n => {
-      const k = n.cloneNode(true); h.appendChild(k); blocks.push(k);
+      const k = n.cloneNode(true);
+      // 사진은 PDF에 안 들어가므로 붙이기 전에 빼서 내려받지 않게
+      k.querySelectorAll('.img-gallery, .curr-inline-img, .curr-month-img-section, .curr-month-img-empty').forEach(x => x.remove());
+      h.appendChild(k); blocks.push(k);
     });
     h.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
-    h.querySelectorAll('.img-gallery, .curr-inline-img, .curr-month-img-section, .curr-month-img-empty').forEach(n => n.remove());
     fixColors(h);
     await imgsReady(h);
     try {
