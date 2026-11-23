@@ -1508,7 +1508,7 @@
   .rm-badge--r { transform: translate(0, -100%); }
   .rm-pill {
     transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 5px;
-    font-size: 12.5px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; color: var(--c);
+    font-size: 12.5px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; color: var(--ci, var(--c));
     background: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 4px 10px 4px 8px; white-space: nowrap;
   }
   .rm-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
@@ -1544,7 +1544,7 @@
     font-size: var(--t-sm); font-weight: 800; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
   }
   .rmd__back { padding: 0 16px 0 12px; border: 1px solid var(--c-border); background: #fff; color: var(--c-text); }
-  .rmd__go { margin-left: auto; padding: 0 14px 0 18px; border: 0; background: var(--c); color: #fff; }
+  .rmd__go { margin-left: auto; padding: 0 14px 0 18px; border: 0; background: var(--ci, var(--c)); color: #fff; }
   .rmd__back span, .rmd__go span { font-size: 24px; line-height: 1; margin-top: -3px; }
   .rmd__back:active { background: var(--c-bg-2); }
   .rmd__go:active { filter: brightness(.92); }
@@ -1552,7 +1552,7 @@
   .rmd__title { display: flex; align-items: center; gap: 12px; }
   .rmd__name {
     display: inline-flex; align-items: center; gap: 12px; font-size: 32px; font-weight: 900; line-height: 1.15;
-    letter-spacing: -0.02em; color: var(--c); word-break: keep-all;
+    letter-spacing: -0.02em; color: var(--ci, var(--c)); word-break: keep-all;
   }
   .rmd__name::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
   .rmd__num + .rmd__name::before { display: none; }
@@ -1569,7 +1569,7 @@
   /* 노선 아래: 결과물 예시 사진 4칸 */
   .rmd__ex { width: 100%; max-width: 1000px; align-self: center; display: flex; flex-direction: column; gap: 10px; }
   .rmd__ex-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-  .rmd__ex-h { font-size: 15px; font-weight: 800; color: var(--c); letter-spacing: -0.01em; }
+  .rmd__ex-h { font-size: 15px; font-weight: 800; color: var(--ci, var(--c)); letter-spacing: -0.01em; }
   .rmd__ex-fig { margin: 0; }
   .rmd__ex-fig img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
   .rmd__ex-fig figcaption { margin-top: 4px; font-size: 10.5px; line-height: 1.3; color: #94a3b8; word-break: keep-all; }
@@ -4299,12 +4299,13 @@ const RMAP = {
   ],
   right: [
     // 아트웍: 순환선 → 아트파운데이션(웹툰 노선 첫 역) → 위로 올라가 이어짐
-    { id: 'l21', color: '#16a34a', dept: 'd06', label: '아트웍', from: ['l4', 0], st: [
+    // ink = 밝은 노선색 위 글씨·버튼용 진한 색(노란색은 그대로 쓰면 글씨가 안 보임)
+    { id: 'l21', color: '#eab308', ink: '#854d0e', dept: 'd06', label: '아트웍', from: ['l4', 0], st: [
       ['디지털 드로잉 기초', '타블렛 훈련 · 캐릭터 기초', 'g'],
       ['디지털 드로잉 심화', '채색·라이팅 · 일러스트 제작', 'g'],
       ['AI디지털\u200b드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
       ['디지털\u200b드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
-    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#16a34a', label: '웹툰(드로잉)', st: [
+    { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#eab308', label: '웹툰(드로잉)', st: [
       ['아트\u200b파운데이션', '기초 조형 · 드로잉 · 색채', 't', '+ 파운데이션'],
       ['웹툰기초', '웹툰 작화 · 선화·표현 기초', 'g'],
       ['웹툰심화', '스토리·콘티 기획 · 칸 연출', 'g'],
@@ -4545,7 +4546,7 @@ function renderRoadmapMap() {
     // 바로 시작 노선: 첫 역 위에 표시 + 이름표는 그 표시를 피해 둘째 역~끝 가운데
     const pillX = row.solo ? (xs[1] + xs[xs.length - 1]) / 2 : (x0 + x1) / 2;
     if (row.solo) html.push(V('solo_tag', RMAP.soloTag, 'rm-solo', `left:${xs[0]}px;top:${y - 15}px;--c:${row.color}`));
-    html.push(V(row.id + '_label', row.label, 'rm-pill' + (row._s < 0 ? ' rm-pill--l' : ''), `left:${pillX}px;top:${y - 13}px;--c:${row.color}`,
+    html.push(V(row.id + '_label', row.label, 'rm-pill' + (row._s < 0 ? ' rm-pill--l' : ''), `left:${pillX}px;top:${y - 13}px;--c:${row.color}${row.ink ? `;--ci:${row.ink}` : ''}`,
       ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
@@ -4666,7 +4667,7 @@ function rmDetailHtml(id, pdf) {
   const exHtml = ex.length ? `<section class="rmd__ex">${T('ex_title', '결과물 예시', 'rmd__ex-h')}<div class="rmd__ex-grid">`
     + ex.slice(0, 4).map(([f, by]) => `<figure class="rmd__ex-fig"><img src="images/roadmap-ex/${f}" alt=""${pdf ? '' : ' loading="lazy"'} decoding="async">`
       + `<figcaption>참고 사진 · ${rmEsc(by)} / Unsplash</figcaption></figure>`).join('') + `</div></section>` : '';
-  return `<div class="rmd" style="--c:${color}">`
+  return `<div class="rmd" style="--c:${color}${row?.ink ? `;--ci:${row.ink}` : ''}">`
     + (pdf ? '' : `<div class="rmd__bar"><button type="button" class="rmd__back"><span aria-hidden="true">‹</span>전체 노선도</button>${go}</div>`)
     + `<div class="rmd__head">${head}</div>`
     + `<div class="rmd__body"><div class="rmd__route" data-n="${cols.length}" style="--n:${cols.length}">${cols.join('')}</div>${exHtml}</div>`
