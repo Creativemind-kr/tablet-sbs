@@ -4927,113 +4927,34 @@ function renderReviewsPage() {
 /* ══════════════════════════════════════════════════
    RENDER: 자격증 시험 일정
 ══════════════════════════════════════════════════ */
+/* 국가기술자격: 한국산업인력공단 「2027년 국가기술자격 검정시행계획」 정기검정 기준 */
+const KT_FUNC_2027 = [ // 기능사
+  { round: '1회', wReg: '2027-01-05~01-08', wExam: '2027-01-19~01-23', wPass: '2027-01-29', pReg: '2027-02-02~02-05', pExam: '2027-03-13~03-31', result: '2027-04-09', result2: '2027-04-16' },
+  { round: '2회', wReg: '2027-03-15~03-19', wExam: '2027-04-03~04-08', wPass: '2027-04-21', pReg: '2027-04-26~04-29', pExam: '2027-05-29~06-13', result: '2027-06-25', result2: '2027-07-02' },
+  { round: '3회', wReg: '2027-06-07~06-10', wExam: '2027-06-26~06-30', wPass: '2027-07-07', pReg: '2027-07-26~07-29', pExam: '2027-08-28~09-17', result: '2027-09-24', result2: '2027-09-30' },
+  { round: '4회', wReg: '2027-08-23~08-26', wExam: '2027-09-21~09-25', wPass: '2027-09-30', pReg: '2027-10-05~10-08', pExam: '2027-11-27~12-15', result: '2027-12-24', result2: '2027-12-31' },
+];
+const KT_ENG_2027 = [ // 기사·산업기사
+  { round: '1회', wReg: '2027-01-18~01-21', wExam: '2027-02-12~03-02', wPass: '2027-03-10', pReg: '2027-03-22~03-25', pExam: '2027-04-17~05-04', result: '2027-06-04', result2: '2027-06-11' },
+  { round: '2회', wReg: '2027-04-12~04-15', wExam: '2027-05-07~05-26', wPass: '2027-06-02', pReg: '2027-06-15~06-18', pExam: '2027-07-10~07-28', result: '2027-09-03', result2: '2027-09-10' },
+  { round: '3회', wReg: '2027-07-20~07-23', wExam: '2027-08-13~09-01', wPass: '2027-09-08', pReg: '2027-09-21~09-24', pExam: '2027-10-30~11-19', result: '2027-12-24', result2: '2027-12-31' },
+];
+const KT_ORG = '한국산업인력공단 · 2027년 시행계획';
+const ktFunc = name => ({ cat: '국가기술자격', grade: '기능사', name, org: KT_ORG, sessions: KT_FUNC_2027,
+  note: '2회 필기 원서접수 기간 중 3월 18일(목)은 접수하지 않습니다.' });
+const ktEng = (grade, name) => ({ cat: '국가기술자격', grade, name, org: KT_ORG, sessions: KT_ENG_2027,
+  note: '필기 합격(예정)자는 응시자격 서류를 제출해야 실기에 응시할 수 있습니다. 서류 제출: 1회 02-12~03-19 · 2회 05-07~06-11 · 3회 08-13~09-17' });
 const EXAM_SCHEDULE = [
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '컴퓨터그래픽스운용기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '전산응용건축제도기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '전산응용기계제도기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '실내건축기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '웹디자인기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기능사',
-    name: '프로그래밍기능사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-01-06~01-24', practical: '2026-02-02~04-01', result: '2026-04-17' },
-      { round: '2회', written: '2026-03-16~04-09', practical: '2026-04-27~06-14', result: '2026-07-03' },
-      { round: '3회', written: '2026-06-08~07-02', practical: '2026-07-27~09-16', result: '2026-10-08' },
-      { round: '4회', written: '2026-08-24~09-21', practical: '2026-10-12~12-02', result: '2026-12-18' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '산업기사',
-    name: '실내건축산업기사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-03-07', practical: '2026-05-31~06-20', result: '2026-07-16' },
-      { round: '2회', written: '2026-06-06', practical: '2026-08-22~09-04', result: '2026-11-05' },
-      { round: '3회', written: '2026-09-05', practical: '2026-11-22~12-05', result: '2026-12-31' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '산업기사',
-    name: '컬러리스트산업기사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-03-07', practical: '2026-05-31~06-20', result: '2026-07-16' },
-      { round: '2회', written: '2026-06-06', practical: '2026-08-22~09-04', result: '2026-11-05' },
-      { round: '3회', written: '2026-09-05', practical: '2026-11-22~12-05', result: '2026-12-31' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기사',
-    name: '실내건축기사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-02-07', practical: '2026-04-05~04-18', result: '2026-05-28' },
-      { round: '2회', written: '2026-05-09', practical: '2026-07-12~07-25', result: '2026-09-17' },
-      { round: '3회', written: '2026-09-05', practical: '2026-10-25~11-07', result: '2026-11-26' },
-    ]
-  },
-  {
-    cat: '국가기술자격', grade: '기사',
-    name: '컬러리스트기사',
-    org: '한국산업인력공단',
-    sessions: [
-      { round: '1회', written: '2026-02-07', practical: '2026-04-05~04-18', result: '2026-05-28' },
-      { round: '2회', written: '2026-05-09', practical: '2026-07-12~07-25', result: '2026-09-17' },
-      { round: '3회', written: '2026-09-05', practical: '2026-10-25~11-07', result: '2026-11-26' },
-    ]
-  },
+  ktFunc('컴퓨터그래픽스운용기능사'),
+  ktFunc('전산응용건축제도기능사'),
+  ktFunc('전산응용기계제도기능사'),
+  ktFunc('실내건축기능사'),
+  ktFunc('웹디자인기능사'),
+  ktFunc('프로그래밍기능사'),
+  ktEng('산업기사', '실내건축산업기사'),
+  ktEng('산업기사', '컬러리스트산업기사'),
+  ktEng('기사', '실내건축기사'),
+  ktEng('기사', '컬러리스트기사'),
   {
     cat: '컴퓨터활용능력',
     name: '컴퓨터활용능력 1·2급',
@@ -5166,9 +5087,9 @@ function buildExamDDayTable() {
 
   function getNextInfo(ex) {
     for (const s of ex.sessions) {
-      const wd = parseExamDate(s.written);
+      const wd = parseExamDate(s.wExam || s.written);
       if (!wd) return { s, status: 'always' };          // 상시
-      const rd = parseExamDate(s.result);
+      const rd = parseExamDate(s.result2 || s.result);
       if (wd >= today) {
         const diff = Math.ceil((wd - today) / 86400000);
         return { s, status: 'upcoming', diff };
@@ -5219,8 +5140,8 @@ function buildExamDDayTable() {
     const s = info?.s;
     const dateStr = !info ? '-'
       : info.status === 'always' ? '연중 상시'
-      : info.status === 'waiting' ? `발표: ${s.result}`
-      : s.written;
+      : info.status === 'waiting' ? `발표: ${s.result2 || s.result}`
+      : (s.wExam || s.written);
     return `<tr>
       <td><span class="edd-name">${name}</span></td>
       <td class="edd-round">${s ? s.round : '-'}</td>
@@ -5239,21 +5160,25 @@ function buildExamDDayTable() {
 
 function parseExamDate(str) {
   if (!str || str === '-') return null;
-  // "2025-01-18~19" → 첫 번째 날짜만 파싱
-  const m = str.match(/(\d{4}-\d{2}-\d{2})/);
-  return m ? new Date(m[1]) : null;
+  // "2025-01-18~19" → 첫 번째 날짜만, 현지 자정 기준으로 파싱
+  const m = str.match(/(\d{4})-(\d{2})-(\d{2})/);
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
 }
 
 function _buildExamCard(ex, today, soon) {
+  const md = v => String(v).replace(/^\d{4}-/, '');
   const sessionRows = ex.sessions.map(s => {
-    const d = parseExamDate(s.written);
+    const d = parseExamDate(s.wExam || s.written);
+    const wCell = s.wExam ? `접수 ${md(s.wReg)}<br>시험 ${md(s.wExam)}<br>발표 ${md(s.wPass)}` : s.written;
+    const pCell = s.pExam ? `접수 ${md(s.pReg)}<br>시험 ${md(s.pExam)}` : s.practical;
+    const rCell = s.result2 ? `1차 ${md(s.result)}<br>2차 ${md(s.result2)}` : s.result;
     const isUp = d && d >= today && d <= soon;
     const badge = isUp ? `<span class="exam-upcoming-badge">예정</span>` : '';
     return `<tr${isUp ? ' class="is-upcoming"' : ''}>
       <td>${s.round}${badge}</td>
-      <td>${s.written}</td>
-      <td>${s.practical}</td>
-      <td>${s.result}</td>
+      <td>${wCell}</td>
+      <td>${pCell}</td>
+      <td>${rCell}</td>
     </tr>`;
   }).join('');
   const regBox = ex.registerUrl ? `
@@ -5278,6 +5203,7 @@ function _buildExamCard(ex, today, soon) {
         </table>
       </div>
       ${regBox}
+      ${ex.note ? `<p class="exam-notice">※ ${ex.note}</p>` : ''}
       <p class="exam-notice">※ 일정은 시행처 공고 기준이며 변동될 수 있습니다. 반드시 공식 홈페이지에서 재확인하세요.</p>
     </div>`;
 }
