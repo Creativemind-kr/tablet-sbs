@@ -4250,7 +4250,7 @@ const RMAP_W = 1600, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 �
 const RMAP = {
   title: 'AI CURRICULUM\nROAD MAP',
   sub: '실무 맞춤형 AI 교육과정\n기초부터 취업, 창업, 수익까지!!',
-  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화반'], ['b', '창업역'], ['s', '신설 예정역']],
+  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화반'], ['b', '창업역']],
   soonTag: '신설 예정',   // 평일·주말 시간표에 아직 없는 역(RMAP_SOON)의 표시
   soloTag: '바로 시작',   // solo: true 노선(공통기초 없이 시작)의 첫 역 표시
   hub: {
@@ -4438,7 +4438,7 @@ function rmT(k, def, cls, style = '', attrs = '', editable = true) {
 }
 
 // 평일·주말 시간표에 아직 없는 과정 = 신설 예정역(점선). 개설되면 여기서 이름만 빼면 일반 역으로 돌아감
-const RMAP_SOON = new Set(['ACP', '디지털드로잉PO', '웹툰심화', 'AI웹툰', '웹툰PO', 'AI시각디자인', '웹퍼블리싱', 'Web Total', '실내건축기초', '영상편집 심화 실무', '창업', '자영업/소상공인', '스타트업']);
+const RMAP_SOON = new Set([]);   // 11/24: 신설 예정 13개 역 모두 일반 역으로 전환(로드맵 표시 없음)
 const rmSoon = name => RMAP_SOON.has(String(name).replace(/\u200b/g, ''));
 function renderRoadmapMap() {
   const box = document.getElementById('rmap-texts'), svgBox = document.getElementById('rmap-svg');
