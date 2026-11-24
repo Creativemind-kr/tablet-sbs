@@ -1493,6 +1493,7 @@
   .rm-st--x .rm-n { color: #065f46; }
   .rm-st--r .rm-n { color: #5b21b6; }
   .rm-st--b .rm-n { color: #86198f; }
+  .rm-st--soon .rm-n { color: #64748b; }
   .rm-d { font-size: 10px; font-weight: 500; line-height: 1.28; color: #64748b; white-space: pre-line; letter-spacing: -0.01em; }
   /* 전체 보기에선 노선·역 이름만, 확대하면 과목 설명이 나타남(편집 모드는 항상 보임) */
   .rm-d { transition: opacity 180ms, visibility 180ms; }
@@ -1585,6 +1586,7 @@
   .rmd__dot--p { width: 34px; height: 34px; background: radial-gradient(circle, #fff 0 4.5px, #0f172a 5px); }
   .rmd__dot--x { width: 32px; height: 32px; border-color: #059669; background: radial-gradient(circle, #059669 0 6px, #ecfdf5 6.5px); }
   .rmd__dot--r { width: 32px; height: 32px; border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 6px, #f5f3ff 6.5px); }
+  .rmd__dot--s { width: 26px; height: 26px; border-style: dashed; background: #fff; }
   .rmd__dot--b { width: 32px; height: 32px; border-color: #a21caf; background: radial-gradient(circle, #fff 0 5.5px, #a21caf 6px); }
   .rmd__dot--t { width: 38px; height: 38px; border: 6px solid #0f172a; background: radial-gradient(circle, var(--in) 0 7.5px, #fff 8px); }
   .rmd__hub {
@@ -1603,6 +1605,7 @@
   .rmd__badge--core { background: #16a34a; }
   .rmd__badge--rv { background: #7c3aed; }
   .rmd__badge--biz { background: #a21caf; }
+  .rmd__badge--soon { background: #b45309; }
   .rmd__badge--start { background: var(--c); }
   .rmd__legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 14px 80px 0 0; border-top: 1px solid #eef2f7; }
   .rmd__legend .rm-lg__t { font-size: 13px; }
@@ -1678,6 +1681,7 @@
   .rm-lg__dot--a { border-color: #16a34a; background: radial-gradient(circle, #059669 0 2.6px, #ecfdf5 3px); }
   .rm-lg__dot--p { border-color: #64748b; background: radial-gradient(circle, #fff 0 1.8px, #0f172a 2.2px); }
   .rm-lg__dot--r { border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 2.6px, #f5f3ff 3px); }
+  .rm-lg__dot--s { border-color: #94a3b8; border-style: dashed; background: #fff; }
   .rm-lg__dot--b { border-color: #a21caf; background: radial-gradient(circle, #fff 0 2.4px, #a21caf 2.8px); }
   /* 아래 자격시험 칸 */
   .rm-foot {
@@ -4239,7 +4243,8 @@ const RMAP_W = 1600, RMAP_H = 920;   // 노선도 판 크기(px) — 뷰어가 �
 const RMAP = {
   title: 'AI CURRICULUM\nROAD MAP',
   sub: '실무 맞춤형 AI 교육과정\n기초부터 취업, 창업, 수익까지!!',
-  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화반'], ['b', '창업역']],
+  legend: [['g', '전공 일반역'], ['a', 'AI 융합역'], ['p', 'PO·완성 종착역'], ['r', '+ 추가·수익화반'], ['b', '창업역'], ['s', '신설 예정역']],
+  soonTag: '신설 예정',   // 평일·주말 시간표에 아직 없는 역(RMAP_SOON)의 표시
   soloTag: '바로 시작',   // solo: true 노선(공통기초 없이 시작)의 첫 역 표시
   hub: {
     num: '2', tag: '내부 공통 순환형', name: '공통기초 순환선',
@@ -4426,6 +4431,9 @@ function rmT(k, def, cls, style = '', attrs = '', editable = true) {
   return `<div class="${cls}"${style ? ` style="${style}"` : ''}${attrs}${ed}>${rmEsc(t)}</div>`;
 }
 
+// 평일·주말 시간표에 아직 없는 과정 = 신설 예정역(점선). 개설되면 여기서 이름만 빼면 일반 역으로 돌아감
+const RMAP_SOON = new Set(['ACP', 'AI디지털드로잉', '디지털드로잉PO', '웹툰심화', 'AI웹툰', '웹툰PO', 'AI시각디자인', '웹퍼블리싱', 'Web Total', '실내건축기초', '영상편집 심화 실무']);
+const rmSoon = name => RMAP_SOON.has(String(name).replace(/\u200b/g, ''));
 function renderRoadmapMap() {
   const box = document.getElementById('rmap-texts'), svgBox = document.getElementById('rmap-svg');
   if (!box || !svgBox) return;
@@ -4535,9 +4543,11 @@ function renderRoadmapMap() {
     const y = row._y, xs = row._x;
     xs.forEach((x, i) => {
       const [name, , t] = row.st[i], key = `${row.id}_${i}`;
-      dots.push(dot(x, y, t, row.color, (i === 0 && row.feed) ? row.feed : row.color));
+      const soon = rmSoon(name);
+      dots.push(soon ? `<circle cx="${Math.round(x * 10) / 10}" cy="${Math.round(y * 10) / 10}" r="8.5" fill="#fff" stroke="${row.color}" stroke-width="3.5" stroke-dasharray="3.6 3"/>`
+        : dot(x, y, t, row.color, (i === 0 && row.feed) ? row.feed : row.color));
       const up = (kids[key] || []).some(k => k._y > y);
-      html.push(`<div class="rm-st rm-st--${t}${up ? ' rm-st--up' : ''}" style="left:${x}px;top:${up ? y - 14 : y + 14}px;width:${LBL_W}px`
+      html.push(`<div class="rm-st rm-st--${t}${soon ? ' rm-st--soon' : ''}${up ? ' rm-st--up' : ''}" style="left:${x}px;top:${up ? y - 14 : y + 14}px;width:${LBL_W}px`
         + (up ? ';transform:translate(-50%,-100%)' : '') + `">` + V(key + '_n', name, 'rm-n') + `</div>`);
     });
     const x0 = Math.min(...xs), x1 = Math.max(...xs);
@@ -4656,11 +4666,12 @@ function rmDetailHtml(id, pdf) {
       T('hub_name', hub.name, 'rmd__n'), T('hub_d1', hub.d1, 'rmd__d'))])
       .concat(rmRoute(row.id).map(({ row: r, i, st: [name, desc, t, badge], color: c, dash }, n) => {
         const key = `${r.id}_${i}`, b = badge || (t === 'p' ? 'PO·완성' : '');
-        const first = row.solo && n === 0;
-        const top = first ? T('solo_tag', RMAP.soloTag, 'rmd__badge rmd__badge--start')
+        const first = row.solo && n === 0, soon = rmSoon(name);
+        const top = soon ? T('soon_tag', RMAP.soonTag, 'rmd__badge rmd__badge--soon')
+          : first ? T('solo_tag', RMAP.soloTag, 'rmd__badge rmd__badge--start')
           : b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : t === 'b' ? 'biz' : 'ai'}`) : '';
         return col(first ? '' : seg(c, dash), top,
-          dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
+          soon ? dot('s', r.color, r.color) : dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
       }));
   }
   const ex = row ? (RMAP_EX[row.id] || []) : [];
