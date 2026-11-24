@@ -7194,6 +7194,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
+/* 새 배포 자동 적용: 열어 둔 태블릿 화면이 옛 버전으로 남지 않게, 최신 버전인지 확인해 바뀌었으면 새로고침.
+   - 다른 앱·잠금 화면에서 돌아올 때 확인
+   - 10분마다 확인하되, 상담 도중 화면이 바뀌지 않게 첫 화면(학원 소개)에 있을 때만 새로고침
+   - 관리자 편집 중·로그인 창·PDF 화면에서는 새로고침하지 않음 */
+(function autoUpdate() {
+  if (location.protocol === 'file:' || /[?&]pdf=/.test(location.search)) return;
+  const tag = () => fetch('/', { method: 'HEAD', cache: 'no-store' })
+    .then(r => (r.ok ? r.headers.get('etag') || r.headers.get('last-modified') : null)).catch(() => null);
+  let base = null;
+  tag().then(t => { base = t; });
+  const busy = () => isEditMode || (document.getElementById('login-modal') || {}).style?.display === 'flex';
+  async function check(onlyIntro) {
+    if (!base || document.hidden || busy()) return;
+    if (onlyIntro && currentPage !== 'intro') return;
+    const t = await tag();
+    if (t && t !== base && !busy()) location.reload();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) check(false); });
+  setInterval(() => check(true), 10 * 60 * 1000);
+})();
 </script>
 </body>
 </html>
