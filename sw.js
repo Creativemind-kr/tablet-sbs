@@ -15,6 +15,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).pathname.startsWith('/api/')) return; // 구글 후기 등 API 응답은 저장하지 않음
   e.respondWith(
     fetch(e.request)
       .then(res => {

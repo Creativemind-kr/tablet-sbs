@@ -1212,6 +1212,19 @@
   }
 
   @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } .review-ghost { display: none; } }
+  .g-rv { margin: 0 0 28px; }
+  .g-rv:empty { display: none; }
+  .g-rv__wait { font-size: var(--t-sm); color: var(--c-text-3); padding: 6px 0; }
+  .g-rv__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .g-rv__title { font-size: var(--t-md); font-weight: 800; letter-spacing: -.02em; }
+  .g-rv__sub { font-size: var(--t-xs); color: var(--c-text-3); margin-top: 3px; }
+  .g-rv__score { display: inline-flex; align-items: baseline; gap: 8px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--c-border); background: #fff; color: var(--c-text); text-decoration: none; }
+  .g-rv__score b { font-size: 1.05rem; font-weight: 800; color: #F59E0B; }
+  .g-rv__score span { font-size: var(--t-xs); font-weight: 600; color: var(--c-text-2); }
+  .g-rv__photo { object-fit: cover; background: var(--c-bg-2); }
+  .g-rv__card .review-card-v2__name a { color: inherit; text-decoration: none; }
+  .g-rv__text { display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; word-break: keep-all; }
+  .g-rv__attr { margin-top: 8px; text-align: right; font-family: Roboto, Arial, sans-serif; font-size: 11px; color: #5e5e5e; }
 
   /* ══════════════════════════════════════
      17. IMAGE GALLERY & LIGHTBOX
@@ -4921,6 +4934,7 @@ function renderReviewsPage() {
         <span class="review-banner__chip">✨ 친절·꼼꼼한 강사</span>
       </div>
     </div>
+    <section class="g-rv" id="g-reviews" aria-label="구글 지도 후기"></section>
     <div class="review-grid-v2">
       ${cards}
       ${em ? `<button class="admin-add-block" onclick="addReview()" style="min-height:160px">+ 후기 추가</button>` : `
@@ -4928,6 +4942,47 @@ function renderReviewsPage() {
       <div class="review-ghost" aria-hidden="true"></div>
       <p class="review-more-label">· · · 등등</p>`}
     </div>`;
+  paintGoogleReviews();
+}
+
+/* 구글 지도 후기: 수강생 후기 화면을 열 때 /api/google-reviews 에서 받아옴.
+   구글 약관상 저장하지 않고(서비스워커도 제외), 받은 후기 최대 5개 중 4점 이상만 표시 */
+let G_REVIEWS = null, G_REVIEWS_LOADING = false;
+function loadGoogleReviews() {
+  if (G_REVIEWS || G_REVIEWS_LOADING || location.protocol === 'file:') return;
+  G_REVIEWS_LOADING = true; paintGoogleReviews();
+  fetch('/api/google-reviews', { cache: 'no-store' })
+    .then(r => r.json()).then(d => { G_REVIEWS = d; })
+    .catch(() => { G_REVIEWS = { ok: false }; })
+    .finally(() => { G_REVIEWS_LOADING = false; paintGoogleReviews(); });
+}
+function paintGoogleReviews() {
+  const el = document.getElementById('g-reviews');
+  if (!el) return;
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const safeUrl = u => /^https:\/\//.test(u || '') ? esc(u) : '';
+  const d = G_REVIEWS;
+  if (!d) { el.innerHTML = G_REVIEWS_LOADING ? '<p class="g-rv__wait">구글 지도 후기를 불러오는 중…</p>' : ''; return; }
+  if (!d.ok || !d.rating) { el.innerHTML = ''; return; }   // 불러오지 못하면 칸을 숨김
+  const maps = safeUrl(d.mapsUri);
+  const cards = (d.reviews || []).map(v => {
+    const raw = v.author || '구글 사용자', name = esc(raw), link = safeUrl(v.authorUri), photo = safeUrl(v.photo);
+    return `<div class="review-card-v2 g-rv__card" style="--rv-accent:#4285F4">
+      <div class="review-card-v2__head">
+        ${photo ? `<img class="review-avatar-v2 g-rv__photo" src="${photo}" alt="" referrerpolicy="no-referrer" loading="lazy">` : `<div class="review-avatar-v2">${esc(raw.charAt(0))}</div>`}
+        <div><p class="review-card-v2__name">${link ? `<a href="${link}" target="_blank" rel="noopener">${name}</a>` : name}</p>
+          <div class="review-card-v2__tags"><span class="rv-tag-course">Google 지도 리뷰</span></div></div>
+      </div>
+      <p class="review-card-v2__text g-rv__text">${esc(v.text)}</p>
+      <div class="review-card-v2__foot"><span class="rv-stars">${'★'.repeat(Math.round(v.rating || 0))}</span><span class="rv-date">${esc(v.when)}</span></div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="g-rv__head">
+      <div><p class="g-rv__title">구글 지도 후기</p><p class="g-rv__sub">구글 지도에 남겨진 후기 중 4점 이상만 보여드려요</p></div>
+      ${maps ? `<a class="g-rv__score" href="${maps}" target="_blank" rel="noopener"><b>★ ${Number(d.rating).toFixed(1)}</b><span>후기 ${Number(d.count || 0).toLocaleString()}개 · 전체 보기 ›</span></a>` : ''}
+    </div>
+    ${cards ? `<div class="review-grid-v2">${cards}</div>` : ''}
+    <p class="g-rv__attr">Google Maps</p>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -5814,6 +5869,7 @@ function goToPage(pageId) {
   document.getElementById('indicator').textContent =
     `${PAGE_ORDER.indexOf(pageId)+1} / ${PAGE_ORDER.length}`;
   if (['intro','instructors','reviews'].includes(pageId)) setCourseColor(null);
+  if (pageId === 'reviews') loadGoogleReviews();
   currentPage = pageId;
   // 영상 배경: 인트로일 때만 표시
   _syncBgVideo(pageId);
