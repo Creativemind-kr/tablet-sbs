@@ -1428,8 +1428,14 @@
   .exam-dday-table { width:100%; border-collapse:collapse; }
   .exam-dday-table th { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--c-text-3); padding:12px 14px; text-align:left; border-bottom:1px solid var(--c-border); white-space:nowrap; }
   .exam-dday-table td { padding:11px 14px; border-bottom:1px solid var(--c-border); vertical-align:middle; font-size:13px; }
-  .exam-dday-table tr:last-child td { border-bottom:none; }
+  .exam-dday-table tbody:last-child tr:last-child td { border-bottom:none; }
   .exam-dday-table tr:hover td { background:rgba(0,0,0,.025); }
+  .exam-dday-table .edd-sec td:first-child { box-shadow:inset 4px 0 0 var(--g); }
+  .exam-dday-table tr.edd-group td, .exam-dday-table tr.edd-group:hover td { background:#fff; padding:14px 14px 8px; border-top:10px solid var(--c-bg-2); }
+  .exam-dday-table .edd-sec:first-of-type tr.edd-group td { border-top:0; }
+  .edd-group__name { font-size:14px; font-weight:800; color:var(--g); }
+  .edd-group__org { margin-left:8px; font-size:11px; font-weight:600; color:var(--c-text-3); }
+  @media (max-width: 600px) { .exam-dday-table th:nth-child(2), .exam-dday-table td.edd-round { display:none; } .exam-dday-table td, .exam-dday-table th { padding-left:10px; padding-right:10px; } .edd-date { white-space:nowrap; } }
   .edd-name { font-weight:700; color:var(--c-text); font-size:13px; }
   .edd-round { color:var(--c-text-3); font-size:12px; white-space:nowrap; }
   .edd-date { color:var(--c-text-2); font-size:12px; }
@@ -5015,6 +5021,18 @@ const KPC_CAD = [
   { round: '11회', reg: '2027-10-07~10-13', exam: '2027-11-13', result: '2027-12-02' },
   { round: '12회', reg: '2027-11-04~11-10', exam: '2027-12-11', result: '2027-12-30' },
 ];
+/* 전산세무회계: 한국세무사회 시험일정(2026.11.24 받은 일정). 회차 번호는 전산세무·전산회계 공통 */
+const TAX_ORG = '한국세무사회 · 2026년 남은 회차 + 2027년 일정';
+const TAX_NOTE = '전산세무 1·2급, 전산회계 1·2급 같은 날 시행 · 수험표 출력: 시험일 5일 전부터 시험 당일까지';
+const TAX_SESSIONS = [
+  { round: '2026년 129회', reg: '2026-11-05~11-11', exam: '2026-12-05', result: '2026-12-24' },
+  { round: '130회', reg: '2027-01-01~01-08', exam: '2027-01-30', result: '2027-02-25' },
+  { round: '131회', reg: '2027-03-04~03-10', exam: '2027-04-03', result: '2027-04-22' },
+  { round: '132회', reg: '2027-04-29~05-06', exam: '2027-06-05', result: '2027-06-24' },
+  { round: '133회', reg: '2027-07-01~07-07', exam: '2027-07-31', result: '2027-08-19' },
+  { round: '134회', reg: '2027-08-26~09-01', exam: '2027-10-02', result: '2027-10-28' },
+  { round: '135회', reg: '2027-11-04~11-10', exam: '2027-12-04', result: '2027-12-23' },
+];
 const kpc = (cat, name, sessions, note) => ({ cat, name, org: KPC_ORG, sessions, note, registerUrl: 'https://license.kpc.or.kr/index.do' });
 const EXAM_SCHEDULE = [
   ktFunc('컴퓨터그래픽스운용기능사'),
@@ -5038,32 +5056,8 @@ const EXAM_SCHEDULE = [
   kpc('GTQ', 'GTQ 그래픽기술자격 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Photoshop CS6·CC (한글/영문)'),
   kpc('GTQi', 'GTQi 그래픽기술자격(일러스트) 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Illustrator CS6·CC (영문)'),
   kpc('GTQ-AI', 'GTQ-AI 그래픽기술자격(AI)', KPC_GTQAI, '2027년은 짝수달 4주차 토요일 시행 · Photoshop CC (한글/영문)'),
-  {
-    cat: '전산세무회계',
-    name: '전산세무 2급',
-    org: '한국세무사회',
-    sessions: [
-      { round: '124회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
-      { round: '125회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
-      { round: '126회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
-      { round: '127회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
-      { round: '128회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
-      { round: '129회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
-    ]
-  },
-  {
-    cat: '전산세무회계',
-    name: '전산회계 1급',
-    org: '한국세무사회',
-    sessions: [
-      { round: '121회', written: '2026-01-02~01-08', practical: '-', result: '2026-01-31' },
-      { round: '122회', written: '2026-03-05~03-11', practical: '-', result: '2026-04-04' },
-      { round: '123회', written: '2026-04-30~05-07', practical: '-', result: '2026-06-06' },
-      { round: '124회', written: '2026-07-02~07-08', practical: '-', result: '2026-08-01' },
-      { round: '125회', written: '2026-08-27~09-02', practical: '-', result: '2026-10-03' },
-      { round: '126회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
-    ]
-  },
+  { cat: '전산세무회계', name: '전산세무 2급', org: TAX_ORG, sessions: TAX_SESSIONS, note: TAX_NOTE },
+  { cat: '전산세무회계', name: '전산회계 1급', org: TAX_ORG, sessions: TAX_SESSIONS, note: TAX_NOTE },
   kpc('ITQ', 'ITQ (정보기술자격) — 한글·엑셀·파워포인트', KPC_ITQ, '정기시험 12회 + 일요일 특별시험 4회 · MS오피스 2021 · 한글 2020·2022 중 선택, 한셀·한쇼는 2022'),
   kpc('AI-POT', 'AI-POT 2급 (AI프롬프트 활용능력)', KPC_AIPOT, '정기시험 총 6회'),
   kpc('CAD실무능력평가', 'CAD실무능력평가', KPC_CAD, '매월 둘째 주 토요일 시행 (총 12회) · AutoCAD'),
@@ -5151,13 +5145,19 @@ function buildExamDDayTable() {
         if (info.status === 'always') { best = info; continue; }
         if (info.status === 'upcoming' && (best.status !== 'upcoming' || info.diff < best.diff)) best = info;
       }
-      displayList.push({ name: `국가기술자격 (${grade})`, info: best });
+      displayList.push({ name: `국가기술자격 (${grade})`, info: best, grp: 'nat' });
     } else {
-      displayList.push({ name: ex.name, info: getNextInfo(ex) });
+      displayList.push({ name: ex.name, info: getNextInfo(ex), grp: ex.org === KPC_ORG ? 'kpc' : ex.cat === '전산세무회계' ? 'tax' : 'always' });
     }
   }
 
-  const rows = displayList.map(({ name, info }) => {
+  const EDD_GROUPS = [
+    { key: 'nat', label: '국가기술자격', org: '한국산업인력공단', color: '#2563EB' },
+    { key: 'kpc', label: 'KPC 자격', org: '한국생산성본부', color: '#7C3AED' },
+    { key: 'tax', label: '전산세무회계', org: '한국세무사회', color: '#0D9488' },
+    { key: 'always', label: '상시 시험', org: '원하는 날 응시', color: '#94A3B8' },
+  ];
+  const rowHtml = ({ name, info }) => {
     const s = info?.s;
     const dateStr = !info ? '-'
       : info.status === 'always' ? '연중 상시'
@@ -5169,12 +5169,17 @@ function buildExamDDayTable() {
       <td class="edd-date">${dateStr}</td>
       <td>${ddayPill(info)}</td>
     </tr>`;
+  };
+  const rows = EDD_GROUPS.map(g => {
+    const list = displayList.filter(d => d.grp === g.key);
+    if (!list.length) return '';
+    return `<tbody class="edd-sec" style="--g:${g.color}"><tr class="edd-group"><td colspan="4"><span class="edd-group__name">${g.label}</span><span class="edd-group__org">${g.org}</span></td></tr>${list.map(rowHtml).join('')}</tbody>`;
   }).join('');
 
   return `<div class="exam-dday-wrap">
     <table class="exam-dday-table">
       <thead><tr><th>자격증</th><th>회차</th><th>시험 일정</th><th>D-Day</th></tr></thead>
-      <tbody>${rows}</tbody>
+      ${rows}
     </table>
   </div>`;
 }
