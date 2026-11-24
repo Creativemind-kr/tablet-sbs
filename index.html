@@ -1587,6 +1587,7 @@
   .rmd__dot--x { width: 32px; height: 32px; border-color: #059669; background: radial-gradient(circle, #059669 0 6px, #ecfdf5 6.5px); }
   .rmd__dot--r { width: 32px; height: 32px; border-color: #7c3aed; background: radial-gradient(circle, #7c3aed 0 6px, #f5f3ff 6.5px); }
   .rmd__dot--s { width: 26px; height: 26px; border-style: dashed; background: #fff; }
+  .rmd__dot--sb { width: 30px; height: 30px; border-style: dashed; border-color: #a21caf; background: radial-gradient(circle, #a21caf 0 5px, #fdf4ff 5.5px); }
   .rmd__dot--b { width: 32px; height: 32px; border-color: #a21caf; background: radial-gradient(circle, #fff 0 5.5px, #a21caf 6px); }
   .rmd__dot--t { width: 38px; height: 38px; border: 6px solid #0f172a; background: radial-gradient(circle, var(--in) 0 7.5px, #fff 8px); }
   .rmd__hub {
@@ -4308,7 +4309,6 @@ const RMAP = {
     { id: 'l21', color: '#eab308', ink: '#854d0e', dept: 'd06', label: '아트웍', from: ['l4', 0], st: [
       ['드로잉 TOTAL', '타블렛 훈련 · 캐릭터 기초', 'g'],
       ['디지털 드로잉 심화', '채색·라이팅 · 일러스트 제작', 'g'],
-      ['AI디지털\u200b드로잉', '생성형 이미지 · 프롬프트 아트', 'a'],
       ['디지털\u200b드로잉PO', '컨셉아트 · 일러스트 포폴', 'p'] ] },
     { id: 'l4', color: '#00a4e3', dept: 'd06', feed: '#eab308', label: '웹툰(드로잉)', st: [
       ['아트\u200b파운데이션', 'AI 레퍼런스 · 디지털 드로잉 · 포트폴리오', 't', '+ 파운데이션'],
@@ -4432,7 +4432,7 @@ function rmT(k, def, cls, style = '', attrs = '', editable = true) {
 }
 
 // 평일·주말 시간표에 아직 없는 과정 = 신설 예정역(점선). 개설되면 여기서 이름만 빼면 일반 역으로 돌아감
-const RMAP_SOON = new Set(['ACP', 'AI디지털드로잉', '디지털드로잉PO', '웹툰심화', 'AI웹툰', '웹툰PO', 'AI시각디자인', '웹퍼블리싱', 'Web Total', '실내건축기초', '영상편집 심화 실무']);
+const RMAP_SOON = new Set(['ACP', '디지털드로잉PO', '웹툰심화', 'AI웹툰', '웹툰PO', 'AI시각디자인', '웹퍼블리싱', 'Web Total', '실내건축기초', '영상편집 심화 실무', '창업', '자영업/소상공인', '스타트업']);
 const rmSoon = name => RMAP_SOON.has(String(name).replace(/\u200b/g, ''));
 function renderRoadmapMap() {
   const box = document.getElementById('rmap-texts'), svgBox = document.getElementById('rmap-svg');
@@ -4544,7 +4544,9 @@ function renderRoadmapMap() {
     xs.forEach((x, i) => {
       const [name, , t] = row.st[i], key = `${row.id}_${i}`;
       const soon = rmSoon(name);
-      dots.push(soon ? `<circle cx="${Math.round(x * 10) / 10}" cy="${Math.round(y * 10) / 10}" r="8.5" fill="#fff" stroke="${row.color}" stroke-width="3.5" stroke-dasharray="3.6 3"/>`
+      const sx = Math.round(x * 10) / 10, sy = Math.round(y * 10) / 10;
+      dots.push(soon ? `<circle cx="${sx}" cy="${sy}" r="${t === 'b' ? 10 : 8.5}" fill="${t === 'b' ? '#fdf4ff' : '#fff'}" stroke="${row.color}" stroke-width="3.5" stroke-dasharray="3.6 3"/>`
+        + (t === 'b' ? `<circle cx="${sx}" cy="${sy}" r="4" fill="#a21caf"/>` : '')
         : dot(x, y, t, row.color, (i === 0 && row.feed) ? row.feed : row.color));
       const up = (kids[key] || []).some(k => k._y > y);
       html.push(`<div class="rm-st rm-st--${t}${soon ? ' rm-st--soon' : ''}${up ? ' rm-st--up' : ''}" style="left:${x}px;top:${up ? y - 14 : y + 14}px;width:${LBL_W}px`
@@ -4671,7 +4673,7 @@ function rmDetailHtml(id, pdf) {
           : first ? T('solo_tag', RMAP.soloTag, 'rmd__badge rmd__badge--start')
           : b ? T(key + '_b', b, `rmd__badge rmd__badge--${t === 'p' ? 'po' : t === 'r' ? 'rv' : t === 'b' ? 'biz' : 'ai'}`) : '';
         return col(first ? '' : seg(c, dash), top,
-          soon ? dot('s', r.color, r.color) : dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
+          soon ? dot(t === 'b' ? 'sb' : 's', r.color, r.color) : dot(t, r.color, (i === 0 && r.feed) ? r.feed : r.color), T(key + '_n', name, 'rmd__n'), T(key + '_d', desc, 'rmd__d'));
       }));
   }
   const ex = row ? (RMAP_EX[row.id] || []) : [];
