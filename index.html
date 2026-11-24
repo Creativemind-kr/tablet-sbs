@@ -4944,6 +4944,78 @@ const ktFunc = name => ({ cat: '국가기술자격', grade: '기능사', name, o
   note: '2회 필기 원서접수 기간 중 3월 18일(목)은 접수하지 않습니다.' });
 const ktEng = (grade, name) => ({ cat: '국가기술자격', grade, name, org: KT_ORG, sessions: KT_ENG_2027,
   note: '필기 합격(예정)자는 응시자격 서류를 제출해야 실기에 응시할 수 있습니다. 서류 제출: 1회 02-12~03-19 · 2회 05-07~06-11 · 3회 08-13~09-17' });
+/* KPC(한국생산성본부) 자격: license.kpc.or.kr 시험일정 기준 — 2026년 남은 회차(맨 위) + 2027년 */
+const KPC_ORG = '한국생산성본부(KPC) · 2026년 남은 회차 + 2027년 일정';
+const KPC_ITQ = [
+  { round: '2026년 16회 특별(일)', reg: '2026-10-22~10-28', exam: '2026-11-29', result: '2026-12-18' },
+  { round: '2026년 12회', reg: '2026-11-05~11-11', exam: '2026-12-12', result: '2026-12-31' },
+  { round: '1회', reg: '2026-12-03~12-09', exam: '2027-01-09', result: '2027-01-28' },
+  { round: '2회', reg: '2027-01-07~01-13', exam: '2027-02-13', result: '2027-03-04' },
+  { round: '13회 특별(일)', reg: '2027-01-21~01-27', exam: '2027-02-28', result: '2027-03-19' },
+  { round: '3회', reg: '2027-02-04~02-10', exam: '2027-03-13', result: '2027-04-01' },
+  { round: '4회', reg: '2027-03-04~03-10', exam: '2027-04-10', result: '2027-04-29' },
+  { round: '5회', reg: '2027-04-01~04-07', exam: '2027-05-08', result: '2027-05-27' },
+  { round: '14회 특별(일)', reg: '2027-04-22~04-28', exam: '2027-05-30', result: '2027-06-18' },
+  { round: '6회', reg: '2027-05-06~05-12', exam: '2027-06-12', result: '2027-07-01' },
+  { round: '7회', reg: '2027-06-03~06-09', exam: '2027-07-10', result: '2027-07-29' },
+  { round: '8회', reg: '2027-07-01~07-07', exam: '2027-08-07', result: '2027-08-26' },
+  { round: '15회 특별(일)', reg: '2027-07-15~07-21', exam: '2027-08-22', result: '2027-09-10' },
+  { round: '9회', reg: '2027-07-29~08-04', exam: '2027-09-04', result: '2027-09-23' },
+  { round: '10회', reg: '2027-09-09~09-17', exam: '2027-10-16', result: '2027-11-04' },
+  { round: '11회', reg: '2027-10-07~10-13', exam: '2027-11-13', result: '2027-12-02' },
+  { round: '16회 특별(일)', reg: '2027-10-21~10-27', exam: '2027-11-28', result: '2027-12-17' },
+  { round: '12회', reg: '2027-11-04~11-10', exam: '2027-12-11', result: '2027-12-30' },
+];
+const KPC_GTQ = [
+  { round: '2026년 11회', reg: '2026-10-28~11-04', exam: '2026-11-28', result: '2026-12-28' },
+  { round: '2026년 12회', reg: '2026-11-18~11-25', exam: '2026-12-19', result: '2027-01-08' },
+  { round: '1회', reg: '2026-12-23~12-30', exam: '2027-01-23', result: '2027-02-12' },
+  { round: '2회', reg: '2027-01-27~02-03', exam: '2027-02-27', result: '2027-03-19' },
+  { round: '3회', reg: '2027-02-24~03-03', exam: '2027-03-27', result: '2027-04-16' },
+  { round: '4회', reg: '2027-03-24~03-31', exam: '2027-04-24', result: '2027-05-14' },
+  { round: '5회', reg: '2027-04-28~05-06', exam: '2027-05-29', result: '2027-06-18' },
+  { round: '6회', reg: '2027-05-26~06-02', exam: '2027-06-26', result: '2027-07-16' },
+  { round: '7회', reg: '2027-06-23~06-30', exam: '2027-07-24', result: '2027-08-13' },
+  { round: '8회', reg: '2027-07-28~08-04', exam: '2027-08-28', result: '2027-09-17' },
+  { round: '9회', reg: '2027-08-25~09-01', exam: '2027-09-25', result: '2027-10-15' },
+  { round: '10회', reg: '2027-09-22~09-29', exam: '2027-10-23', result: '2027-11-12' },
+  { round: '11회', reg: '2027-10-27~11-03', exam: '2027-11-27', result: '2027-12-17' },
+  { round: '12회', reg: '2027-11-17~11-24', exam: '2027-12-18', result: '2028-01-07' },
+];
+const KPC_GTQAI = [
+  { round: '2026년 3회', reg: '2026-11-18~11-25', exam: '2026-12-19', result: '2027-01-08' },
+  { round: '1회', reg: '2027-01-27~02-03', exam: '2027-02-27', result: '2027-03-19' },
+  { round: '2회', reg: '2027-03-24~03-31', exam: '2027-04-24', result: '2027-05-14' },
+  { round: '3회', reg: '2027-05-26~06-02', exam: '2027-06-26', result: '2027-07-16' },
+  { round: '4회', reg: '2027-07-28~08-04', exam: '2027-08-28', result: '2027-09-17' },
+  { round: '5회', reg: '2027-09-22~09-29', exam: '2027-10-23', result: '2027-11-12' },
+  { round: '6회', reg: '2027-11-17~11-24', exam: '2027-12-18', result: '2028-01-07' },
+];
+const KPC_AIPOT = [
+  { round: '2026년 6회', reg: '2026-11-05~11-11', exam: '2026-12-12', result: '2026-12-31' },
+  { round: '1회', reg: '2026-12-03~12-09', exam: '2027-01-09', result: '2027-01-28' },
+  { round: '2회', reg: '2027-02-04~02-10', exam: '2027-03-13', result: '2027-04-01' },
+  { round: '3회', reg: '2027-04-01~04-07', exam: '2027-05-08', result: '2027-05-27' },
+  { round: '4회', reg: '2027-06-03~06-09', exam: '2027-07-10', result: '2027-07-29' },
+  { round: '5회', reg: '2027-07-29~08-04', exam: '2027-09-04', result: '2027-09-23' },
+  { round: '6회', reg: '2027-10-07~10-13', exam: '2027-11-13', result: '2027-12-02' },
+];
+const KPC_CAD = [
+  { round: '2026년 12회', reg: '2026-11-05~11-11', exam: '2026-12-12', result: '2026-12-31' },
+  { round: '1회', reg: '2026-12-03~12-09', exam: '2027-01-09', result: '2027-01-28' },
+  { round: '2회', reg: '2027-01-07~01-13', exam: '2027-02-13', result: '2027-03-04' },
+  { round: '3회', reg: '2027-02-04~02-10', exam: '2027-03-13', result: '2027-04-01' },
+  { round: '4회', reg: '2027-03-04~03-10', exam: '2027-04-10', result: '2027-04-29' },
+  { round: '5회', reg: '2027-04-01~04-07', exam: '2027-05-08', result: '2027-05-27' },
+  { round: '6회', reg: '2027-05-06~05-12', exam: '2027-06-12', result: '2027-07-01' },
+  { round: '7회', reg: '2027-06-03~06-09', exam: '2027-07-10', result: '2027-07-29' },
+  { round: '8회', reg: '2027-07-01~07-07', exam: '2027-08-07', result: '2027-08-26' },
+  { round: '9회', reg: '2027-07-29~08-04', exam: '2027-09-04', result: '2027-09-23' },
+  { round: '10회', reg: '2027-09-09~09-17', exam: '2027-10-16', result: '2027-11-04' },
+  { round: '11회', reg: '2027-10-07~10-13', exam: '2027-11-13', result: '2027-12-02' },
+  { round: '12회', reg: '2027-11-04~11-10', exam: '2027-12-11', result: '2027-12-30' },
+];
+const kpc = (cat, name, sessions, note) => ({ cat, name, org: KPC_ORG, sessions, note, registerUrl: 'https://license.kpc.or.kr/index.do' });
 const EXAM_SCHEDULE = [
   ktFunc('컴퓨터그래픽스운용기능사'),
   ktFunc('전산응용건축제도기능사'),
@@ -4963,44 +5035,9 @@ const EXAM_SCHEDULE = [
       { round: '상시 CBT', written: '연중 상시', practical: '-', result: '시험 익일 오전 10시' },
     ]
   },
-  {
-    cat: 'GTQ',
-    name: 'GTQ 그래픽기술자격 1급',
-    org: '한국생산성본부(KPC)',
-    sessions: [
-      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
-      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
-      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
-      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-15' },
-      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-26' },
-      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
-      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
-      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-11' },
-      { round: '9회',  written: '2026-09-19', practical: '-', result: '2026-10-16' },
-      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
-      { round: '11회', written: '2026-11-28', practical: '-', result: '2026-12-28' },
-      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
-    ]
-  },
-  {
-    cat: 'GTQi',
-    name: 'GTQi 그래픽기술자격(일러스트) 1급',
-    org: '한국생산성본부(KPC)',
-    sessions: [
-      { round: '1회',  written: '2026-01-24', practical: '-', result: '2026-02-20' },
-      { round: '2회',  written: '2026-02-28', practical: '-', result: '2026-03-20' },
-      { round: '3회',  written: '2026-03-28', practical: '-', result: '2026-04-17' },
-      { round: '4회',  written: '2026-04-25', practical: '-', result: '2026-05-22' },
-      { round: '5회',  written: '2026-05-30', practical: '-', result: '2026-06-19' },
-      { round: '6회',  written: '2026-06-27', practical: '-', result: '2026-07-17' },
-      { round: '7회',  written: '2026-07-25', practical: '-', result: '2026-08-14' },
-      { round: '8회',  written: '2026-08-22', practical: '-', result: '2026-09-18' },
-      { round: '9회',  written: '2026-09-26', practical: '-', result: '2026-10-16' },
-      { round: '10회', written: '2026-10-24', practical: '-', result: '2026-11-13' },
-      { round: '11회', written: '2026-11-21', practical: '-', result: '2026-12-11' },
-      { round: '12회', written: '2026-12-19', practical: '-', result: '2027-01-08' },
-    ]
-  },
+  kpc('GTQ', 'GTQ 그래픽기술자격 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Photoshop CS6·CC (한글/영문)'),
+  kpc('GTQi', 'GTQi 그래픽기술자격(일러스트) 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Illustrator CS6·CC (영문)'),
+  kpc('GTQ-AI', 'GTQ-AI 그래픽기술자격(AI)', KPC_GTQAI, '2027년은 짝수달 4주차 토요일 시행 · Photoshop CC (한글/영문)'),
   {
     cat: '전산세무회계',
     name: '전산세무 2급',
@@ -5027,25 +5064,9 @@ const EXAM_SCHEDULE = [
       { round: '126회', written: '2026-11-05~11-11', practical: '-', result: '2026-12-05' },
     ]
   },
-  {
-    cat: 'ITQ',
-    name: 'ITQ (정보기술자격) — 한글·엑셀·파워포인트',
-    org: '한국생산성본부(KPC)',
-    sessions: [
-      { round: '1회',  written: '2026-01-10', practical: '-', result: '2026-01-22' },
-      { round: '2회',  written: '2026-02-14', practical: '-', result: '2026-02-26' },
-      { round: '3회',  written: '2026-03-14', practical: '-', result: '2026-03-26' },
-      { round: '4회',  written: '2026-04-11', practical: '-', result: '2026-04-23' },
-      { round: '5회',  written: '2026-05-09', practical: '-', result: '2026-05-21' },
-      { round: '6회',  written: '2026-06-13', practical: '-', result: '2026-06-25' },
-      { round: '7회',  written: '2026-07-11', practical: '-', result: '2026-07-23' },
-      { round: '8회',  written: '2026-08-08', practical: '-', result: '2026-08-20' },
-      { round: '9회',  written: '2026-09-12', practical: '-', result: '2026-09-24' },
-      { round: '10회', written: '2026-10-10', practical: '-', result: '2026-10-22' },
-      { round: '11회', written: '2026-11-14', practical: '-', result: '2026-11-26' },
-      { round: '12회', written: '2026-12-12', practical: '-', result: '2026-12-24' },
-    ]
-  },
+  kpc('ITQ', 'ITQ (정보기술자격) — 한글·엑셀·파워포인트', KPC_ITQ, '정기시험 12회 + 일요일 특별시험 4회 · MS오피스 2021 · 한글 2020·2022 중 선택, 한셀·한쇼는 2022'),
+  kpc('AI-POT', 'AI-POT 2급 (AI프롬프트 활용능력)', KPC_AIPOT, '정기시험 총 6회'),
+  kpc('CAD실무능력평가', 'CAD실무능력평가', KPC_CAD, '매월 둘째 주 토요일 시행 (총 12회) · AutoCAD'),
   {
     cat: 'MOS',
     name: 'MOS (Microsoft Office Specialist)',
@@ -5087,7 +5108,7 @@ function buildExamDDayTable() {
 
   function getNextInfo(ex) {
     for (const s of ex.sessions) {
-      const wd = parseExamDate(s.wExam || s.written);
+      const wd = parseExamDate(s.wExam || s.exam || s.written);
       if (!wd) return { s, status: 'always' };          // 상시
       const rd = parseExamDate(s.result2 || s.result);
       if (wd >= today) {
@@ -5141,7 +5162,7 @@ function buildExamDDayTable() {
     const dateStr = !info ? '-'
       : info.status === 'always' ? '연중 상시'
       : info.status === 'waiting' ? `발표: ${s.result2 || s.result}`
-      : (s.wExam || s.written);
+      : (s.wExam || s.exam || s.written);
     return `<tr>
       <td><span class="edd-name">${name}</span></td>
       <td class="edd-round">${s ? s.round : '-'}</td>
@@ -5168,9 +5189,9 @@ function parseExamDate(str) {
 function _buildExamCard(ex, today, soon) {
   const md = v => String(v).replace(/^\d{4}-/, '');
   const sessionRows = ex.sessions.map(s => {
-    const d = parseExamDate(s.wExam || s.written);
-    const wCell = s.wExam ? `접수 ${md(s.wReg)}<br>시험 ${md(s.wExam)}<br>발표 ${md(s.wPass)}` : s.written;
-    const pCell = s.pExam ? `접수 ${md(s.pReg)}<br>시험 ${md(s.pExam)}` : s.practical;
+    const d = parseExamDate(s.wExam || s.exam || s.written);
+    const wCell = s.wExam ? `접수 ${md(s.wReg)}<br>시험 ${md(s.wExam)}<br>발표 ${md(s.wPass)}` : s.reg || s.written;
+    const pCell = s.pExam ? `접수 ${md(s.pReg)}<br>시험 ${md(s.pExam)}` : s.reg ? s.exam : s.practical;
     const rCell = s.result2 ? `1차 ${md(s.result)}<br>2차 ${md(s.result2)}` : s.result;
     const isUp = d && d >= today && d <= soon;
     const badge = isUp ? `<span class="exam-upcoming-badge">예정</span>` : '';
@@ -5188,7 +5209,7 @@ function _buildExamCard(ex, today, soon) {
         <svg viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
         접수 바로가기
       </a>
-      <ul class="exam-reg-list">${ex.registerNote.map(n => `<li>${n}</li>`).join('')}</ul>
+      ${(ex.registerNote || []).length ? `<ul class="exam-reg-list">${ex.registerNote.map(n => `<li>${n}</li>`).join('')}</ul>` : ''}
     </div>` : '';
   return `
     <div class="exam-card">
@@ -5198,7 +5219,7 @@ function _buildExamCard(ex, today, soon) {
       </div>
       <div class="exam-table-wrap">
         <table class="exam-table">
-          <thead><tr><th>회차</th><th>필기(접수·시험)</th><th>실기(접수·시험)</th><th>합격자 발표</th></tr></thead>
+          <thead><tr><th>회차</th>${ex.sessions.some(s => s.reg) ? '<th>원서 접수</th><th>시험일</th>' : '<th>필기(접수·시험)</th><th>실기(접수·시험)</th>'}<th>합격자 발표</th></tr></thead>
           <tbody>${sessionRows}</tbody>
         </table>
       </div>
