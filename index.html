@@ -1217,7 +1217,6 @@
   .g-rv__wait { font-size: var(--t-sm); color: var(--c-text-3); padding: 6px 0; }
   .g-rv__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
   .g-rv__title { font-size: var(--t-md); font-weight: 800; letter-spacing: -.02em; }
-  .g-rv__sub { font-size: var(--t-xs); color: var(--c-text-3); margin-top: 3px; }
   .g-rv__score { display: inline-flex; align-items: baseline; gap: 8px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--c-border); background: #fff; color: var(--c-text); text-decoration: none; }
   .g-rv__score b { font-size: 1.05rem; font-weight: 800; color: #F59E0B; }
   .g-rv__score span { font-size: var(--t-xs); font-weight: 600; color: var(--c-text-2); }
@@ -4978,7 +4977,7 @@ function paintGoogleReviews() {
     </div>`;
   }).join('');
   el.innerHTML = `<div class="g-rv__head">
-      <div><p class="g-rv__title">구글 지도 후기</p><p class="g-rv__sub">구글 지도에 남겨진 후기 중 4점 이상만 보여드려요</p></div>
+      <div><p class="g-rv__title">구글 지도 후기</p></div>
       ${maps ? `<a class="g-rv__score" href="${maps}" target="_blank" rel="noopener"><b>★ ${Number(d.rating).toFixed(1)}</b><span>후기 ${Number(d.count || 0).toLocaleString()}개 · 전체 보기 ›</span></a>` : ''}
     </div>
     ${cards ? `<div class="review-grid-v2">${cards}</div>` : ''}
