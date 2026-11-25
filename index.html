@@ -790,6 +790,11 @@
   .exam-table td { padding:6px 8px; border-bottom:1px solid var(--c-border); color:var(--c-text-1); vertical-align:top; }
   .exam-table tr:last-child td { border-bottom:none; }
   .exam-notice { font-size:10px; color:var(--c-text-2); margin-top:8px; }
+  .exam-certs { margin-top:12px; border-top:1px solid var(--c-border); padding-top:12px; }
+  .exam-certs__t { font-size:var(--t-xs); font-weight:700; color:var(--c-text-1); margin-bottom:8px; }
+  .exam-certs__list { margin:0; padding:0; list-style:none; display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:6px 18px; }
+  .exam-certs__list li { position:relative; padding-left:12px; font-size:13px; font-weight:600; color:var(--c-text); word-break:keep-all; }
+  .exam-certs__list li::before { content:''; position:absolute; left:0; top:.6em; width:5px; height:5px; border-radius:50%; background:var(--c-accent); }
   .exam-reg-box { margin-top:12px; border-top:1px solid var(--c-border); padding-top:12px; }
   .exam-reg-title { font-size:var(--t-xs); font-weight:700; color:var(--c-text-1); margin-bottom:8px; display:flex; align-items:center; gap:5px; }
   .exam-reg-btn { display:inline-flex; align-items:center; gap:5px; background:var(--c-accent); color:#fff; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:600; text-decoration:none; margin-bottom:10px; }
@@ -5107,8 +5112,8 @@ const EXAM_SCHEDULE = [
       { round: '상시 CBT', written: '연중 상시', practical: '-', result: '시험 익일 오전 10시' },
     ]
   },
-  kpc('GTQ', 'GTQ 그래픽기술자격 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Photoshop CS6·CC (한글/영문)'),
-  kpc('GTQi', 'GTQi 그래픽기술자격(일러스트) 1급', KPC_GTQ, '매월 4주차 토요일 시행 · Illustrator CS6·CC (영문)'),
+  Object.assign(kpc('GTQ·GTQi', 'GTQ 그래픽기술자격 1급', KPC_GTQ, '매월 4주차 토요일 시행 · GTQ: Photoshop CS6·CC (한글/영문) · GTQi: Illustrator CS6·CC (영문)'), { ddName: 'GTQ · GTQi 1급' }),
+  Object.assign(kpc('GTQ·GTQi', 'GTQi 그래픽기술자격(일러스트) 1급', KPC_GTQ, '매월 4주차 토요일 시행 · GTQ: Photoshop CS6·CC (한글/영문) · GTQi: Illustrator CS6·CC (영문)'), { ddName: 'GTQ · GTQi 1급' }),
   kpc('GTQ-AI', 'GTQ-AI 그래픽기술자격(AI)', KPC_GTQAI, '2027년은 짝수달 4주차 토요일 시행 · Photoshop CC (한글/영문)'),
   { cat: '전산세무회계', name: '전산세무 2급', org: TAX_ORG, sessions: TAX_SESSIONS, note: TAX_NOTE },
   { cat: '전산세무회계', name: '전산회계 1급', org: TAX_ORG, sessions: TAX_SESSIONS, note: TAX_NOTE },
@@ -5182,7 +5187,7 @@ function buildExamDDayTable() {
 
   // 국가기술자격은 grade별로 묶어 대표 1행씩만 표시
   const displayList = [];
-  const gradesSeen = new Set();
+  const gradesSeen = new Set(), schedSeen = new Set();
   for (const ex of EXAM_SCHEDULE) {
     if (ex.cat === '국가기술자격') {
       const grade = ex.grade || '기능사';
@@ -5201,7 +5206,13 @@ function buildExamDDayTable() {
       }
       displayList.push({ name: `국가기술자격 (${grade})`, info: best, grp: 'nat' });
     } else {
-      displayList.push({ name: ex.name, info: getNextInfo(ex), grp: ex.org === KPC_ORG ? 'kpc' : ex.cat === '전산세무회계' ? 'tax' : 'always' });
+      // 날짜가 정해진 시험은 일정이 같으면 한 줄로 묶음(예: GTQ·GTQi, 전산세무·전산회계)
+      const key = JSON.stringify(ex.sessions), dated = !!parseExamDate(ex.sessions[0].wExam || ex.sessions[0].exam || ex.sessions[0].written);
+      if (dated && schedSeen.has(key)) continue;
+      schedSeen.add(key);
+      const same = dated ? EXAM_SCHEDULE.filter(e => e.cat !== '국가기술자격' && JSON.stringify(e.sessions) === key) : [ex];
+      const name = same.length > 1 ? (ex.ddName || same.map(e => e.name).join(' · ')) : ex.name;
+      displayList.push({ name, info: getNextInfo(ex), grp: ex.org === KPC_ORG ? 'kpc' : ex.cat === '전산세무회계' ? 'tax' : 'always' });
     }
   }
 
@@ -5245,6 +5256,20 @@ function parseExamDate(str) {
   return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
 }
 
+// 같은 탭 안에서 회차 일정이 똑같은 자격증은 표 하나로 합치고, 해당 자격증 이름을 표 아래에 묶어서 보여줌
+function _mergeSameSchedule(list) {
+  const groups = [];
+  list.forEach(ex => {
+    const key = JSON.stringify(ex.sessions), g = groups.find(x => x.key === key);
+    if (g) g.items.push(ex); else groups.push({ key, items: [ex] });
+  });
+  return groups.map(({ items }) => items.length === 1 ? items[0] : Object.assign({}, items[0], {
+    name: `${items[0].grade || items[0].cat} 시험 일정`,
+    certs: items.map(e => e.name),
+    note: [...new Set(items.map(e => e.note).filter(Boolean))],
+  }));
+}
+
 function _buildExamCard(ex, today, soon) {
   const md = v => String(v).replace(/^\d{4}-/, '');
   const sessionRows = ex.sessions.map(s => {
@@ -5282,8 +5307,9 @@ function _buildExamCard(ex, today, soon) {
           <tbody>${sessionRows}</tbody>
         </table>
       </div>
+      ${ex.certs ? `<div class="exam-certs"><p class="exam-certs__t">이 일정으로 보는 자격증 ${ex.certs.length}개</p><ul class="exam-certs__list">${ex.certs.map(n => `<li>${n}</li>`).join('')}</ul></div>` : ''}
       ${regBox}
-      ${ex.note ? `<p class="exam-notice">※ ${ex.note}</p>` : ''}
+      ${[].concat(ex.note || []).map(n => `<p class="exam-notice">※ ${n}</p>`).join('')}
       <p class="exam-notice">※ 일정은 시행처 공고 기준이며 변동될 수 있습니다. 반드시 공식 홈페이지에서 재확인하세요.</p>
     </div>`;
 }
@@ -5306,13 +5332,13 @@ function renderExamsPage() {
         `<button class="exam-grade-tab-btn ${i===0?'is-active':''}" onclick="switchExamGrade(this,'${g}')">${g}</button>`
       ).join('');
       const gradeGroups = grades.map((grade, i) => {
-        const cards = exams.filter(e => (e.grade || '기능사') === grade)
+        const cards = _mergeSameSchedule(exams.filter(e => (e.grade || '기능사') === grade))
           .map(ex => _buildExamCard(ex, today, soon)).join('');
         return `<div class="exam-grade-group" data-grade="${grade}" style="${i===0?'':'display:none'}">${cards}</div>`;
       }).join('');
       inner = `<div class="exam-grade-tab-row">${gradeTabs}</div>${gradeGroups}`;
     } else {
-      inner = exams.map(ex => _buildExamCard(ex, today, soon)).join('');
+      inner = _mergeSameSchedule(exams).map(ex => _buildExamCard(ex, today, soon)).join('');
     }
     return `<div class="exam-group" data-cat="${cat}" style="${cat===cats[0]?'':'display:none'}">${inner}</div>`;
   }).join('');
