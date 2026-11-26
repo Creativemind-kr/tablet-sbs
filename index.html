@@ -6818,9 +6818,13 @@ function renderJobsPage() {
   }).join('');
   const kegCard = p => {
     // 확장 1.1.3부터는 글자(text)·이미지 주소(imgs)만 옴. 이전 형식(html)도 읽음
-    const { text, imgs } = p.text != null
-      ? { text: String(p.text), imgs: (Array.isArray(p.imgs) ? p.imgs : []).filter(u => /^https:\/\//.test(String(u))).slice(0, 6) }
-      : kegPostParts(p.html);
+    // 그룹웨어 본문이 태그를 글자로 바꿔 저장한 경우(<p style=…>가 글자로 옴)에는 한 번 더 걷어냄
+    const raw = p.text != null ? String(p.text) : null;
+    const tagText = raw != null && /<\/?(p|span|div|strong|b|br|table|tr|td|font|ul|li)\b[^>]*>/i.test(raw);
+    const extraImgs = (Array.isArray(p.imgs) ? p.imgs : []).filter(u => /^https:\/\//.test(String(u)));
+    let text, imgs;
+    if (raw != null && !tagText) { text = raw; imgs = extraImgs.slice(0, 6); }
+    else { const parts = kegPostParts(tagText ? raw.replace(/&singlequte;/g, "'") : p.html); text = parts.text; imgs = [...new Set(extraImgs.concat(parts.imgs))].slice(0, 6); }
     const m = String(p.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
     const long = text.length > 260 || text.split(String.fromCharCode(10)).length > 8;
     return `<article class="job-card job-card--keg">
