@@ -1818,7 +1818,7 @@
       <button class="main-nav__btn"           data-page="curriculum"   role="tab"><span class="dot"></span>커리큘럼</button>
       <button class="main-nav__btn"           data-page="instructors"  role="tab"><span class="dot"></span>강사 소개</button>
       <button class="main-nav__btn"           data-page="reviews"      role="tab"><span class="dot"></span>수강생 후기</button>
-      <button class="main-nav__btn"           data-page="jobs"         role="tab" style="display:none"><span class="dot"></span>채용정보</button>
+      <button class="main-nav__btn"           data-page="jobs"         role="tab"><span class="dot"></span>채용정보</button>
       <button class="main-nav__btn"           data-page="checklist"    role="tab"><span class="dot"></span>준비물 안내</button>
       <button class="main-nav__btn"           data-page="exams"        role="tab"><span class="dot"></span>자격증 일정</button>
     </nav>
@@ -6738,7 +6738,7 @@ function deleteReview(i) {
 
 /* ══════════════════════════════════════════════════
    채용정보 게시판 — 지점으로 들어온 채용 정보를 관리자가 직접 등록
-   마감일이 지난 글은 상담 화면에서 숨기고(편집 모드에서는 '마감'으로 보임), 보여줄 글이 없으면 메뉴도 숨김
+   마감일이 지난 글은 상담 화면에서 숨김(편집 모드에서는 '마감'으로 보임). 메뉴는 글이 없어도 항상 보임
 ══════════════════════════════════════════════════ */
 const JOB_FIELDS = [
   { key: 'company',  label: '회사명',          type: 'text', placeholder: '예: (주)OO디자인' },
@@ -6791,10 +6791,7 @@ function renderJobsPage() {
   const list = JOBS_DATA.map((j, i) => ({ j, i, dl: jobDeadline(j) }))
     .filter(x => em || x.dl.open)
     .sort((a, b) => (b.dl.open - a.dl.open) || (a.dl.diff - b.dl.diff) || (b.i - a.i));
-  // 메뉴: 보여줄 글이 있거나 편집 중일 때만
   const keg = kegVisible();
-  const btn = document.querySelector('.main-nav__btn[data-page="jobs"]');
-  if (btn) btn.style.display = (em || list.length || keg.length) ? '' : 'none';
   updateIndicator(currentPage);
 
   const cards = list.map(({ j, i, dl }) => {
