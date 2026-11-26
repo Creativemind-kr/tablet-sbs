@@ -1219,11 +1219,12 @@
   @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } .review-ghost { display: none; } }
   @media (max-width: 1100px) and (orientation: landscape) { .main-nav__btn { padding: 7px 9px; } }   /* 메뉴 8개가 가로 태블릿에서 넘치지 않게 */
   .jobs-sub { font-size: var(--t-sm); color: var(--c-text-2); margin: -6px 0 18px; }
+  #page-jobs .page__inner { width: 100%; }
   .jobs-sec + .jobs-sec { margin-top: 34px; }
   .jobs-sec__head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; padding-left: 12px; border-left: 4px solid var(--js); }
   .jobs-sec__title { font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; color: var(--js); }
   .jobs-sec__sub { font-size: var(--t-xs); color: var(--c-text-3); }
-  .jobs-empty { font-size: var(--t-sm); color: var(--c-text-3); padding: 24px 0; text-align: center; }
+  .jobs-empty { font-size: var(--t-sm); color: var(--c-text-3); padding: 28px 0; text-align: center; border: 1px dashed var(--c-border); border-radius: 14px; }
   .job-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .job-card { background: #fff; border: 1px solid var(--c-border); border-radius: 16px; padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 10px; }
   .job-card.is-closed { opacity: .55; }
