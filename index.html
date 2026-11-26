@@ -168,6 +168,11 @@
     transition: background var(--base);
   }
   .main-nav__btn:hover { color: var(--c-text); background: var(--c-bg-2); }
+  /* 인트라넷 바로가기(새 창): 탭과 구분되게 테두리 */
+  .main-nav__ext { margin-left: 6px; padding: 7px 12px; min-height: 44px; display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    border: 1px solid var(--c-border); border-radius: 8px; font-size: var(--t-sm); font-weight: 600; color: var(--c-text-2); white-space: nowrap; text-decoration: none; align-self: center; }
+  .main-nav__ext:hover { color: var(--c-text); background: var(--c-bg-2); }
+  .main-nav__ext svg { width: 13px; height: 13px; }
   .main-nav__btn.is-active { color: var(--c-text); font-weight: 700; background: var(--c-bg-2); }
   .main-nav__btn.is-active .dot { background: var(--c-course); }
 
@@ -1217,7 +1222,9 @@
   }
 
   @media (max-width: 680px) { .review-grid-v2 { grid-template-columns: 1fr; } .review-ghost { display: none; } }
-  @media (max-width: 1100px) and (orientation: landscape) { .main-nav__btn { padding: 7px 9px; } }   /* 메뉴 8개가 가로 태블릿에서 넘치지 않게 */
+  /* 메뉴 8개 + 인트라넷 버튼이 가로 태블릿에서 넘치지 않게 */
+  @media (max-width: 1240px) and (orientation: landscape) { .main-nav__btn { padding: 7px 10px; } }
+  @media (max-width: 1100px) and (orientation: landscape) { .main-nav__btn { padding: 7px 9px; } .main-nav__btn .dot { display: none; } }
   .jobs-sub { font-size: var(--t-sm); color: var(--c-text-2); margin: -6px 0 18px; }
   #page-jobs .page__inner { width: 100%; }
   .jobs-sec + .jobs-sec { margin-top: 34px; }
@@ -1826,6 +1833,7 @@
       <button class="main-nav__btn"           data-page="jobs"         role="tab"><span class="dot"></span>채용정보</button>
       <button class="main-nav__btn"           data-page="checklist"    role="tab"><span class="dot"></span>준비물 안내</button>
       <button class="main-nav__btn"           data-page="exams"        role="tab"><span class="dot"></span>자격증 일정</button>
+      <a class="main-nav__ext" href="https://kegone.koreagroupware.com/" target="_blank" rel="noopener" aria-label="인트라넷 바로가기 (새 창)" title="인트라넷 바로가기">인트라넷<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg></a>
     </nav>
     <!-- 2초 길게 누르면 관리자 로그인 -->
     <div class="header__indicator" id="indicator" title="">1 / 7</div>
