@@ -1235,6 +1235,11 @@
   .job-card__link { font-size: 13px; font-weight: 700; color: var(--c-accent); text-decoration: none; }
   .job-card__date { font-size: 11px; color: var(--c-text-3); }
   .job-card__admin { display: flex; gap: 6px; }
+  .job-card__body { font-size: var(--t-sm); color: var(--c-text-2); line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere; }
+  .job-card__body.is-clamped { display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
+  .job-card__more { align-self: flex-start; padding: 0; border: 0; background: none; font-size: 13px; font-weight: 700; color: var(--c-accent); cursor: pointer; }
+  .job-card__imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .job-card__imgs img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; border: 1px solid var(--c-border); background: var(--c-bg-2); }
   .job-card__admin button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--c-border); background: #fff; font-size: 12px; font-weight: 600; cursor: pointer; }
   @media (max-width: 760px) { .job-grid { grid-template-columns: 1fr; } }
   @media (max-width: 420px) { .job-card__meta { grid-template-columns: 1fr; } }
@@ -3537,6 +3542,7 @@ function linkify(text) {
 }
 
 let JOBS_DATA  = [];   // 채용정보 게시판(관리자가 직접 등록, Firestore curriculum/jobs)
+let KEG_JOBS   = [];   // 그룹웨어 '채용 공고'(부원장 PC 크롬 확장이 하루 한 번 curriculum/kegJobs 로 보냄)
 let isAdmin    = false;
 let isEditMode = false;
 let currentPage   = 'intro';
@@ -3605,7 +3611,7 @@ function loadStorageSDK() {
   document.head.appendChild(s);
 }
 
-const CURRICULUM_DOC_IDS = ['ui', 'instructors', 'reviews', 'books', 'jobs']; // 'courses'는 학과별 서브컬렉션(depts)으로 분리 저장 (1MB 문서 제한 회피)
+const CURRICULUM_DOC_IDS = ['ui', 'instructors', 'reviews', 'books', 'jobs', 'kegJobs']; // 'courses'는 학과별 서브컬렉션(depts)으로 분리 저장 (1MB 문서 제한 회피)
 let _knownDeptIds = new Set(); // Firestore에 이미 저장된 학과 id — 삭제된 학과의 잔여 문서를 정리하기 위해 추적
 
 function applyFirestoreData(data) {
@@ -3623,6 +3629,7 @@ function applyFirestoreData(data) {
   }
   if (data.reviews)     REVIEWS_DATA     = data.reviews;
   if (Array.isArray(data.jobs)) JOBS_DATA = data.jobs;
+  if (Array.isArray(data.kegJobs)) KEG_JOBS = data.kegJobs;
   if (data.books)       Object.assign(BOOKS_DATA, data.books);
 }
 
@@ -6755,6 +6762,27 @@ function jobDeadline(j) {
   if (diff < 0) return { open: false, diff, label: '마감', cls: 'dday-done' };
   return { open: true, diff, label: diff === 0 ? '오늘 마감' : `D-${diff}`, cls: diff <= 7 ? 'dday-hot' : diff <= 30 ? 'dday-soon' : 'dday-ok' };
 }
+function kegPostParts(html) {
+  const NL = String.fromCharCode(10);
+  const doc = new DOMParser().parseFromString('<div>' + String(html || '') + '</div>', 'text/html');
+  doc.querySelectorAll('br').forEach(b => b.replaceWith(NL));
+  doc.querySelectorAll('p,div,li,tr,h1,h2,h3,h4,h5,h6').forEach(e => e.append(NL));
+  doc.querySelectorAll('td,th').forEach(e => e.append(' '));
+  const imgs = [...doc.querySelectorAll('img')].map(i => i.getAttribute('src') || '').filter(u => /^https:\/\//.test(u)).slice(0, 6);
+  const lines = (doc.body.textContent || '').replace(/ /g, ' ').split(NL).map(l => l.trim());
+  const text = lines.join(NL).replace(/\n{3,}/g, NL + NL).trim();
+  return { text, imgs };
+}
+// 그룹웨어 글은 등록일로부터 2개월이 지나면 숨김
+function kegVisible() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return KEG_JOBS.filter(p => {
+    const m = String(p.date || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return false;
+    const until = new Date(+m[1], +m[2] - 1, +m[3]); until.setMonth(until.getMonth() + 2);
+    return until >= today;
+  }).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+}
 function renderJobsPage() {
   const el = document.getElementById('jobs-content');
   if (!el) return;
@@ -6764,8 +6792,9 @@ function renderJobsPage() {
     .filter(x => em || x.dl.open)
     .sort((a, b) => (b.dl.open - a.dl.open) || (a.dl.diff - b.dl.diff) || (b.i - a.i));
   // 메뉴: 보여줄 글이 있거나 편집 중일 때만
+  const keg = kegVisible();
   const btn = document.querySelector('.main-nav__btn[data-page="jobs"]');
-  if (btn) btn.style.display = (em || list.length) ? '' : 'none';
+  if (btn) btn.style.display = (em || list.length || keg.length) ? '' : 'none';
   updateIndicator(currentPage);
 
   const cards = list.map(({ j, i, dl }) => {
@@ -6785,14 +6814,27 @@ function renderJobsPage() {
       </div>
     </article>`;
   }).join('');
+  const kegCards = keg.map(p => {
+    const { text, imgs } = kegPostParts(p.html);
+    const m = String(p.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    const long = text.length > 260 || text.split(String.fromCharCode(10)).length > 8;
+    return `<article class="job-card job-card--keg">
+      <div class="job-card__top"><span class="job-card__co">${m ? `${+m[2]}월 ${+m[3]}일 등록` : ''}</span></div>
+      <h3 class="job-card__title">${esc(p.title)}</h3>
+      ${text ? `<div class="job-card__body${long ? ' is-clamped' : ''}">${esc(text).split(String.fromCharCode(10)).join('<br>')}</div>
+        ${long ? `<button type="button" class="job-card__more" onclick="this.previousElementSibling.classList.toggle('is-clamped');this.textContent=this.previousElementSibling.classList.contains('is-clamped')?'더보기':'접기'">더보기</button>` : ''}` : ''}
+      ${imgs.length ? `<div class="job-card__imgs">${imgs.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(u)}" alt="" loading="lazy" onerror="this.parentNode.remove()"></a>`).join('')}</div>` : ''}
+    </article>`;
+  }).join('');
   el.innerHTML = `
     <p class="page-label">채용정보</p>
     <p class="jobs-sub">학원으로 들어온 채용 정보입니다.</p>
     <div class="job-grid">
+      ${kegCards}
       ${cards}
       ${em ? `<button class="admin-add-block" onclick="addJob()" style="min-height:160px">+ 채용정보 추가</button>` : ''}
     </div>
-    ${!em && !list.length ? '<p class="jobs-empty">지금 모집 중인 채용정보가 없어요.</p>' : ''}`;
+    ${!em && !list.length && !keg.length ? '<p class="jobs-empty">지금 모집 중인 채용정보가 없어요.</p>' : ''}`;
 }
 function _jobFromForm(d, prev) {
   const v = k => String(d[k] || '').trim();
@@ -6928,9 +6970,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 500);
 
   // 백그라운드에서 Firebase 로드 — 데이터 변경 시에만 재렌더
-  const snapBefore = JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, JOBS_DATA });
+  const snapBefore = JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, JOBS_DATA, KEG_JOBS });
   await initFirebase();
-  const snapAfter  = JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, JOBS_DATA });
+  const snapAfter  = JSON.stringify({ COURSES, UI_DATA, INSTRUCTORS_DATA, REVIEWS_DATA, JOBS_DATA, KEG_JOBS });
   if (snapAfter !== snapBefore) {
     renderUI();
     renderAll();
