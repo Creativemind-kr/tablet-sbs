@@ -6817,7 +6817,10 @@ function renderJobsPage() {
     </article>`;
   }).join('');
   const kegCard = p => {
-    const { text, imgs } = kegPostParts(p.html);
+    // 확장 1.1.3부터는 글자(text)·이미지 주소(imgs)만 옴. 이전 형식(html)도 읽음
+    const { text, imgs } = p.text != null
+      ? { text: String(p.text), imgs: (Array.isArray(p.imgs) ? p.imgs : []).filter(u => /^https:\/\//.test(String(u))).slice(0, 6) }
+      : kegPostParts(p.html);
     const m = String(p.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
     const long = text.length > 260 || text.split(String.fromCharCode(10)).length > 8;
     return `<article class="job-card job-card--keg">
