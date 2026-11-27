@@ -11,12 +11,21 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const small = u => /^https:\/\/drive\.google\.com\//.test(u) ? u : '/_vercel/image?url=' + encodeURIComponent(u) + '&w=960&q=72';
 
-  let data = null, dataP = null;
-  function load() {
-    return dataP || (dataP = fetch('/curriculum/data.json', { cache: 'no-cache' })
-      .then(r => { if (!r.ok) throw new Error('커리큘럼을 불러오지 못했어요'); return r.json(); })
-      .then(d => (data = d))
-      .catch(e => { dataP = null; throw e; }));
+  // 내용: 수정 페이지에서 고치는 대로(/api/curriculum, 서버가 3분 단위로 받아 둠) → 안 되면 예비본(/curriculum/data.json)
+  let data = null, dataP = null, loadedAt = 0;
+  const getJson = (url, ms) => {
+    const c = new AbortController(), t = setTimeout(() => c.abort(), ms);
+    return fetch(url, { cache: 'no-cache', signal: c.signal }).then(r => { clearTimeout(t); if (!r.ok) throw new Error(String(r.status)); return r.json(); });
+  };
+  const valid = d => d && Array.isArray(d.lines) && d.lines.length && d.records;
+  function load(force) {
+    if (dataP && !force) return dataP;
+    const p = getJson('/api/curriculum', 9000).then(d => { if (!valid(d)) throw new Error('형식'); return d; })
+      .catch(() => (data && force ? data : getJson('/curriculum/data.json', 15000)))
+      .then(d => { if (!valid(d)) throw new Error('형식'); data = d; loadedAt = Date.now(); return d; })
+      .catch(() => { if (dataP === p) dataP = null; throw new Error('커리큘럼을 불러오지 못했어요'); });
+    dataP = p;
+    return p;
   }
   const lineById = id => data && data.lines.find(l => l.id === id);
   const firstRow = l => Math.max(0, l.rows.findIndex(r => !r.hub));
@@ -208,6 +217,22 @@
       render(1);
     }).catch(() => showMsg('커리큘럼을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.', true));
   }
+  // 열어 둔 태블릿도 최신 내용으로: 커리큘럼 탭을 다시 열거나 화면으로 돌아올 때 3분이 지났으면 새로 받아 옴(보던 학과·과정 유지)
+  function refresh() {
+    if (!data || !root || !S.line || Date.now() - loadedAt < 180000) return;
+    const keepLine = S.line.id, keepRow = S.row;
+    load(true).then(() => {
+      if (!lineById(keepLine)) return;
+      S.line = lineById(keepLine);
+      S.row = S.line.rows[keepRow] ? keepRow : firstRow(S.line);
+      const y = $('text').scrollTop;
+      render();
+      $('text').scrollTop = y;
+    }).catch(() => {});
+  }
+  const onCurriculum = () => document.getElementById('page-curriculum')?.classList.contains('is-active');
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.main-nav__btn[data-page="curriculum"]')) setTimeout(refresh, 0); }, true);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && onCurriculum()) refresh(); });
 
   /* ── PDF용: 한 학과의 커리큘럼을 A4 세로 블록들로(사이트 스타일 .pcx-*) ── */
   function printBlocks(lineId) {
