@@ -1745,7 +1745,7 @@
     position: absolute; left: 50%; top: 0; transform: translate(-50%, -55%); font-size: 9.5px; font-weight: 800; line-height: 1.1;
     color: #fff; background: #16a34a; border-radius: 999px; padding: 2.5px 8px; white-space: nowrap;
   }
-  .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; white-space: nowrap; letter-spacing: -0.03em; }
+  .rm-core__name { font-size: 14.5px; font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; word-break: keep-all; }
   .rm-core__kw { font-size: 12.5px; font-weight: 700; line-height: 1.2; color: #15803d; white-space: nowrap; }
   .rmd__kw { margin-top: 5px; font-size: 15px; font-weight: 700; line-height: 1.3; color: #15803d; }
   .rm-core__desc { font-size: 10px; line-height: 1.25; color: #475569; }
@@ -4350,12 +4350,13 @@ const RMAP = {
   soloTag: '바로 시작',   // solo: true 노선(공통기초 없이 시작)의 첫 역 표시
   hub: {
     num: '2', tag: '내부 공통 순환형', name: '공통기초 순환선',
-    d1: 'AI아키텍처 → AI포토샵 → AI일러스트', d2: '기초 코어 순환 후 희망 학과 노선 환승',
+    d1: '컴퓨터기초 → AI아키텍처 → AI포토샵 → AI일러스트', d2: '기초 코어 순환 후 희망 학과 노선 환승',
     loop: '순환 ↻',
     cores: [
-      { k: 'c1', tag: 'CORE 01', name: 'AI 아키텍처 엔지니어링', kw: '프롬프트 · 엔지니어링', desc: '생성형 AI 구조 이해 · 프롬프트 설계' },
-      { k: 'c3', tag: 'CORE 03', name: 'AI일러스트 올인원', desc: '벡터 드로잉 · 로고·캐릭터 그래픽' },
-      { k: 'c2', tag: 'CORE 02', name: 'AI포토샵 올인원', desc: '툴 기초·레이어 · AI 이미지 합성' },
+      { k: 'c0', tag: 'CORE 01', name: '컴퓨터기초', desc: '컴퓨터 구성·운영체제 · 문서·엑셀 기초' },
+      { k: 'c1', tag: 'CORE 02', name: 'AI 아키텍처 엔지니어링', kw: '프롬프트 · 엔지니어링', desc: '생성형 AI 구조 이해 · 프롬프트 설계' },
+      { k: 'c3', tag: 'CORE 04', name: 'AI일러스트 올인원', desc: '벡터 드로잉 · 로고·캐릭터 그래픽' },
+      { k: 'c2', tag: 'CORE 03', name: 'AI포토샵 올인원', desc: '툴 기초·레이어 · AI 이미지 합성' },
     ],
   },
   // 역 순서 = 순환선에서 바깥쪽으로. [이름, 설명, 종류, 배지(없으면 PO는 'PO·완성')]
@@ -4664,20 +4665,21 @@ function renderRoadmapMap() {
       ` data-line="${row.id}" role="button" tabindex="0"`));
   });
 
-  // 4) 가운데 순환선(모서리가 둥근 사각형) — CORE 상자 3개는 사각형 안쪽
+  // 4) 가운데 순환선(모서리가 둥근 사각형) — CORE 상자 4개는 사각형 안쪽(위 2 · 아래 2)
   const hub = RMAP.hub;
   const boxW = 134, boxH = 56;
-  const cores = [[cx, LT], [cx - 70, LB], [cx + 70, LB]];
-  const boxX = [cx, cx - 70, cx + 70], boxY = [LT + 28, LB - 28 - boxH, LB - 28 - boxH];
+  const cores = [[cx - 70, LT], [cx + 70, LT], [cx - 70, LB], [cx + 70, LB]];
+  const boxX = [cx - 70, cx + 70, cx - 70, cx + 70], boxY = [LT + 28, LT + 28, LB - 28 - boxH, LB - 28 - boxH];
   const rr = pad => `x="${cx - HW - pad}" y="${LT - pad}" width="${2 * (HW + pad)}" height="${LB - LT + 2 * pad}" rx="${RC + pad}"`;
   const dashLine = (x, y1, y2) => `<path d="M${x},${y1}V${y2}" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="4 4" fill="none"/>`;
   const hubSvg = [
     `<rect ${rr(16)} fill="#f0fdf4" stroke="#86efac" stroke-width="1.6" stroke-dasharray="5 6"/>`,
     `<rect ${rr(0)} fill="#fff" stroke="#16a34a" stroke-width="18"/>`,
     `<rect ${rr(0)} fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="9 9" opacity=".9"/>`,
-    dashLine(cx, LT + 12, boxY[0]),
-    dashLine(cx - 70, LB - 12, boxY[1] + boxH),
-    dashLine(cx + 70, LB - 12, boxY[2] + boxH),
+    dashLine(cx - 70, LT + 12, boxY[0]),
+    dashLine(cx + 70, LT + 12, boxY[1]),
+    dashLine(cx - 70, LB - 12, boxY[2] + boxH),
+    dashLine(cx + 70, LB - 12, boxY[3] + boxH),
     `<circle cx="${cx}" cy="${cy - 58}" r="32" fill="#16a34a"/>`,
   ];
   loopDots.forEach(([x, y]) => hubSvg.push(`<circle cx="${x}" cy="${y}" r="5.2" fill="#fff" stroke="#0f172a" stroke-width="2.6"/>`));
@@ -4691,11 +4693,12 @@ function renderRoadmapMap() {
   // '순환' 표시: 위 변 좌우 + 아래 변 가운데
   // (아래 변 가운데에서 노선이 나가면 그 자리는 비움)
   const bottomMidUsed = all.some(r => r.drop === 0);
-  [[cx - 64, LT], [cx + 64, LT], [cx, LB]]
-    .forEach(([x, y], i) => { if (!(i === 2 && bottomMidUsed)) html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)); });
+  // '순환' 표시: 위 변 가운데(위 두 상자 사이) + 아래 변 가운데
+  [[cx, LT], [cx, LB]]
+    .forEach(([x, y], i) => { if (!(i === 1 && bottomMidUsed)) html.push(V('hub_loop' + i, hub.loop, 'rm-loop', `left:${x}px;top:${y}px`)); });
   hub.cores.forEach((c, i) => {
-    // 키워드(kw)가 있는 상자는 이름 아래에 키워드 줄 + 칸을 넓게(위 CORE 01은 혼자라 자리 넉넉)
-    const w = c.kw ? 176 : boxW;
+    // 상자 4개가 같은 너비(위 두 상자는 이름이 길면 두 줄)
+    const w = boxW;
     html.push(`<div class="rm-core" style="left:${boxX[i]}px;top:${boxY[i]}px;width:${w}px;min-height:${boxH}px">`
       + V(c.k + '_tag', c.tag, 'rm-core__tag') + V(c.k + '_name', c.name, 'rm-core__name')
       + (c.kw ? V(c.k + '_kw', c.kw, 'rm-core__kw') : '') + V(c.k + '_desc', c.desc, 'rm-d rm-core__desc') + `</div>`);
@@ -4757,7 +4760,7 @@ function rmDetailHtml(id, pdf) {
     color = '#16a34a';
     head = `<div class="rmd__title"><span class="rmd__num">${rmEsc(rmText('hub_num', hub.num))}</span>${T('hub_name', hub.name, 'rmd__name')}</div>`
       + T('hub_d2', hub.d2, 'rmd__sub');
-    cols = ['c1', 'c2', 'c3'].map(k => hub.cores.find(c => c.k === k)).map((c, i) =>
+    cols = ['c0', 'c1', 'c2', 'c3'].map(k => hub.cores.find(c => c.k === k)).filter(Boolean).map((c, i) =>
       col(i ? seg(color) : '', T(c.k + '_tag', c.tag, 'rmd__badge rmd__badge--core'), dot('t', '#0f172a', '#16a34a'),
         T(c.k + '_name', c.name, 'rmd__n') + (c.kw ? T(c.k + '_kw', c.kw, 'rmd__kw') : ''), T(c.k + '_desc', c.desc, 'rmd__d')));
   } else {

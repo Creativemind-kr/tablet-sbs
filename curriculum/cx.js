@@ -90,7 +90,7 @@
   function courseBtn(r, i, label) {
     const mark = r.hub ? '<span class="hubm">2</span>' : `<span class="num num--${esc(r.t)}">${label}</span>`;
     const name = r.hub ? '공통기초 순환선' : r.name;
-    const sub = r.hub ? '공통 과정 3개' : [r.parts ? `${r.parts.length}단계` : '', DAY[r.day] || ''].filter(Boolean).join(' · ');
+    const sub = r.hub ? `공통 과정 ${data.lines[0].rows.length}개` :[r.parts ? `${r.parts.length}단계` : '', DAY[r.day] || ''].filter(Boolean).join(' · ');
     return `<li><button type="button" class="course" data-i="${i}"${i === S.row ? ' aria-current="true"' : ''}>`
       + `<span class="mark">${mark}</span><span>${esc(name)}${sub ? `<small${r.day === 'end' ? ' class="is-end"' : ''}>${esc(sub)}</small>` : ''}</span></button></li>`;
   }

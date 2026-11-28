@@ -27,8 +27,29 @@ function fixL3(line, lines) {
     cg, rest);
 }
 
+// 공통기초 순환선 맨 앞에 컴퓨터기초(11/28, 로드맵 CORE 01). 수정 페이지에 아직 이 과정이 없어 내용은 사이트에 있던 4주 과정을 씀
+// 수정 페이지에 '컴퓨터기초'가 생기면 그쪽 내용을 그대로 씀(여기서는 손대지 않음)
+const PC_BASICS = {
+  id: 'site|컴퓨터기초',
+  row: { name: '컴퓨터기초', t: 'g', desc: '컴퓨터 구성·운영체제 · 문서·엑셀 기초', badge: 'CORE 01' },
+  record: { title: '컴퓨터기초', imgs: [], items: [
+    '## Week 01', '# How to use computer?', '컴퓨터 기본 구성 이해', '운영체제의 이해',
+    '## Week 02', '# 웹 브라우저 및 보안', '웹 브라우저 사용방법/컴퓨터 보안 상식', '# 문서작업 기초', '파워포인트 기초/슬라이드/목차/차트/도형',
+    '## Week 03', '# 파워포인트 기초', '슬라이드/동영상/차트/도형', '# 엑셀 기초', '기초함수/표/행/열',
+    '## Week 04', '# 프리미어 기초', '프로젝트/시퀀스/클립자르기/자막', '# AI 기초', '프롬프트 작성방법/움직이는 AI 영상 만들기',
+  ] },
+};
+function addPcBasics(src) {
+  const hub = src.lines.find(l => l.id === 'hub');
+  if (!hub || hub.rows.some(r => r.name === '컴퓨터기초')) return;
+  hub.rows.forEach(r => { const m = /^CORE (\d+)$/.exec(r.badge || ''); if (m) r.badge = 'CORE ' + String(+m[1] + 1).padStart(2, '0'); });
+  hub.rows.unshift(Object.assign({ src: [PC_BASICS.id] }, PC_BASICS.row));
+  src.records[PC_BASICS.id] = PC_BASICS.record;
+}
+
 function transform(d) {
   const src = JSON.parse(JSON.stringify(d));
+  addPcBasics(src);
   const lines = src.lines.map(l => {
     if (l.id === 'l3') fixL3(l, src.lines);
     const nl = {};
